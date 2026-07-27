@@ -316,7 +316,7 @@ a:hover {
   -webkit-tap-highlight-color: transparent;
 }
 
-.card-scratch {
+.card-frost {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -326,32 +326,14 @@ a:hover {
   border-radius: inherit;
 }
 
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    420px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(100, 255, 218, 0.14),
-    transparent 45%
-  );
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.25s ease;
-}
-
 .card.is-hover,
-.card:hover {
-  border-color: rgba(100, 255, 218, 0.4);
+.card:hover,
+.card.is-frosted {
+  border-color: rgba(180, 220, 255, 0.45);
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(100, 255, 218, 0.08);
-}
-
-.card.is-hover::after,
-.card:hover::after {
-  opacity: 1;
+    0 12px 36px rgba(80, 140, 200, 0.18),
+    0 0 0 1px rgba(200, 230, 255, 0.12),
+    inset 0 0 24px rgba(180, 220, 255, 0.06);
 }
 
 .card.is-press {
@@ -374,10 +356,7 @@ a:hover {
     transform: none !important;
     transition: border-color 0.2s ease;
   }
-  .card::after {
-    display: none;
-  }
-  .card-scratch {
+  .card-frost {
     display: none;
   }
 }

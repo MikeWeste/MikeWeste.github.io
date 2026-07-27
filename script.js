@@ -25,124 +25,126 @@
     sections.forEach((s) => io.observe(s));
   }
 
+  // Cards: tilt + frost cover, wipe frost with mouse
   const cards = document.querySelectorAll(".card");
 
   cards.forEach((card) => {
-    const maxTilt = 7;
+    const maxTilt = 6;
     const canvas = document.createElement("canvas");
-    canvas.className = "card-scratch";
+    canvas.className = "card-frost";
     canvas.setAttribute("aria-hidden", "true");
     card.appendChild(canvas);
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: false });
 
-    let scratches = [];
     let lastX = null;
     let lastY = null;
-    let distAcc = 0;
-    let raf = 0;
-    let lastTs = 0;
+    let cssW = 0;
+    let cssH = 0;
+    let dpr = 1;
+    let frosted = false;
 
-    function resize() {
+    function size() {
       const r = card.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.max(1, Math.floor(r.width * dpr));
-      canvas.height = Math.max(1, Math.floor(r.height * dpr));
-      canvas.style.width = r.width + "px";
-      canvas.style.height = r.height + "px";
+      cssW = Math.max(1, r.width);
+      cssH = Math.max(1, r.height);
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(cssW * dpr);
+      canvas.height = Math.floor(cssH * dpr);
+      canvas.style.width = cssW + "px";
+      canvas.style.height = cssH + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    resize();
-    window.addEventListener("resize", resize);
 
-    function spawnScratch(x, y, dx, dy) {
-      const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.4;
-      const len = 9 + Math.random() * 14; // short — not a long line
-      const maxLife = 1100 + Math.random() * 1200; // stays ~1–2.3s
-      const jags = 2 + Math.floor(Math.random() * 2);
-      const spread = 2 + Math.random() * 1.6;
-      const lines = [];
-      for (let i = 0; i < jags; i++) {
-        const oy = (i - (jags - 1) / 2) * spread;
-        lines.push({
-          oy,
-          midY: oy + (Math.random() - 0.5) * 1.6,
-          endY: oy + (Math.random() - 0.5) * 1.4,
-        });
+    /** Full frost layer — text still readable underneath */
+    function paintFrost() {
+      size();
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, cssW, cssH);
+
+      // base icy haze
+      const g = ctx.createLinearGradient(0, 0, cssW, cssH);
+      g.addColorStop(0, "rgba(200, 230, 255, 0.42)");
+      g.addColorStop(0.45, "rgba(170, 210, 245, 0.38)");
+      g.addColorStop(1, "rgba(220, 240, 255, 0.48)");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, cssW, cssH);
+
+      // soft frost grain
+      for (let i = 0; i < 900; i++) {
+        const x = Math.random() * cssW;
+        const y = Math.random() * cssH;
+        const r = 0.4 + Math.random() * 1.8;
+        ctx.fillStyle = `rgba(255, 255, 255, ${0.04 + Math.random() * 0.14})`;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
       }
-      scratches.push({
-        x,
-        y,
-        angle,
-        len,
-        w: 0.65 + Math.random() * 0.85,
-        life: maxLife,
-        maxLife,
-        lines,
-      });
+
+      // crystal-like short strokes
+      ctx.lineCap = "round";
+      for (let i = 0; i < 70; i++) {
+        const x = Math.random() * cssW;
+        const y = Math.random() * cssH;
+        const a = Math.random() * Math.PI;
+        const len = 4 + Math.random() * 14;
+        ctx.strokeStyle = `rgba(255, 255, 255, ${0.08 + Math.random() * 0.18})`;
+        ctx.lineWidth = 0.5 + Math.random() * 1.1;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + Math.cos(a) * len, y + Math.sin(a) * len);
+        ctx.stroke();
+      }
+
+      // edge frost rim
+      ctx.strokeStyle = "rgba(230, 245, 255, 0.35)";
+      ctx.lineWidth = 2;
+      roundRect(ctx, 1, 1, cssW - 2, cssH - 2, 11);
+      ctx.stroke();
+
+      frosted = true;
     }
 
-    function paint() {
-      const r = card.getBoundingClientRect();
-      ctx.clearRect(0, 0, r.width, r.height);
-
-      for (const s of scratches) {
-        const t = Math.max(0, s.life / s.maxLife);
-        // hold opacity then fade
-        const alpha = t > 0.4 ? 0.5 + 0.15 * t : (0.65 * t) / 0.4;
-        if (alpha <= 0.01) continue;
-
-        ctx.save();
-        ctx.translate(s.x, s.y);
-        ctx.rotate(s.angle);
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-
-        s.lines.forEach((ln, i) => {
-          ctx.beginPath();
-          ctx.moveTo(0, ln.oy);
-          ctx.lineTo(s.len * 0.45, ln.midY);
-          ctx.lineTo(s.len, ln.endY);
-          ctx.strokeStyle = `rgba(200, 235, 240, ${alpha * (0.85 - i * 0.1)})`;
-          ctx.lineWidth = s.w * (1 - i * 0.1);
-          ctx.stroke();
-
-          ctx.beginPath();
-          ctx.moveTo(1, ln.oy + 0.5);
-          ctx.lineTo(s.len * 0.85, ln.endY + 0.5);
-          ctx.strokeStyle = `rgba(0, 0, 0, ${alpha * 0.4})`;
-          ctx.lineWidth = Math.max(0.4, s.w * 0.4);
-          ctx.stroke();
-        });
-
-        ctx.restore();
-      }
+    function roundRect(c, x, y, w, h, rad) {
+      c.beginPath();
+      c.moveTo(x + rad, y);
+      c.arcTo(x + w, y, x + w, y + h, rad);
+      c.arcTo(x + w, y + h, x, y + h, rad);
+      c.arcTo(x, y + h, x, y, rad);
+      c.arcTo(x, y, x + w, y, rad);
+      c.closePath();
     }
 
-    function loop(ts) {
-      if (!lastTs) lastTs = ts;
-      const dt = Math.min(40, ts - lastTs);
-      lastTs = ts;
-
-      for (const s of scratches) s.life -= dt;
-      scratches = scratches.filter((s) => s.life > 0);
-      paint();
-
-      if (scratches.length) {
-        raf = requestAnimationFrame(loop);
+    /** Wipe frost along mouse path */
+    function wipe(x, y, prevX, prevY) {
+      if (!frosted) return;
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = "rgba(0,0,0,1)";
+      ctx.lineWidth = 28;
+      ctx.beginPath();
+      if (prevX != null) {
+        ctx.moveTo(prevX, prevY);
+        ctx.lineTo(x, y);
       } else {
-        raf = 0;
-        lastTs = 0;
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + 0.1, y);
       }
+      ctx.stroke();
+
+      // soft center of brush
+      const brush = ctx.createRadialGradient(x, y, 2, x, y, 18);
+      brush.addColorStop(0, "rgba(0,0,0,0.95)");
+      brush.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = brush;
+      ctx.beginPath();
+      ctx.arc(x, y, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
 
-    function kick() {
-      if (!raf) {
-        lastTs = 0;
-        raf = requestAnimationFrame(loop);
-      }
-    }
-
-    function setFromPoint(clientX, clientY) {
+    function setTilt(clientX, clientY) {
       const r = card.getBoundingClientRect();
       const px = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
       const py = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
@@ -151,56 +153,59 @@
       if (reduceMotion) return;
       card.style.setProperty("--ry", `${(px - 0.5) * maxTilt * 2}deg`);
       card.style.setProperty("--rx", `${(0.5 - py) * maxTilt * 2}deg`);
-      card.style.setProperty("--lift", "-5px");
+      card.style.setProperty("--lift", "-4px");
     }
 
-    function onMove(clientX, clientY) {
-      const r = card.getBoundingClientRect();
-      const x = clientX - r.left;
-      const y = clientY - r.top;
-      setFromPoint(clientX, clientY);
-      if (reduceMotion) return;
+    function onEnter(e) {
+      card.classList.add("is-hover", "is-frosted");
+      size();
+      if (!reduceMotion) paintFrost();
+      lastX = null;
+      lastY = null;
+      setTilt(e.clientX, e.clientY);
+    }
 
-      if (lastX != null) {
-        const dx = x - lastX;
-        const dy = y - lastY;
-        distAcc += Math.hypot(dx, dy);
-        // discrete claw marks every ~16–28px of travel
-        if (distAcc > 16 + Math.random() * 12) {
-          spawnScratch(x, y, dx || 1, dy || 0);
-          distAcc = 0;
-          kick();
-        }
-      }
+    function onMove(e) {
+      const r = card.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      setTilt(e.clientX, e.clientY);
+      if (reduceMotion) return;
+      wipe(x, y, lastX, lastY);
       lastX = x;
       lastY = y;
     }
 
-    function reset() {
-      card.classList.remove("is-hover", "is-press");
+    function onLeave() {
+      card.classList.remove("is-hover", "is-press", "is-frosted");
       card.style.setProperty("--rx", "0deg");
       card.style.setProperty("--ry", "0deg");
       card.style.setProperty("--lift", "0px");
       card.style.setProperty("--press", "1");
       lastX = null;
       lastY = null;
-      distAcc = 0;
+      // clear frost when leaving
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, cssW, cssH);
+      frosted = false;
     }
 
-    card.addEventListener("pointerenter", (e) => {
-      card.classList.add("is-hover");
-      resize();
-      lastX = null;
-      distAcc = 0;
-      onMove(e.clientX, e.clientY);
+    window.addEventListener("resize", () => {
+      if (card.classList.contains("is-hover") && !reduceMotion) {
+        paintFrost();
+      } else {
+        size();
+      }
     });
-    card.addEventListener("pointermove", (e) => onMove(e.clientX, e.clientY));
-    card.addEventListener("pointerleave", reset);
-    card.addEventListener("pointercancel", reset);
+
+    card.addEventListener("pointerenter", onEnter);
+    card.addEventListener("pointermove", onMove);
+    card.addEventListener("pointerleave", onLeave);
+    card.addEventListener("pointercancel", onLeave);
     card.addEventListener("pointerdown", (e) => {
-      card.classList.add("is-press", "is-hover");
+      card.classList.add("is-press");
       card.style.setProperty("--press", "0.97");
-      onMove(e.clientX, e.clientY);
+      onMove(e);
       try {
         card.setPointerCapture(e.pointerId);
       } catch (_) {}
@@ -208,7 +213,7 @@
     card.addEventListener("pointerup", () => {
       card.classList.remove("is-press");
       card.style.setProperty("--press", "1");
-      card.style.setProperty("--lift", "-5px");
+      card.style.setProperty("--lift", "-4px");
     });
   });
 })();
