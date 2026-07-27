@@ -426,46 +426,55 @@ a:hover {
   border-radius: 999px;
 }
 
-/* Ёжик — угол, следит за мышью */
+/* Ёжик — PNG-арт, следит (поворот) */
 .ezhik {
+  --look-x: 0deg;
+  --look-y: 0deg;
+  --scale: 1;
   position: fixed;
-  right: 0.85rem;
-  bottom: 0.5rem;
+  right: 0.35rem;
+  bottom: 0.15rem;
   z-index: 40;
-  width: 108px;
-  height: 108px;
+  width: 132px;
+  height: 132px;
   cursor: pointer;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
-  transition: transform 0.25s ease;
   user-select: none;
   -webkit-user-select: none;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5));
+  transform-origin: 70% 85%;
+  transform:
+    perspective(420px)
+    rotateY(var(--look-x))
+    rotateX(var(--look-y))
+    scale(var(--scale));
+  transition: filter 0.2s ease;
+  will-change: transform;
 }
 
 .ezhik:hover {
-  transform: scale(1.06) translateY(-4px);
+  --scale: 1.06;
+  filter: drop-shadow(0 12px 22px rgba(100, 255, 218, 0.2));
 }
 
-.ezhik-svg {
+.ezhik-img {
   display: block;
   width: 100%;
   height: 100%;
-  overflow: visible;
-}
-
-.ezhik-pupil {
-  transition: transform 0.05s linear;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
 }
 
 .ezhik-bubble {
   position: absolute;
-  right: 88px;
-  bottom: 62px;
+  right: 108px;
+  bottom: 88px;
   white-space: nowrap;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: #0a0c10;
   background: var(--accent);
-  padding: 0.35rem 0.6rem;
+  padding: 0.38rem 0.7rem;
   border-radius: 999px;
   opacity: 0;
   transform: translateY(6px) scale(0.9);
@@ -490,27 +499,34 @@ a:hover {
   transform: translateY(0) scale(1);
 }
 
-.ezhik.wave .ezhik-svg {
+.ezhik.wave {
   animation: ezhik-bounce 0.55s ease;
 }
 
 @keyframes ezhik-bounce {
-  0%, 100% { transform: translateY(0); }
-  35% { transform: translateY(-10px) rotate(-4deg); }
-  70% { transform: translateY(-3px) rotate(3deg); }
+  0%, 100% { translate: 0 0; }
+  35% { translate: 0 -12px; }
+  70% { translate: 0 -4px; }
 }
 
 @media (max-width: 720px) {
   .ezhik {
-    width: 72px;
-    height: 72px;
-    right: 0.5rem;
-    bottom: 0.4rem;
+    width: 96px;
+    height: 96px;
+    right: 0.15rem;
+    bottom: 0.05rem;
   }
   .ezhik-bubble {
-    right: 68px;
-    bottom: 48px;
-    font-size: 0.65rem;
+    right: 78px;
+    bottom: 64px;
+    font-size: 0.68rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ezhik {
+    --look-x: 0deg !important;
+    --look-y: 0deg !important;
   }
 }
 

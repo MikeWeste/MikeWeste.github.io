@@ -85,37 +85,28 @@
     });
   });
 
-  // ——— Ёжик: глаза следят за курсором / касанием ———
+  // ——— Ёжик (PNG): слегка поворачивается к курсору ———
   const ezhik = document.getElementById("ezhik");
   const bubble = document.getElementById("ezhik-bubble");
-  if (!ezhik || reduceMotion) return;
+  if (!ezhik) return;
 
-  const pupils = ezhik.querySelectorAll(".ezhik-pupil");
-  const maxPupil = 3.2;
+  const maxYaw = 16;
+  const maxPitch = 10;
 
   function lookAt(clientX, clientY) {
+    if (reduceMotion) return;
     const box = ezhik.getBoundingClientRect();
-    const cx = box.left + box.width * 0.5;
-    const cy = box.top + box.height * 0.48;
-    const dx = clientX - cx;
-    const dy = clientY - cy;
-    const dist = Math.hypot(dx, dy) || 1;
-    const nx = (dx / dist) * maxPupil;
-    const ny = (dy / dist) * maxPupil;
-    pupils.forEach((p) => {
-      p.style.transform = `translate(${nx}px, ${ny}px)`;
-    });
+    const cx = box.left + box.width * 0.55;
+    const cy = box.top + box.height * 0.4;
+    const nx = Math.max(-1, Math.min(1, (clientX - cx) / (window.innerWidth * 0.45)));
+    const ny = Math.max(-1, Math.min(1, (clientY - cy) / (window.innerHeight * 0.45)));
+    ezhik.style.setProperty("--look-x", `${nx * maxYaw}deg`);
+    ezhik.style.setProperty("--look-y", `${-ny * maxPitch}deg`);
   }
 
-  window.addEventListener(
-    "pointermove",
-    (e) => {
-      lookAt(e.clientX, e.clientY);
-    },
-    { passive: true }
-  );
-
-  // На тач: смотрит на касание
+  window.addEventListener("pointermove", (e) => lookAt(e.clientX, e.clientY), {
+    passive: true,
+  });
   window.addEventListener(
     "touchstart",
     (e) => {
@@ -126,9 +117,9 @@
   );
 
   const phrases = [
-    "Привет! Я ёжик 🦔",
-    "Тикет закрыт ✓",
+    "Привет! 🦔",
     "Пиши @Ezhik302",
+    "Тикет закрыт ✓",
     "Windows? Починим",
     "Ежу понятно!",
   ];
@@ -147,9 +138,8 @@
     }, 2200);
   });
 
-  // Первый привет через 1.2s
   setTimeout(() => {
     ezhik.classList.add("show-bubble", "wave");
     hideTimer = setTimeout(() => ezhik.classList.remove("show-bubble", "wave"), 2500);
-  }, 1200);
+  }, 1000);
 })();
