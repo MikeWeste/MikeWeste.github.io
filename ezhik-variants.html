@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ёжик — узнаваемые варианты</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: "DM Sans", system-ui, sans-serif;
+      background: #0a0c10;
+      color: #e8edf5;
+      padding: 2rem 1.25rem 3rem;
+      margin: 0;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 0.4rem; }
+    .sub { color: #8b97a8; margin-bottom: 1.5rem; max-width: 48ch; line-height: 1.5; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      max-width: 900px;
+    }
+    .opt {
+      background: #12161f;
+      border: 1px solid rgba(148,163,184,.16);
+      border-radius: 16px;
+      padding: 1.2rem;
+      text-align: center;
+    }
+    .stage {
+      height: 200px;
+      display: grid;
+      place-items: center;
+      background: #0a0c10;
+      border-radius: 12px;
+      margin-bottom: 0.85rem;
+      border: 1px solid rgba(148,163,184,.12);
+    }
+    .stage svg { width: 160px; height: 160px; overflow: visible; }
+    h2 { font-size: 1.05rem; margin: 0 0 0.35rem; }
+    p { color: #8b97a8; font-size: 0.88rem; line-height: 1.45; margin: 0 0 0.75rem; }
+    .hint { margin-top: 1.25rem; color: #64ffda; font-size: 0.9rem; }
+    a { color: #64ffda; }
+  </style>
+</head>
+<body>
+  <h1>Ёжик — должно быть сразу ясно 🦔</h1>
+  <p class="sub">
+    Ключ: <strong>треугольные иголки</strong> + <strong>острая мордочка с носом</strong> + уши + лапки.
+    Наведи мышь — глаза следят. На сайте уже стоит вариант «Classic».
+  </p>
+
+  <div class="grid">
+    <article class="opt">
+      <div class="stage" data-track>
+        <!-- same as site classic -->
+        <svg viewBox="0 0 128 128">
+          <defs>
+            <radialGradient id="b1" cx="42%" cy="38%" r="62%">
+              <stop offset="0%" stop-color="#6b7280"/><stop offset="100%" stop-color="#374151"/>
+            </radialGradient>
+            <radialGradient id="f1" cx="50%" cy="32%" r="70%">
+              <stop offset="0%" stop-color="#f6dcb0"/><stop offset="100%" stop-color="#d4a574"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="64" cy="74" rx="34" ry="30" fill="url(#b1)"/>
+          <g fill="#4b5563" stroke="#1f2937" stroke-width="0.5">
+            <path d="M64 14 L74 46 L54 46 Z"/><path d="M40 20 L58 48 L44 52 Z"/>
+            <path d="M88 20 L84 52 L70 48 Z"/><path d="M22 38 L52 54 L38 64 Z"/>
+            <path d="M106 38 L90 64 L76 54 Z"/><path d="M16 64 L48 66 L34 84 Z"/>
+            <path d="M112 64 L94 84 L80 66 Z"/><path d="M28 88 L54 72 L48 96 Z"/>
+            <path d="M100 88 L80 96 L74 72 Z"/><path d="M48 12 L64 42 L52 44 Z"/>
+            <path d="M80 12 L76 44 L64 42 Z"/><path d="M14 52 L46 60 L36 72 Z"/>
+            <path d="M114 52 L92 72 L82 60 Z"/><path d="M36 28 L56 50 L46 54 Z"/>
+            <path d="M92 28 L82 54 L72 50 Z"/>
+          </g>
+          <ellipse cx="64" cy="80" rx="29" ry="27" fill="url(#f1)"/>
+          <path d="M64 74 L50 96 L78 96 Z" fill="#ecc98f"/>
+          <ellipse cx="64" cy="94" rx="8" ry="6" fill="#ecc98f"/>
+          <ellipse cx="64" cy="98" rx="5.5" ry="4.2" fill="#1f2937"/>
+          <ellipse cx="40" cy="64" rx="7.5" ry="10" fill="#d4a574"/>
+          <ellipse cx="88" cy="64" rx="7.5" ry="10" fill="#d4a574"/>
+          <g class="eye">
+            <ellipse cx="51" cy="74" rx="8.5" ry="9.5" fill="#fff"/>
+            <circle class="pupil" cx="51" cy="75" r="4" fill="#111827"/>
+            <circle cx="53.2" cy="73" r="1.5" fill="#fff"/>
+          </g>
+          <g class="eye">
+            <ellipse cx="77" cy="74" rx="8.5" ry="9.5" fill="#fff"/>
+            <circle class="pupil" cx="77" cy="75" r="4" fill="#111827"/>
+            <circle cx="79.2" cy="73" r="1.5" fill="#fff"/>
+          </g>
+          <path d="M56 90 Q64 95 72 90" stroke="#a67c52" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+          <ellipse cx="50" cy="108" rx="11" ry="6.5" fill="#d4a574"/>
+          <ellipse cx="78" cy="108" rx="11" ry="6.5" fill="#d4a574"/>
+        </svg>
+      </div>
+      <h2>Classic (на сайте сейчас)</h2>
+      <p>Иголки-треугольники, мордочка-конус, нос, уши, лапки. Читается как ёжик сразу.</p>
+    </article>
+
+    <article class="opt">
+      <div class="stage" data-track>
+        <!-- side-ish classic silhouette even clearer -->
+        <svg viewBox="0 0 140 120">
+          <g fill="#4b5563" stroke="#1f2937" stroke-width="0.4">
+            <path d="M78 12 L88 42 L68 40 Z"/>
+            <path d="M58 16 L72 44 L56 46 Z"/>
+            <path d="M98 18 L96 46 L80 42 Z"/>
+            <path d="M44 28 L66 50 L52 56 Z"/>
+            <path d="M110 30 L100 58 L86 48 Z"/>
+            <path d="M36 50 L64 56 L52 72 Z"/>
+            <path d="M118 52 L102 72 L90 56 Z"/>
+            <path d="M48 70 L70 62 L64 84 Z"/>
+            <path d="M108 70 L94 84 L86 62 Z"/>
+          </g>
+          <ellipse cx="78" cy="62" rx="36" ry="30" fill="#4b5563"/>
+          <!-- face from left-front -->
+          <ellipse cx="52" cy="68" rx="26" ry="24" fill="#e8c48a"/>
+          <path d="M28 72 L48 58 L50 86 Z" fill="#f0d2a0"/>
+          <ellipse cx="30" cy="74" rx="7" ry="5.5" fill="#1f2937"/>
+          <circle cx="31.5" cy="72.5" r="1.2" fill="#9ca3af"/>
+          <ellipse cx="58" cy="52" rx="6" ry="8" fill="#d4a574"/>
+          <g class="eye">
+            <ellipse cx="48" cy="64" rx="7" ry="8" fill="#fff"/>
+            <circle class="pupil" cx="46" cy="65" r="3.5" fill="#111827"/>
+            <circle cx="48" cy="63" r="1.2" fill="#fff"/>
+          </g>
+          <path d="M40 80 Q48 84 54 78" stroke="#a67c52" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+          <ellipse cx="62" cy="92" rx="12" ry="7" fill="#d4a574"/>
+          <ellipse cx="88" cy="90" rx="11" ry="7" fill="#d4a574"/>
+        </svg>
+      </div>
+      <h2>Profile (ещё «ежовее»)</h2>
+      <p>Боковой профиль: длинная морда + иголки назад. Как в детских книжках.</p>
+    </article>
+  </div>
+
+  <p class="hint">
+    Classic уже на <a href="index.html">портфолио</a>.
+    Если хочешь профиль — напиши «ставь profile».
+  </p>
+
+  <script>
+    const max = 3.2;
+    document.querySelectorAll("[data-track]").forEach((stage) => {
+      const pupils = stage.querySelectorAll(".pupil");
+      stage.addEventListener("pointermove", (e) => {
+        const r = stage.getBoundingClientRect();
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height * 0.45;
+        const dx = e.clientX - cx, dy = e.clientY - cy;
+        const d = Math.hypot(dx, dy) || 1;
+        pupils.forEach((p) => {
+          p.style.transform = `translate(${(dx/d)*max}px, ${(dy/d)*max}px)`;
+        });
+      });
+      stage.addEventListener("pointerleave", () => {
+        pupils.forEach((p) => { p.style.transform = "translate(0,0)"; });
+      });
+    });
+  </script>
+</body>
+</html>
