@@ -26,10 +26,126 @@
     sections.forEach((s) => io.observe(s));
   }
 
-  // Project cards tilt
+  // ——— Cards: tilt + short claw scratches that linger ———
   const cards = document.querySelectorAll(".card");
+
   cards.forEach((card) => {
-    const maxTilt = 8;
+    const maxTilt = 7;
+    const canvas = document.createElement("canvas");
+    canvas.className = "card-scratch";
+    canvas.setAttribute("aria-hidden", "true");
+    card.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+
+    /** @type {Array<{x:number,y:number,angle:number,len:number,w:number,life:number,maxLife:number,lines:Array<{oy:number,midY:number,endY:number}>}>} */
+    let scratches = [];
+    let lastX = null;
+    let lastY = null;
+    let distAcc = 0;
+    let raf = 0;
+    let lastTs = 0;
+
+    function resize() {
+      const r = card.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.floor(r.width * dpr));
+      canvas.height = Math.max(1, Math.floor(r.height * dpr));
+      canvas.style.width = r.width + "px";
+      canvas.style.height = r.height + "px";
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    function spawnScratch(x, y, dx, dy) {
+      const angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.4;
+      const len = 9 + Math.random() * 14; // short — not a long line
+      const maxLife = 1100 + Math.random() * 1200; // stays ~1–2.3s
+      const jags = 2 + Math.floor(Math.random() * 2);
+      const spread = 2 + Math.random() * 1.6;
+      const lines = [];
+      for (let i = 0; i < jags; i++) {
+        const oy = (i - (jags - 1) / 2) * spread;
+        lines.push({
+          oy,
+          midY: oy + (Math.random() - 0.5) * 1.6,
+          endY: oy + (Math.random() - 0.5) * 1.4,
+        });
+      }
+      scratches.push({
+        x,
+        y,
+        angle,
+        len,
+        w: 0.65 + Math.random() * 0.85,
+        life: maxLife,
+        maxLife,
+        lines,
+      });
+    }
+
+    function paint() {
+      const r = card.getBoundingClientRect();
+      ctx.clearRect(0, 0, r.width, r.height);
+
+      for (const s of scratches) {
+        const t = Math.max(0, s.life / s.maxLife);
+        // hold opacity then fade
+        const alpha = t > 0.4 ? 0.5 + 0.15 * t : (0.65 * t) / 0.4;
+        if (alpha <= 0.01) continue;
+
+        ctx.save();
+        ctx.translate(s.x, s.y);
+        ctx.rotate(s.angle);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        s.lines.forEach((ln, i) => {
+          // light groove
+          ctx.beginPath();
+          ctx.moveTo(0, ln.oy);
+          ctx.lineTo(s.len * 0.45, ln.midY);
+          ctx.lineTo(s.len, ln.endY);
+          ctx.strokeStyle = `rgba(200, 235, 240, ${alpha * (0.85 - i * 0.1)})`;
+          ctx.lineWidth = s.w * (1 - i * 0.1);
+          ctx.stroke();
+
+          // dark under-scratch
+          ctx.beginPath();
+          ctx.moveTo(1, ln.oy + 0.5);
+          ctx.lineTo(s.len * 0.85, ln.endY + 0.5);
+          ctx.strokeStyle = `rgba(0, 0, 0, ${alpha * 0.4})`;
+          ctx.lineWidth = Math.max(0.4, s.w * 0.4);
+          ctx.stroke();
+        });
+
+        ctx.restore();
+      }
+    }
+
+    function loop(ts) {
+      if (!lastTs) lastTs = ts;
+      const dt = Math.min(40, ts - lastTs);
+      lastTs = ts;
+
+      for (const s of scratches) s.life -= dt;
+      scratches = scratches.filter((s) => s.life > 0);
+      paint();
+
+      if (scratches.length) {
+        raf = requestAnimationFrame(loop);
+      } else {
+        raf = 0;
+        lastTs = 0;
+      }
+    }
+
+    function kick() {
+      if (!raf) {
+        lastTs = 0;
+        raf = requestAnimationFrame(loop);
+      }
+    }
 
     function setFromPoint(clientX, clientY) {
       const r = card.getBoundingClientRect();
@@ -40,7 +156,29 @@
       if (reduceMotion) return;
       card.style.setProperty("--ry", `${(px - 0.5) * maxTilt * 2}deg`);
       card.style.setProperty("--rx", `${(0.5 - py) * maxTilt * 2}deg`);
-      card.style.setProperty("--lift", "-6px");
+      card.style.setProperty("--lift", "-5px");
+    }
+
+    function onMove(clientX, clientY) {
+      const r = card.getBoundingClientRect();
+      const x = clientX - r.left;
+      const y = clientY - r.top;
+      setFromPoint(clientX, clientY);
+      if (reduceMotion) return;
+
+      if (lastX != null) {
+        const dx = x - lastX;
+        const dy = y - lastY;
+        distAcc += Math.hypot(dx, dy);
+        // discrete claw marks every ~16–28px of travel
+        if (distAcc > 16 + Math.random() * 12) {
+          spawnScratch(x, y, dx || 1, dy || 0);
+          distAcc = 0;
+          kick();
+        }
+      }
+      lastX = x;
+      lastY = y;
     }
 
     function reset() {
@@ -49,22 +187,25 @@
       card.style.setProperty("--ry", "0deg");
       card.style.setProperty("--lift", "0px");
       card.style.setProperty("--press", "1");
+      lastX = null;
+      lastY = null;
+      distAcc = 0;
     }
 
     card.addEventListener("pointerenter", (e) => {
       card.classList.add("is-hover");
-      setFromPoint(e.clientX, e.clientY);
+      resize();
+      lastX = null;
+      distAcc = 0;
+      onMove(e.clientX, e.clientY);
     });
-    card.addEventListener("pointermove", (e) => {
-      if (e.pointerType === "touch" && !card.classList.contains("is-press")) return;
-      setFromPoint(e.clientX, e.clientY);
-    });
+    card.addEventListener("pointermove", (e) => onMove(e.clientX, e.clientY));
     card.addEventListener("pointerleave", reset);
     card.addEventListener("pointercancel", reset);
     card.addEventListener("pointerdown", (e) => {
       card.classList.add("is-press", "is-hover");
       card.style.setProperty("--press", "0.97");
-      setFromPoint(e.clientX, e.clientY);
+      onMove(e.clientX, e.clientY);
       try {
         card.setPointerCapture(e.pointerId);
       } catch (_) {}
@@ -72,101 +213,7 @@
     card.addEventListener("pointerup", () => {
       card.classList.remove("is-press");
       card.style.setProperty("--press", "1");
-      card.style.setProperty("--lift", "-6px");
+      card.style.setProperty("--lift", "-5px");
     });
   });
-
-  // ——— Ёжик SVG: зрачки следят ———
-  const ezhik = document.getElementById("ezhik");
-  const bubble = document.getElementById("ezhik-bubble");
-  if (!ezhik) return;
-
-  const pupilGroups = ezhik.querySelectorAll(".ezhik-pupil-g");
-  const maxMove = 4.5; // SVG units inside eye
-
-  function lookAt(clientX, clientY) {
-    if (reduceMotion) return;
-    pupilGroups.forEach((g) => {
-      const eye = g.closest(".ezhik-eye");
-      // getBBox is SVG local; use DOM rect of sclera for screen coords
-      const sclera = eye.querySelector(".ezhik-sclera");
-      const r = sclera.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const dx = clientX - cx;
-      const dy = clientY - cy;
-      const dist = Math.hypot(dx, dy) || 1;
-      // convert roughly to SVG units (eye ~28px wide → 14 viewBox radius)
-      const scale = 14 / (r.width / 2 || 1);
-      let nx = (dx / dist) * maxMove;
-      let ny = (dy / dist) * maxMove;
-      // clamp inside eye
-      const lim = maxMove;
-      nx = Math.max(-lim, Math.min(lim, nx));
-      ny = Math.max(-lim, Math.min(lim, ny));
-      g.setAttribute("transform", `translate(${nx}, ${ny})`);
-    });
-  }
-
-  window.addEventListener("pointermove", (e) => lookAt(e.clientX, e.clientY), {
-    passive: true,
-  });
-  window.addEventListener(
-    "touchstart",
-    (e) => {
-      const t = e.touches[0];
-      if (t) lookAt(t.clientX, t.clientY);
-    },
-    { passive: true }
-  );
-  window.addEventListener(
-    "touchmove",
-    (e) => {
-      const t = e.touches[0];
-      if (t) lookAt(t.clientX, t.clientY);
-    },
-    { passive: true }
-  );
-
-  function scheduleSquint() {
-    if (reduceMotion) return;
-    setTimeout(() => {
-      const wink = Math.random() < 0.4;
-      ezhik.classList.remove("is-squint", "is-wink");
-      ezhik.classList.add(wink ? "is-wink" : "is-squint");
-      setTimeout(() => {
-        ezhik.classList.remove("is-squint", "is-wink");
-        scheduleSquint();
-      }, wink ? 200 : 160);
-    }, 3200 + Math.random() * 5000);
-  }
-  scheduleSquint();
-
-  const phrases = [
-    "Привет! 🦔",
-    "Пиши @Ezhik302",
-    "Тикет закрыт ✓",
-    "Windows? Починим",
-    "Ежу понятно!",
-  ];
-  let phraseIdx = 0;
-  let hideTimer;
-
-  ezhik.addEventListener("click", () => {
-    ezhik.classList.add("wave", "show-bubble", "is-wink");
-    if (bubble) {
-      bubble.textContent = phrases[phraseIdx % phrases.length];
-      phraseIdx += 1;
-    }
-    clearTimeout(hideTimer);
-    setTimeout(() => ezhik.classList.remove("is-wink"), 240);
-    hideTimer = setTimeout(() => {
-      ezhik.classList.remove("show-bubble", "wave");
-    }, 2200);
-  });
-
-  setTimeout(() => {
-    ezhik.classList.add("show-bubble", "wave");
-    hideTimer = setTimeout(() => ezhik.classList.remove("show-bubble", "wave"), 2500);
-  }, 900);
 })();

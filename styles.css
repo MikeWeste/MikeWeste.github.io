@@ -305,6 +305,8 @@ a:hover {
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1.25rem 1.3rem;
+  overflow: hidden;
+  isolation: isolate;
   transform-style: preserve-3d;
   transform:
     translateY(var(--lift))
@@ -318,6 +320,17 @@ a:hover {
   will-change: transform;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* canvas-царапины поверх контента */
+.card-scratch {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  border-radius: inherit;
 }
 
 .card::after {
@@ -371,16 +384,25 @@ a:hover {
   .card::after {
     display: none;
   }
-  .ezhik {
-    display: none !important;
+  .card-scratch {
+    display: none;
   }
 }
 
 .card-top {
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
+}
+
+.card h3,
+.card p,
+.card .pills {
+  position: relative;
+  z-index: 1;
 }
 
 .card-num {
@@ -424,126 +446,6 @@ a:hover {
   background: var(--accent-dim);
   padding: 0.22rem 0.5rem;
   border-radius: 999px;
-}
-
-/* Ёжик — SVG, зрачки следят, прищур */
-.ezhik {
-  position: fixed;
-  right: 0.4rem;
-  bottom: 0.2rem;
-  z-index: 40;
-  width: 132px;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
-  transition: filter 0.2s ease, transform 0.2s ease;
-}
-
-.ezhik:hover {
-  filter: drop-shadow(0 10px 20px rgba(100, 255, 218, 0.2));
-  transform: translateY(-3px);
-}
-
-.ezhik-stage {
-  position: relative;
-  width: 100%;
-  line-height: 0;
-}
-
-.ezhik-svg {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-  pointer-events: none;
-}
-
-/* зрачок + блик двигаются вместе */
-.ezhik-pupil-g {
-  transform: translate(0px, 0px);
-  transition: transform 0.06s linear;
-}
-
-/* веко (SVG rect height) */
-.ezhik-lid {
-  height: 0;
-  transition: height 0.12s ease;
-}
-
-.ezhik.is-squint .ezhik-lid {
-  height: 28px;
-}
-
-.ezhik.is-wink .ezhik-eye-r .ezhik-lid {
-  height: 30px;
-}
-
-.ezhik-bubble {
-  position: absolute;
-  right: 108px;
-  bottom: 100px;
-  white-space: nowrap;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #0a0c10;
-  background: var(--accent);
-  padding: 0.38rem 0.7rem;
-  border-radius: 999px;
-  opacity: 0;
-  transform: translateY(6px) scale(0.9);
-  pointer-events: none;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  box-shadow: 0 4px 12px rgba(100, 255, 218, 0.25);
-}
-
-.ezhik-bubble::after {
-  content: "";
-  position: absolute;
-  right: -4px;
-  bottom: 8px;
-  width: 10px;
-  height: 10px;
-  background: var(--accent);
-  transform: rotate(45deg);
-}
-
-.ezhik.show-bubble .ezhik-bubble {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-.ezhik.wave .ezhik-stage {
-  animation: ezhik-bounce 0.5s ease;
-}
-
-@keyframes ezhik-bounce {
-  0%, 100% { transform: translateY(0); }
-  35% { transform: translateY(-10px); }
-  70% { transform: translateY(-3px); }
-}
-
-@media (max-width: 720px) {
-  .ezhik {
-    width: 100px;
-    right: 0.15rem;
-    bottom: 0.05rem;
-  }
-  .ezhik-bubble {
-    right: 78px;
-    bottom: 72px;
-    font-size: 0.68rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ezhik-pupil-g {
-    transform: none !important;
-    transition: none !important;
-  }
-  .ezhik.wave .ezhik-stage {
-    animation: none;
-  }
 }
 
 /* CTA */
