@@ -426,131 +426,63 @@ a:hover {
   border-radius: 999px;
 }
 
-/* Ёжик — статичный PNG (flip), глаза следят, редкий прищур */
+/* Ёжик — SVG, зрачки следят, прищур */
 .ezhik {
-  --px: 0px;
-  --py: 0px;
   position: fixed;
-  right: 0.25rem;
-  bottom: 0.1rem;
+  right: 0.4rem;
+  bottom: 0.2rem;
   z-index: 40;
-  width: 140px;
-  height: 140px;
+  width: 132px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
   transition: filter 0.2s ease, transform 0.2s ease;
 }
 
 .ezhik:hover {
-  filter: drop-shadow(0 12px 22px rgba(100, 255, 218, 0.18));
-  transform: translateY(-2px);
+  filter: drop-shadow(0 10px 20px rgba(100, 255, 218, 0.2));
+  transform: translateY(-3px);
 }
 
 .ezhik-stage {
   position: relative;
   width: 100%;
-  height: 100%;
+  line-height: 0;
 }
 
-.ezhik-img {
+.ezhik-svg {
   display: block;
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
+  overflow: visible;
   pointer-events: none;
-  user-select: none;
 }
 
-/* Глаза: % от картинки (подогнано под арт после flip) */
-.ezhik-eye {
-  --ex: 0px;
-  --ey: 0px;
-  position: absolute;
-  width: 11.5%;
-  height: 13.5%;
-  border-radius: 50%;
-  background: #0a0e14;
-  overflow: hidden;
-  pointer-events: none;
-  box-shadow: inset 0 -1px 2px rgba(255, 255, 255, 0.12);
+/* зрачок + блик двигаются вместе */
+.ezhik-pupil-g {
+  transform: translate(0px, 0px);
+  transition: transform 0.06s linear;
 }
 
-.ezhik-eye-l {
-  left: 40.5%;
-  top: 28.2%;
-}
-
-.ezhik-eye-r {
-  left: 53.2%;
-  top: 28%;
-}
-
-.ezhik-pupil {
-  position: absolute;
-  left: 50%;
-  top: 52%;
-  width: 62%;
-  height: 62%;
-  margin: -31% 0 0 -31%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #2a3140 0%, #05070c 70%);
-  transform: translate(var(--ex), var(--ey));
-  transition: transform 0.05s linear;
-}
-
-.ezhik-shine {
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 28%;
-  height: 28%;
-  margin: -14% 0 0 -14%;
-  border-radius: 50%;
-  background: #fff;
-  opacity: 0.95;
-  transform: translate(var(--ex), var(--ey));
-  transition: transform 0.05s linear;
-  box-shadow: 3px 4px 0 -1px rgba(255, 255, 255, 0.35);
-}
-
-/* Веко для прищура */
+/* веко (SVG rect height) */
 .ezhik-lid {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 0%;
-  background: linear-gradient(#1a1f2a, #0d1118);
-  border-radius: 50% 50% 0 0;
+  height: 0;
   transition: height 0.12s ease;
-  z-index: 2;
 }
 
 .ezhik.is-squint .ezhik-lid {
-  height: 72%;
-}
-
-.ezhik.is-squint .ezhik-pupil,
-.ezhik.is-squint .ezhik-shine {
-  opacity: 0.35;
-  transition: opacity 0.1s ease, transform 0.05s linear;
+  height: 28px;
 }
 
 .ezhik.is-wink .ezhik-eye-r .ezhik-lid {
-  height: 88%;
-}
-
-.ezhik.is-wink .ezhik-eye-r .ezhik-pupil,
-.ezhik.is-wink .ezhik-eye-r .ezhik-shine {
-  opacity: 0.2;
+  height: 30px;
 }
 
 .ezhik-bubble {
   position: absolute;
-  right: 112px;
-  bottom: 92px;
+  right: 108px;
+  bottom: 100px;
   white-space: nowrap;
   font-size: 0.75rem;
   font-weight: 600;
@@ -594,20 +526,18 @@ a:hover {
 @media (max-width: 720px) {
   .ezhik {
     width: 100px;
-    height: 100px;
-    right: 0.1rem;
-    bottom: 0;
+    right: 0.15rem;
+    bottom: 0.05rem;
   }
   .ezhik-bubble {
-    right: 80px;
-    bottom: 68px;
+    right: 78px;
+    bottom: 72px;
     font-size: 0.68rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ezhik-pupil,
-  .ezhik-shine {
+  .ezhik-pupil-g {
     transform: none !important;
     transition: none !important;
   }

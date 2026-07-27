@@ -4,7 +4,7 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Active section highlight in rail nav
+  // Active section highlight
   const links = document.querySelectorAll("[data-nav]");
   const sections = [...links]
     .map((a) => document.querySelector(a.getAttribute("href")))
@@ -26,25 +26,20 @@
     sections.forEach((s) => io.observe(s));
   }
 
-  // ——— Project cards: 3D tilt + touch press ———
+  // Project cards tilt
   const cards = document.querySelectorAll(".card");
-
   cards.forEach((card) => {
     const maxTilt = 8;
 
     function setFromPoint(clientX, clientY) {
       const r = card.getBoundingClientRect();
-      const x = (clientX - r.left) / r.width;
-      const y = (clientY - r.top) / r.height;
-      const px = Math.min(1, Math.max(0, x));
-      const py = Math.min(1, Math.max(0, y));
+      const px = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+      const py = Math.min(1, Math.max(0, (clientY - r.top) / r.height));
       card.style.setProperty("--mx", `${px * 100}%`);
       card.style.setProperty("--my", `${py * 100}%`);
       if (reduceMotion) return;
-      const ry = (px - 0.5) * maxTilt * 2;
-      const rx = (0.5 - py) * maxTilt * 2;
-      card.style.setProperty("--ry", `${ry}deg`);
-      card.style.setProperty("--rx", `${rx}deg`);
+      card.style.setProperty("--ry", `${(px - 0.5) * maxTilt * 2}deg`);
+      card.style.setProperty("--rx", `${(0.5 - py) * maxTilt * 2}deg`);
       card.style.setProperty("--lift", "-6px");
     }
 
@@ -60,15 +55,12 @@
       card.classList.add("is-hover");
       setFromPoint(e.clientX, e.clientY);
     });
-
     card.addEventListener("pointermove", (e) => {
       if (e.pointerType === "touch" && !card.classList.contains("is-press")) return;
       setFromPoint(e.clientX, e.clientY);
     });
-
     card.addEventListener("pointerleave", reset);
     card.addEventListener("pointercancel", reset);
-
     card.addEventListener("pointerdown", (e) => {
       card.classList.add("is-press", "is-hover");
       card.style.setProperty("--press", "0.97");
@@ -77,7 +69,6 @@
         card.setPointerCapture(e.pointerId);
       } catch (_) {}
     });
-
     card.addEventListener("pointerup", () => {
       card.classList.remove("is-press");
       card.style.setProperty("--press", "1");
@@ -85,35 +76,41 @@
     });
   });
 
-  // ——— Ёжик: картинка статична, глаза следят, иногда прищур ———
+  // ——— Ёжик SVG: зрачки следят ———
   const ezhik = document.getElementById("ezhik");
   const bubble = document.getElementById("ezhik-bubble");
   if (!ezhik) return;
 
-  const eyes = ezhik.querySelectorAll(".ezhik-eye");
-  const maxEye = 3.2; // px offset inside socket
+  const pupilGroups = ezhik.querySelectorAll(".ezhik-pupil-g");
+  const maxMove = 4.5; // SVG units inside eye
 
   function lookAt(clientX, clientY) {
     if (reduceMotion) return;
-    eyes.forEach((eye) => {
-      const r = eye.getBoundingClientRect();
+    pupilGroups.forEach((g) => {
+      const eye = g.closest(".ezhik-eye");
+      // getBBox is SVG local; use DOM rect of sclera for screen coords
+      const sclera = eye.querySelector(".ezhik-sclera");
+      const r = sclera.getBoundingClientRect();
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
       const dx = clientX - cx;
       const dy = clientY - cy;
       const dist = Math.hypot(dx, dy) || 1;
-      const nx = (dx / dist) * maxEye;
-      const ny = (dy / dist) * maxEye;
-      eye.style.setProperty("--ex", `${nx}px`);
-      eye.style.setProperty("--ey", `${ny}px`);
+      // convert roughly to SVG units (eye ~28px wide → 14 viewBox radius)
+      const scale = 14 / (r.width / 2 || 1);
+      let nx = (dx / dist) * maxMove;
+      let ny = (dy / dist) * maxMove;
+      // clamp inside eye
+      const lim = maxMove;
+      nx = Math.max(-lim, Math.min(lim, nx));
+      ny = Math.max(-lim, Math.min(lim, ny));
+      g.setAttribute("transform", `translate(${nx}, ${ny})`);
     });
   }
 
-  window.addEventListener(
-    "pointermove",
-    (e) => lookAt(e.clientX, e.clientY),
-    { passive: true }
-  );
+  window.addEventListener("pointermove", (e) => lookAt(e.clientX, e.clientY), {
+    passive: true,
+  });
   window.addEventListener(
     "touchstart",
     (e) => {
@@ -131,19 +128,17 @@
     { passive: true }
   );
 
-  // Случайный прищур / подмигивание
   function scheduleSquint() {
     if (reduceMotion) return;
-    const delay = 3500 + Math.random() * 5500;
     setTimeout(() => {
-      const wink = Math.random() < 0.35;
+      const wink = Math.random() < 0.4;
       ezhik.classList.remove("is-squint", "is-wink");
       ezhik.classList.add(wink ? "is-wink" : "is-squint");
       setTimeout(() => {
         ezhik.classList.remove("is-squint", "is-wink");
         scheduleSquint();
-      }, wink ? 180 : 140 + Math.random() * 80);
-    }, delay);
+      }, wink ? 200 : 160);
+    }, 3200 + Math.random() * 5000);
   }
   scheduleSquint();
 
@@ -164,7 +159,7 @@
       phraseIdx += 1;
     }
     clearTimeout(hideTimer);
-    setTimeout(() => ezhik.classList.remove("is-wink"), 220);
+    setTimeout(() => ezhik.classList.remove("is-wink"), 240);
     hideTimer = setTimeout(() => {
       ezhik.classList.remove("show-bubble", "wave");
     }, 2200);
@@ -173,5 +168,5 @@
   setTimeout(() => {
     ezhik.classList.add("show-bubble", "wave");
     hideTimer = setTimeout(() => ezhik.classList.remove("show-bubble", "wave"), 2500);
-  }, 1000);
+  }, 900);
 })();
