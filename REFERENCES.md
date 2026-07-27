@@ -42,5 +42,5 @@
 
 ## Steam Workshop
 
-В сообщении дважды пришла **та же** ссылка на Play Store.  
-Когда будет реальный URL Steam Workshop — добавим отдельной карточкой.
+- https://steamcommunity.com/profiles/76561199488060129/myworkshopfiles/
+- Карточка **04** на портфолио + строка в resume
