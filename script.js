@@ -4,7 +4,6 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // Active section highlight
   const links = document.querySelectorAll("[data-nav]");
   const sections = [...links]
     .map((a) => document.querySelector(a.getAttribute("href")))
@@ -26,7 +25,6 @@
     sections.forEach((s) => io.observe(s));
   }
 
-  // ——— Cards: tilt + short claw scratches that linger ———
   const cards = document.querySelectorAll(".card");
 
   cards.forEach((card) => {
@@ -37,7 +35,6 @@
     card.appendChild(canvas);
     const ctx = canvas.getContext("2d");
 
-    /** @type {Array<{x:number,y:number,angle:number,len:number,w:number,life:number,maxLife:number,lines:Array<{oy:number,midY:number,endY:number}>}>} */
     let scratches = [];
     let lastX = null;
     let lastY = null;
@@ -101,7 +98,6 @@
         ctx.lineJoin = "round";
 
         s.lines.forEach((ln, i) => {
-          // light groove
           ctx.beginPath();
           ctx.moveTo(0, ln.oy);
           ctx.lineTo(s.len * 0.45, ln.midY);
@@ -110,7 +106,6 @@
           ctx.lineWidth = s.w * (1 - i * 0.1);
           ctx.stroke();
 
-          // dark under-scratch
           ctx.beginPath();
           ctx.moveTo(1, ln.oy + 0.5);
           ctx.lineTo(s.len * 0.85, ln.endY + 0.5);
