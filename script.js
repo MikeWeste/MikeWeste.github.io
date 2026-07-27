@@ -1,27 +1,27 @@
 (function () {
-  const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  const year = document.getElementById("year");
+  if (year) year.textContent = String(new Date().getFullYear());
 
-  const burger = document.getElementById("burger");
-  const nav = document.getElementById("nav");
-  if (burger && nav) {
-    burger.addEventListener("click", () => {
-      const open = nav.classList.toggle("open");
-      burger.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    nav.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        nav.classList.remove("open");
-        burger.setAttribute("aria-expanded", "false");
+  // Active section highlight in rail nav
+  const links = document.querySelectorAll("[data-nav]");
+  const sections = [...links]
+    .map((a) => document.querySelector(a.getAttribute("href")))
+    .filter(Boolean);
+
+  if (!sections.length || !("IntersectionObserver" in window)) return;
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        links.forEach((a) => {
+          a.classList.toggle("active", a.getAttribute("href") === `#${id}`);
+        });
       });
-    });
-  }
+    },
+    { rootMargin: "-30% 0px -55% 0px", threshold: 0 }
+  );
 
-  // Optional: set your GitHub username in localStorage or edit below
-  const GITHUB_USER = localStorage.getItem("github_user") || "MikeWeste";
-  const gh = document.getElementById("github-link");
-  if (gh && GITHUB_USER) {
-    gh.href = `https://github.com/${GITHUB_USER}`;
-    gh.textContent = `github.com/${GITHUB_USER}`;
-  }
+  sections.forEach((s) => io.observe(s));
 })();

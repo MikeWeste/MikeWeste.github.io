@@ -7,98 +7,100 @@
   <title>Резюме — Еременко Виталий</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="resume-page">
   <div class="resume-toolbar no-print">
-    <a class="back" href="index.html">← На сайт</a>
+    <a class="back" href="index.html">← Портфолио</a>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-      <a class="back" href="Eremenko_Vitaliy_Resume_ATS.pdf" download>Скачать PDF</a>
-      <button class="print-btn" type="button" onclick="window.print()">Печать / PDF</button>
+      <a class="back" href="Eremenko_Vitaliy_Resume_ATS.pdf" download>PDF</a>
+      <button class="print-btn" type="button" onclick="window.print()">Печать / Save PDF</button>
     </div>
   </div>
 
+  <!-- Layout ref: classic single-column ATS (Harvard CR / Overleaf Jake's Resume style) -->
   <article class="resume-sheet">
-    <h1>Еременко Виталий</h1>
-    <div class="title">Специалист технической поддержки (IT Support) / Системный администратор (Junior) / Help Desk</div>
-    <div class="contact">Краснодар, Россия &nbsp;|&nbsp; Удалённо &nbsp;|&nbsp; +7 (999) 639-29-93 &nbsp;|&nbsp; vitalik-eremenko@bk.ru</div>
-    <div class="contact">Русский — родной &nbsp;|&nbsp; Английский — B1 &nbsp;|&nbsp; Готов к полной занятости &nbsp;|&nbsp; github.com/MikeWeste</div>
+    <header class="rs-header">
+      <h1>Еременко Виталий</h1>
+      <div class="role">IT Support · Help Desk · Junior System Administrator</div>
+      <div class="meta">
+        Краснодар · удалённо · +7 (999) 639-29-93 ·
+        <a href="mailto:vitalik-eremenko@bk.ru">vitalik-eremenko@bk.ru</a><br />
+        <a href="https://mikeweste.github.io">mikeweste.github.io</a>
+        · <a href="https://github.com/MikeWeste">github.com/MikeWeste</a>
+        · RU · EN B1
+      </div>
+    </header>
 
-    <h2>Professional Summary</h2>
-    <p>
-      Увлечённый IT-специалист с практическим опытом самостоятельного решения технических задач.
-      Диагностика и настройка ПК, Windows, сети, удалённая поддержка, поиск причин сбоев.
-      Опыт 1–2 линии в Альфа-Банке (онлайн-банкинг, мобильные приложения, эскалации в IT/ИБ).
-      Самостоятельно разрабатываю приложения на Python (PySide6, Telegram-боты), применяю AI-инструменты
-      (ChatGPT, Claude, Perplexity) для автоматизации. Принцип — доводить проблему до полного решения.
-      Цель: IT Support / Junior SysAdmin / служба поддержки (удалённо).
+    <h2>Summary</h2>
+    <p class="sum">
+      IT Support с опытом 1–2 линии в Альфа-Банке (цифровые каналы, CRM, эскалации IT/ИБ).
+      Troubleshooting Windows/ПК/сетей; Python-автоматизация, Telegram-боты, Android-приложение в Google Play.
+      Довожу обращения до решения. Цель: remote IT Support / Help Desk / Jr. SysAdmin.
     </p>
 
-    <h2>Skills</h2>
-    <p class="skill-line"><strong>Техподдержка:</strong> диагностика ПО и железа, консультирование пользователей, Windows, установка/настройка ПО и драйверов, поиск причин ошибок, удалённая помощь, журналы ошибок</p>
-    <p class="skill-line"><strong>Администрирование ПК:</strong> установка Windows, BIOS/UEFI, сборка и модернизация ПК, замена комплектующих, оптимизация, SSD/HDD, файловые системы, резервное копирование</p>
-    <p class="skill-line"><strong>Сети:</strong> локальная сеть, VPN, Proxy, диагностика интернета, решение сетевых проблем</p>
-    <p class="skill-line"><strong>Программирование:</strong> Python, desktop (PySide6), Telegram-боты, автоматизация, API, VS Code, Android Studio</p>
-    <p class="skill-line"><strong>AI:</strong> ChatGPT, Claude, Perplexity, промпты, автоматизация задач с помощью AI</p>
-    <p class="skill-line"><strong>3D / графика:</strong> Blender, Photoshop, Substance 3D Painter/Designer, PBR, игровые текстуры и скины</p>
-    <p class="skill-line"><strong>Soft skills:</strong> быстрое обучение, аналитика, самостоятельный поиск решений, ответственность, внимание к деталям, коммуникабельность, стрессоустойчивость, работа с документацией</p>
+    <h2>Technical Skills</h2>
+    <p class="skill-line"><strong>Support:</strong> Windows, drivers, remote support, logs, troubleshooting, CRM/tickets, user training</p>
+    <p class="skill-line"><strong>Systems:</strong> Windows install, BIOS/UEFI, PC build/upgrade, SSD/HDD, backups, performance tuning</p>
+    <p class="skill-line"><strong>Network:</strong> LAN, VPN, Proxy, connectivity diagnostics</p>
+    <p class="skill-line"><strong>Dev / automation:</strong> Python, PySide6, Telegram bots, APIs, VS Code, Android Studio</p>
+    <p class="skill-line"><strong>AI tools:</strong> ChatGPT, Claude, Perplexity, prompt engineering</p>
+    <p class="skill-line"><strong>Creative:</strong> Blender, Photoshop, Substance 3D (PBR, UV, game assets)</p>
 
-    <h2>Work Experience</h2>
+    <h2>Experience</h2>
 
-    <div class="job-title">Технический специалист по поддержке пользователей</div>
-    <div class="job-meta">
-      <span>Альфа-Банк (Россия)</span>
-      <span class="dates">Май 2019 — Январь 2020</span>
+    <div class="role-title">Technical Support Specialist (L1–L2)</div>
+    <div class="role-meta">
+      <span>Alfa-Bank (Russia)</span>
+      <span class="dates">May 2019 – Jan 2020</span>
     </div>
     <ul>
-      <li>Техподдержка клиентов 1–2 линии: онлайн-банкинг, мобильные приложения, банковские системы</li>
-      <li>Диагностика и устранение неисправностей ПО и устройств; восстановление доступа и данных</li>
-      <li>Консультирование по настройке устройств и ПО; сопровождение обращений до решения</li>
-      <li>Эскалации в IT и службу ИБ; отчётность по обращениям; CRM / системы учёта тикетов</li>
+      <li>Supported online banking and mobile apps: access issues, device/software setup, data recovery</li>
+      <li>Triaged and resolved tickets; escalated to IT and InfoSec with clear reproduction steps</li>
+      <li>Worked in CRM / ticket systems; documented resolutions and followed bank procedures</li>
     </ul>
 
-    <div class="job-title">Бригадир (операционное управление, клиентский сервис)</div>
-    <div class="job-meta">
+    <div class="role-title">Team Lead (Operations / Customer Service)</div>
+    <div class="role-meta">
       <span>Level Kitchen</span>
-      <span class="dates">Февраль 2020 — настоящее время</span>
+      <span class="dates">Feb 2020 – Present</span>
     </div>
     <ul>
-      <li>Руководство командой: распределение задач, контроль качества и сроков</li>
-      <li>Операционные инциденты — приоритизация, эскалация, восстановление рабочего процесса</li>
-      <li>Переносимые навыки для IT Support: коммуникация, инциденты, стрессоустойчивость, SLA-подобные сроки</li>
+      <li>Led floor team under peak load: task assignment, quality control, on-the-spot incident recovery</li>
+      <li>Prioritized issues and escalations; transferable to SLA-driven IT support environments</li>
     </ul>
 
-    <div class="job-title">Администратор</div>
-    <div class="job-meta">
+    <div class="role-title">Store Administrator</div>
+    <div class="role-meta">
       <span>FIX PRICE</span>
-      <span class="dates">Май 2018 — Февраль 2019</span>
+      <span class="dates">May 2018 – Feb 2019</span>
     </div>
     <ul>
-      <li>Кассовая дисциплина и финансовая отчётность; работа с учётной системой</li>
-      <li>Обслуживание клиентов и решение спорных ситуаций</li>
+      <li>Cash discipline, reporting systems, customer conflict resolution</li>
     </ul>
 
     <h2>Projects</h2>
-    <p class="skill-line"><strong>File Replacer (Python + PySide6):</strong> desktop-приложение для массовой замены текста — GUI, кодировки, бэкапы, пакетная обработка</p>
-    <p class="skill-line"><strong>Telegram-боты / LookLab:</strong> автоматизация, AI-обработка фото, Mini App, оплата Stars, Docker/VPS</p>
-    <p class="skill-line"><strong>Android:</strong> собственное приложение — цикл от проектирования до сборки и публикации</p>
-    <p class="skill-line"><strong>3D-ассеты:</strong> модели, текстуры, скины (Blender, Photoshop, Substance); UV, PBR, экспорт</p>
-    <p class="skill-line"><strong>AI в работе:</strong> ChatGPT, Claude, Perplexity для кода, анализа и ускорения решений</p>
+    <p class="proj">
+      <strong>TimePay</strong> (Android) —
+      <a href="https://play.google.com/store/apps/details?id=com.vital.mypayday&hl=ru" target="_blank" rel="noopener">Google Play</a>
+      · Full cycle: design → build → publish
+    </p>
+    <p class="proj">
+      <strong>File Replacer</strong> (Python, PySide6) · Batch text replace, encodings, backups, multi-thread UI
+    </p>
+    <p class="proj">
+      <strong>LookLab</strong> (Python, Telegram Mini App) · AI photo styles, Stars billing, Docker/VPS deploy
+    </p>
+    <p class="proj">
+      <strong>3D game assets</strong> · Blender / Substance / Photoshop — UV, PBR textures, export pipeline
+    </p>
 
     <h2>Education</h2>
-    <p><strong>Среднее специальное образование</strong><br />
-      КАТТ КК (Кубанский аграрно-технологический техникум) &nbsp;|&nbsp; 2015</p>
-
-    <h2>Currently Learning</h2>
-    <p class="skill-line">Python (углублённо), desktop-разработка, AI, автоматизация бизнес-процессов, системное администрирование, облачные сервисы, кибербезопасность, практики техподдержки</p>
+    <p class="skill-line"><strong>Secondary specialized</strong> · KATT KK (Kuban Agrarian-Technological College) · 2015</p>
 
     <h2>Additional</h2>
-    <ul>
-      <li>Цель: IT-компания, развитие, практический опыт, польза команде через решение задач пользователей</li>
-      <li>Общий стаж: 8+ лет &nbsp;|&nbsp; Формат: удалённо, полная занятость</li>
-      <li>Сайт: https://mikeweste.github.io</li>
-    </ul>
+    <p class="skill-line">Learning: advanced Python, sysadmin, cloud, security · 8+ years work experience · Full-time remote</p>
   </article>
 </body>
 </html>
