@@ -190,6 +190,46 @@
     </main>
   </div>
 
+  <!-- Ёжик: следит за курсором (Ezhik302) -->
+  <div class="ezhik" id="ezhik" aria-hidden="true" title="@Ezhik302">
+    <svg class="ezhik-svg" viewBox="0 0 120 120" width="96" height="96">
+      <!-- spikes -->
+      <g class="ezhik-spikes" fill="#3d4554">
+        <ellipse cx="60" cy="58" rx="38" ry="34"/>
+        <circle cx="32" cy="40" r="10"/>
+        <circle cx="48" cy="28" r="11"/>
+        <circle cx="68" cy="26" r="12"/>
+        <circle cx="86" cy="36" r="11"/>
+        <circle cx="94" cy="54" r="10"/>
+        <circle cx="28" cy="58" r="9"/>
+        <circle cx="40" cy="72" r="8"/>
+        <circle cx="78" cy="72" r="9"/>
+      </g>
+      <!-- face -->
+      <ellipse class="ezhik-face" cx="60" cy="68" rx="28" ry="24" fill="#c4a574"/>
+      <!-- snout -->
+      <ellipse cx="60" cy="78" rx="12" ry="9" fill="#d4b896"/>
+      <ellipse cx="60" cy="80" rx="5" ry="4" fill="#2a2430"/>
+      <!-- eyes white -->
+      <g class="ezhik-eyes">
+        <g class="ezhik-eye ezhik-eye-l">
+          <ellipse cx="48" cy="64" rx="7" ry="8" fill="#fff"/>
+          <circle class="ezhik-pupil" cx="48" cy="65" r="3.2" fill="#1a1d24"/>
+          <circle cx="49.5" cy="63.5" r="1.1" fill="#fff" opacity="0.9"/>
+        </g>
+        <g class="ezhik-eye ezhik-eye-r">
+          <ellipse cx="72" cy="64" rx="7" ry="8" fill="#fff"/>
+          <circle class="ezhik-pupil" cx="72" cy="65" r="3.2" fill="#1a1d24"/>
+          <circle cx="73.5" cy="63.5" r="1.1" fill="#fff" opacity="0.9"/>
+        </g>
+      </g>
+      <!-- blush -->
+      <ellipse cx="42" cy="74" rx="5" ry="3" fill="#e8a0a0" opacity="0.45"/>
+      <ellipse cx="78" cy="74" rx="5" ry="3" fill="#e8a0a0" opacity="0.45"/>
+    </svg>
+    <span class="ezhik-bubble" id="ezhik-bubble">Привет!</span>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>

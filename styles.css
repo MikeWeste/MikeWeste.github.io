@@ -287,19 +287,71 @@ a:hover {
   font-size: 0.95rem;
 }
 
-/* Project cards */
+/* Project cards — tilt / touch press */
 .cards {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  perspective: 900px;
 }
 
 .card {
+  --rx: 0deg;
+  --ry: 0deg;
+  --lift: 0px;
+  --press: 1;
+  position: relative;
   background: var(--bg-elev);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 1.25rem 1.3rem;
-  transition: border-color 0.2s ease, transform 0.2s ease;
+  transform-style: preserve-3d;
+  transform:
+    translateY(var(--lift))
+    scale(var(--press))
+    rotateX(var(--rx))
+    rotateY(var(--ry));
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.12s ease-out;
+  will-change: transform;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(100, 255, 218, 0.14),
+    transparent 45%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.card.is-hover,
+.card:hover {
+  border-color: rgba(100, 255, 218, 0.4);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(100, 255, 218, 0.08);
+}
+
+.card.is-hover::after,
+.card:hover::after {
+  opacity: 1;
+}
+
+.card.is-press {
+  --press: 0.97;
+  --lift: 0px !important;
+  transition-duration: 0.06s;
 }
 
 .card-link {
@@ -309,12 +361,19 @@ a:hover {
 
 .card-link:hover {
   color: inherit;
-  border-color: rgba(100, 255, 218, 0.35);
-  transform: translateY(-2px);
 }
 
-.card:hover {
-  border-color: rgba(100, 255, 218, 0.25);
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transform: none !important;
+    transition: border-color 0.2s ease;
+  }
+  .card::after {
+    display: none;
+  }
+  .ezhik {
+    display: none !important;
+  }
 }
 
 .card-top {
@@ -365,6 +424,94 @@ a:hover {
   background: var(--accent-dim);
   padding: 0.22rem 0.5rem;
   border-radius: 999px;
+}
+
+/* Ёжик — угол, следит за мышью */
+.ezhik {
+  position: fixed;
+  right: 1rem;
+  bottom: 0.75rem;
+  z-index: 40;
+  width: 96px;
+  height: 96px;
+  cursor: pointer;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45));
+  transition: transform 0.25s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ezhik:hover {
+  transform: scale(1.06) translateY(-4px);
+}
+
+.ezhik-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ezhik-pupil {
+  transition: transform 0.05s linear;
+}
+
+.ezhik-bubble {
+  position: absolute;
+  right: 88px;
+  bottom: 62px;
+  white-space: nowrap;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #0a0c10;
+  background: var(--accent);
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  opacity: 0;
+  transform: translateY(6px) scale(0.9);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 4px 12px rgba(100, 255, 218, 0.25);
+}
+
+.ezhik-bubble::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  bottom: 8px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  transform: rotate(45deg);
+}
+
+.ezhik.show-bubble .ezhik-bubble {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.ezhik.wave .ezhik-svg {
+  animation: ezhik-bounce 0.55s ease;
+}
+
+@keyframes ezhik-bounce {
+  0%, 100% { transform: translateY(0); }
+  35% { transform: translateY(-10px) rotate(-4deg); }
+  70% { transform: translateY(-3px) rotate(3deg); }
+}
+
+@media (max-width: 720px) {
+  .ezhik {
+    width: 72px;
+    height: 72px;
+    right: 0.5rem;
+    bottom: 0.4rem;
+  }
+  .ezhik-bubble {
+    right: 68px;
+    bottom: 48px;
+    font-size: 0.65rem;
+  }
 }
 
 /* CTA */
