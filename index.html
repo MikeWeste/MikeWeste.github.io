@@ -190,17 +190,29 @@
     </main>
   </div>
 
-  <!-- Ёжик: твой арт, поворачивается к курсору -->
+  <!-- Ёжик: статичный PNG (отражён), глаза/блики следят, иногда прищур -->
   <div class="ezhik" id="ezhik" title="@Ezhik302">
-    <img
-      class="ezhik-img"
-      id="ezhik-img"
-      src="ezhik.png"
-      width="128"
-      height="128"
-      alt="Ёжик — маскот"
-      draggable="false"
-    />
+    <div class="ezhik-stage">
+      <img
+        class="ezhik-img"
+        src="ezhik.png"
+        width="384"
+        height="384"
+        alt="Ёжик — маскот"
+        draggable="false"
+      />
+      <!-- глаза поверх: зрачки + блики едут за курсором -->
+      <div class="ezhik-eye ezhik-eye-l" aria-hidden="true">
+        <span class="ezhik-pupil"></span>
+        <span class="ezhik-shine"></span>
+        <span class="ezhik-lid"></span>
+      </div>
+      <div class="ezhik-eye ezhik-eye-r" aria-hidden="true">
+        <span class="ezhik-pupil"></span>
+        <span class="ezhik-shine"></span>
+        <span class="ezhik-lid"></span>
+      </div>
+    </div>
     <span class="ezhik-bubble" id="ezhik-bubble">Привет! 🦔</span>
   </div>
 

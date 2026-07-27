@@ -85,28 +85,35 @@
     });
   });
 
-  // ——— Ёжик (PNG): слегка поворачивается к курсору ———
+  // ——— Ёжик: картинка статична, глаза следят, иногда прищур ———
   const ezhik = document.getElementById("ezhik");
   const bubble = document.getElementById("ezhik-bubble");
   if (!ezhik) return;
 
-  const maxYaw = 16;
-  const maxPitch = 10;
+  const eyes = ezhik.querySelectorAll(".ezhik-eye");
+  const maxEye = 3.2; // px offset inside socket
 
   function lookAt(clientX, clientY) {
     if (reduceMotion) return;
-    const box = ezhik.getBoundingClientRect();
-    const cx = box.left + box.width * 0.55;
-    const cy = box.top + box.height * 0.4;
-    const nx = Math.max(-1, Math.min(1, (clientX - cx) / (window.innerWidth * 0.45)));
-    const ny = Math.max(-1, Math.min(1, (clientY - cy) / (window.innerHeight * 0.45)));
-    ezhik.style.setProperty("--look-x", `${nx * maxYaw}deg`);
-    ezhik.style.setProperty("--look-y", `${-ny * maxPitch}deg`);
+    eyes.forEach((eye) => {
+      const r = eye.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = clientX - cx;
+      const dy = clientY - cy;
+      const dist = Math.hypot(dx, dy) || 1;
+      const nx = (dx / dist) * maxEye;
+      const ny = (dy / dist) * maxEye;
+      eye.style.setProperty("--ex", `${nx}px`);
+      eye.style.setProperty("--ey", `${ny}px`);
+    });
   }
 
-  window.addEventListener("pointermove", (e) => lookAt(e.clientX, e.clientY), {
-    passive: true,
-  });
+  window.addEventListener(
+    "pointermove",
+    (e) => lookAt(e.clientX, e.clientY),
+    { passive: true }
+  );
   window.addEventListener(
     "touchstart",
     (e) => {
@@ -115,6 +122,30 @@
     },
     { passive: true }
   );
+  window.addEventListener(
+    "touchmove",
+    (e) => {
+      const t = e.touches[0];
+      if (t) lookAt(t.clientX, t.clientY);
+    },
+    { passive: true }
+  );
+
+  // Случайный прищур / подмигивание
+  function scheduleSquint() {
+    if (reduceMotion) return;
+    const delay = 3500 + Math.random() * 5500;
+    setTimeout(() => {
+      const wink = Math.random() < 0.35;
+      ezhik.classList.remove("is-squint", "is-wink");
+      ezhik.classList.add(wink ? "is-wink" : "is-squint");
+      setTimeout(() => {
+        ezhik.classList.remove("is-squint", "is-wink");
+        scheduleSquint();
+      }, wink ? 180 : 140 + Math.random() * 80);
+    }, delay);
+  }
+  scheduleSquint();
 
   const phrases = [
     "Привет! 🦔",
@@ -127,12 +158,13 @@
   let hideTimer;
 
   ezhik.addEventListener("click", () => {
-    ezhik.classList.add("wave", "show-bubble");
+    ezhik.classList.add("wave", "show-bubble", "is-wink");
     if (bubble) {
       bubble.textContent = phrases[phraseIdx % phrases.length];
       phraseIdx += 1;
     }
     clearTimeout(hideTimer);
+    setTimeout(() => ezhik.classList.remove("is-wink"), 220);
     hideTimer = setTimeout(() => {
       ezhik.classList.remove("show-bubble", "wave");
     }, 2200);
