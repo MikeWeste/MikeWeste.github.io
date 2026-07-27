@@ -281,11 +281,11 @@ a:hover {
   font-size: 0.95rem;
 }
 
-/* Project cards */
+/* Project cards — single column list (3 items, no empty slot) */
 .cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
   perspective: 900px;
 }
 
@@ -295,10 +295,19 @@ a:hover {
   --lift: 0px;
   --press: 1;
   position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    "num head"
+    "num desc"
+    "num tags";
+  column-gap: 1rem;
+  row-gap: 0.35rem;
+  align-items: start;
   background: var(--bg-elev);
   border: 1px solid var(--line);
   border-radius: 12px;
-  padding: 1.25rem 1.3rem;
+  padding: 1.15rem 1.25rem;
   overflow: hidden;
   isolation: isolate;
   transform-style: preserve-3d;
@@ -364,44 +373,61 @@ a:hover {
 .card-top {
   position: relative;
   z-index: 1;
+  grid-area: head;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.75rem;
-}
-
-.card h3,
-.card p,
-.card .pills {
-  position: relative;
-  z-index: 1;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0;
 }
 
 .card-num {
-  font-size: 0.75rem;
+  grid-area: num;
+  position: relative;
+  z-index: 1;
+  font-size: 1.35rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: -0.03em;
   color: var(--faint);
+  line-height: 1.1;
+  min-width: 2ch;
+  padding-top: 0.1rem;
 }
 
 .card-ext {
   font-size: 0.75rem;
   color: var(--accent);
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .card h3 {
-  font-size: 1.1rem;
+  position: relative;
+  z-index: 1;
+  font-size: 1.05rem;
   font-weight: 600;
-  margin-bottom: 0.45rem;
+  margin: 0;
   letter-spacing: -0.02em;
 }
 
 .card p {
+  grid-area: desc;
+  position: relative;
+  z-index: 1;
   color: var(--muted);
   font-size: 0.9rem;
-  margin-bottom: 0.9rem;
+  margin: 0;
   line-height: 1.5;
+}
+
+.card .pills {
+  grid-area: tags;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
 }
 
 .pills {
@@ -670,9 +696,6 @@ body.resume-page {
     gap: 0.25rem;
   }
 
-  .cards {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media print {
