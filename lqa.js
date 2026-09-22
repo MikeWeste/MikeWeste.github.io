@@ -6,15 +6,16 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
-chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{chapters.forEach(x=>x.classList.toggle("active",x===ch));if(innerWidth>700)ch.scrollIntoView({behavior:"smooth",block:"start"});else ch.classList.toggle("active")}));
-function updateActive(){
-  const marker=innerHeight*.58;
-  let active=chapters[0];
-  chapters.forEach(ch=>{const r=ch.getBoundingClientRect();if(r.top<=marker)active=ch});
-  chapters.forEach(ch=>ch.classList.toggle("active",ch===active));
+function openChapter(ch,scroll=true){
+  chapters.forEach(x=>{x.classList.remove("active","is-open")});
+  ch.classList.add("active","is-open");
+  if(scroll&&innerWidth>700)setTimeout(()=>ch.scrollIntoView({behavior:"smooth",block:"start"}),30);
 }
-addEventListener("scroll",updateActive,{passive:true});addEventListener("resize",updateActive,{passive:true});updateActive();
-
+chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>openChapter(ch,true)));
+if(location.hash){
+  const target=document.querySelector(location.hash);
+  if(target?.classList.contains("ref-card"))openChapter(target,false);
+}
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{const t=document.querySelector(a.getAttribute("href"));if(t)t.scrollIntoView({behavior:"smooth",block:"start"})}));
 
 if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
@@ -22,6 +23,5 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
  gsap.from(".hero-copy>*",{y:20,autoAlpha:0,stagger:.065,duration:.5,ease:"power2.out"});
  chapters.forEach((ch,i)=>{
   gsap.from(ch.querySelectorAll(".chapter-no,.chapter-head h2,.chapter-head p,.chapter-head>i"),{y:28,autoAlpha:0,stagger:.035,duration:.35,ease:"power2.out",scrollTrigger:{trigger:ch,start:"top 78%",toggleActions:"play none none reverse"}});
-  if(i<chapters.length-1)gsap.to(ch,{scale:.986,filter:"brightness(.72) saturate(.9)",ease:"none",scrollTrigger:{trigger:chapters[i+1],start:"top 96%",end:"top 18%",scrub:.18}});
- });
+   });
 }
