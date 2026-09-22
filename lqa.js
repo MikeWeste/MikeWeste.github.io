@@ -19,7 +19,7 @@ if (window.gsap && window.ScrollTrigger) {
     chapters.forEach(card => deck.append(card));
     gsap.set(chapters, {yPercent: i => i ? 70 : 0, zIndex: i => i + 1});
     const hold = 0.65;
-    const transition = 0.5;
+    const transition = 1;
     const cycle = hold + transition;
     const duration = chapters.length * hold + (chapters.length - 1) * transition;
     const clock = {progress: 0};
