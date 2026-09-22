@@ -6,50 +6,67 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
-let clickLock=0,raf=0,currentIndex=-1;
-function setChapter(index,scroll=false){
-  if(index<0||index>=chapters.length)return;
-  chapters.forEach((x,i)=>{
-    x.classList.toggle("is-open",i===index);
-    x.classList.toggle("active",i===index);
-    x.classList.toggle("is-past",i<index);
-    x.classList.toggle("is-future",i>index);
+let currentIndex=-1, wheelLock=false, touchStartY=0;
+
+function setChapter(index, scroll=true){
+  index=Math.max(-1,Math.min(chapters.length-1,index));
+  chapters.forEach((ch,i)=>{
+    ch.classList.toggle("is-open",i===index);
+    ch.classList.toggle("active",i===index);
+    ch.classList.toggle("is-past",index>=0&&i<index);
+    ch.classList.toggle("is-future",index>=0&&i>index);
   });
   currentIndex=index;
-  document.documentElement.style.setProperty("--stack-index",index);
-  if(scroll&&innerWidth>700){
-    clickLock=Date.now()+1000;
-    const top=chapters[index].offsetTop-76;
-    window.scrollTo({top,behavior:"smooth"});
+  if(index>=0&&scroll&&innerWidth>700){
+    chapters[index].scrollIntoView({behavior:"smooth",block:"start"});
   }
 }
-function clearChapters(){
-  chapters.forEach(x=>x.classList.remove("active","is-open","is-past","is-future"));
-  currentIndex=-1;
-}
+
 chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>setChapter(i,true)));
 
-function syncChapterToScroll(){
-  if(innerWidth<=700||Date.now()<clickLock)return;
-  cancelAnimationFrame(raf);
-  raf=requestAnimationFrame(()=>{
-    const trigger=innerHeight*.16;
-    let next=-1;
-    chapters.forEach((ch,i)=>{
-      const r=ch.getBoundingClientRect();
-      if(r.top<=trigger)next=i;
-    });
-    if(next<0){if(currentIndex!==-1)clearChapters();return}
-    if(next!==currentIndex)setChapter(next,false);
-  });
+function enterStackIfNeeded(dir){
+  const first=chapters[0].getBoundingClientRect();
+  const last=chapters[chapters.length-1].getBoundingClientRect();
+  const inStack=first.top<innerHeight*.86 && last.bottom>80;
+  if(!inStack)return false;
+  if(dir>0){
+    if(currentIndex<0){setChapter(0,true);return true}
+    if(currentIndex<chapters.length-1){setChapter(currentIndex+1,true);return true}
+  }else{
+    if(currentIndex>0){setChapter(currentIndex-1,true);return true}
+    if(currentIndex===0){setChapter(-1,false);return false}
+  }
+  return false;
 }
-addEventListener("scroll",syncChapterToScroll,{passive:true});
-addEventListener("resize",syncChapterToScroll,{passive:true});
+
+addEventListener("wheel",e=>{
+  if(innerWidth<=700||wheelLock||Math.abs(e.deltaY)<18)return;
+  const dir=Math.sign(e.deltaY);
+  if(enterStackIfNeeded(dir)){
+    e.preventDefault();
+    wheelLock=true;
+    setTimeout(()=>wheelLock=false,720);
+  }
+},{passive:false});
+
+addEventListener("touchstart",e=>{touchStartY=e.touches[0]?.clientY||0},{passive:true});
+addEventListener("touchend",e=>{
+  if(innerWidth<=700)return;
+  const y=e.changedTouches[0]?.clientY||0, delta=touchStartY-y;
+  if(Math.abs(delta)>42)enterStackIfNeeded(Math.sign(delta));
+},{passive:true});
+
+document.querySelectorAll('nav a[href^="#"],.heroCta a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
+  const t=document.querySelector(a.getAttribute("href"));
+  const i=chapters.indexOf(t);
+  if(i>=0){e.preventDefault();setChapter(i,true)}
+}));
+
 if(location.hash){
   const target=document.querySelector(location.hash);
   const i=chapters.indexOf(target);
   if(i>=0)setChapter(i,false);
-}else syncChapterToScroll();
+}
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{const t=document.querySelector(a.getAttribute("href"));if(t)t.scrollIntoView({behavior:"smooth",block:"start"})}));
 
 if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
