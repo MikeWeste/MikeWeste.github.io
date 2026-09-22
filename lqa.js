@@ -10,88 +10,63 @@ const chapters=[...document.querySelectorAll(".ref-card")];
 if(innerWidth>700 && window.gsap && window.ScrollTrigger){
   gsap.registerPlugin(ScrollTrigger);
 
-  let stage=document.querySelector(".deck-stage");
+  let stage=document.querySelector(".story-stage");
   if(!stage){
     stage=document.createElement("section");
-    stage.className="deck-stage";
-    const first=chapters[0];
-    first.parentNode.insertBefore(stage,first);
-    const deck=document.createElement("div");
-    deck.className="deck-pin";
-    stage.appendChild(deck);
-    chapters.forEach(ch=>deck.appendChild(ch));
+    stage.className="story-stage";
+    chapters[0].parentNode.insertBefore(stage,chapters[0]);
+    const viewport=document.createElement("div");
+    viewport.className="story-viewport";
+    stage.appendChild(viewport);
+    chapters.forEach(ch=>viewport.appendChild(ch));
   }
 
-  const deck=stage.querySelector(".deck-pin");
-  const count=chapters.length;
-  const STEP=1/count;
-
+  const viewport=stage.querySelector(".story-viewport");
+  const n=chapters.length;
   chapters.forEach((card,i)=>{
-    gsap.set(card,{zIndex:20+i});
-    card.style.setProperty("--deck-i",i);
+    card.style.setProperty("--i",i);
+    gsap.set(card,{zIndex:10+i,yPercent:i?104:0});
   });
 
-  const tl=gsap.timeline({
-    scrollTrigger:{
-      trigger:stage,
-      start:"top top",
-      end:()=>"+="+(innerHeight*(count*1.55)),
-      pin:deck,
-      pinSpacing:true,
-      scrub:1,
-      anticipatePin:1,
-      invalidateOnRefresh:true,
-      snap:{
-        snapTo:1/(count-1),
-        duration:{min:.28,max:.6},
-        delay:.12,
-        ease:"power1.inOut"
-      }
-    }
-  });
-
-  chapters.forEach((card,i)=>{
-    if(i===0){
-      gsap.set(card,{yPercent:0,scale:1,opacity:1});
-    }else{
-      gsap.set(card,{yPercent:112,scale:1,opacity:1});
-      const at=(i-1);
-      tl.to(card,{yPercent:0,ease:"none",duration:1},at);
-      tl.to(chapters[i-1],{
-        y:-10-(i*5),scale:1-(i*.012),filter:"brightness(.56) saturate(.76)",
-        ease:"none",duration:1
-      },at);
-    }
-  });
-
-  function updateOpen(){
-    const p=tl.scrollTrigger.progress;
-    const idx=Math.min(count-1,Math.max(0,Math.round(p*(count-1))));
+  function state(idx){
     chapters.forEach((ch,i)=>{
       ch.classList.toggle("is-open",i===idx);
-      ch.classList.toggle("active",i===idx);
       ch.classList.toggle("is-past",i<idx);
       ch.classList.toggle("is-future",i>idx);
     });
   }
-  tl.eventCallback("onUpdate",updateOpen);
-  updateOpen();
+  state(0);
 
-  chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{
-    const st=tl.scrollTrigger;
-    const target=st.start+(st.end-st.start)*(i/(count-1));
-    scrollTo({top:target,behavior:"smooth"});
-  }));
-
-  document.querySelectorAll('nav a[href^="#"],.heroCta a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
-    const t=document.querySelector(a.getAttribute("href")),i=chapters.indexOf(t);
-    if(i>=0){
-      e.preventDefault();
-      const st=tl.scrollTrigger;
-      scrollTo({top:st.start+(st.end-st.start)*(i/(count-1)),behavior:"smooth"});
+  const tl=gsap.timeline({
+    defaults:{ease:"none"},
+    scrollTrigger:{
+      trigger:stage,
+      start:"top top",
+      end:()=>"+="+(innerHeight*(n-1)*1.45),
+      pin:viewport,
+      scrub:.85,
+      anticipatePin:1,
+      invalidateOnRefresh:true,
+      snap:{snapTo:1/(n-1),duration:{min:.25,max:.55},delay:.12,ease:"power1.inOut"},
+      onUpdate:self=>state(Math.min(n-1,Math.max(0,Math.round(self.progress*(n-1)))))
     }
-  }));
+  });
 
+  for(let i=1;i<n;i++){
+    const at=i-1;
+    tl.to(chapters[i],{yPercent:0,duration:1},at);
+    tl.to(chapters[i-1],{y:-18,scale:.985,filter:"brightness(.52) saturate(.72)",duration:1},at);
+  }
+
+  function go(i){
+    const st=tl.scrollTrigger;
+    scrollTo({top:st.start+(st.end-st.start)*(i/(n-1)),behavior:"smooth"});
+  }
+  chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>go(i)));
+  document.querySelectorAll('nav a[href^="#"],.heroCta a[href^="#"]').forEach(a=>a.addEventListener("click",ev=>{
+    const t=document.querySelector(a.getAttribute("href")),i=chapters.indexOf(t);
+    if(i>=0){ev.preventDefault();go(i)}
+  }));
   addEventListener("load",()=>ScrollTrigger.refresh());
 }else{
   chapters.forEach(ch=>ch.classList.add("is-open"));
