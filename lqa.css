@@ -495,3 +495,60 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-card{position:relative!important;transform:none!important;filter:none!important}
  .ref-card .chapter-body{opacity:1!important;transform:none!important}
 }
+
+/* deck1 — one pinned viewport, cards cover each other in a reversible scrubbed deck */
+@media(min-width:701px){
+ .deck-stage{position:relative!important;height:auto!important;margin:12px 0 70px!important}
+ .deck-pin{
+   position:relative!important;
+   height:calc(100svh - 68px)!important;
+   min-height:650px!important;
+   overflow:hidden!important;
+   padding:10px 22px 16px!important;
+   isolation:isolate!important;
+ }
+ .deck-pin .ref-card{
+   position:absolute!important;
+   inset:10px 22px 16px!important;
+   top:auto!important;
+   width:auto!important;height:auto!important;
+   min-height:0!important;max-height:none!important;
+   margin:0!important;
+   border-radius:22px!important;
+   overflow:hidden!important;
+   transform-origin:50% 0!important;
+   box-shadow:0 22px 70px rgba(0,0,0,.58)!important;
+   will-change:transform,filter!important;
+ }
+ .deck-pin .ref-card .chapter-head{
+   height:118px!important;min-height:118px!important;
+   padding:22px 26px 0!important;
+   grid-template-columns:72px minmax(300px,1fr) 210px 52px!important;
+   align-content:start!important;
+ }
+ .deck-pin .ref-card .chapter-body{
+   display:block!important;visibility:visible!important;
+   position:absolute!important;
+   left:30px!important;right:30px!important;top:134px!important;bottom:24px!important;
+   width:auto!important;height:auto!important;max-height:none!important;
+   overflow:auto!important;overscroll-behavior:contain!important;
+   padding:24px!important;border-radius:18px!important;
+   background:linear-gradient(180deg,rgba(5,7,10,.88),rgba(5,7,10,.74))!important;
+   border:1px solid rgba(255,255,255,.19)!important;
+   box-shadow:0 24px 78px rgba(0,0,0,.62)!important;
+   backdrop-filter:blur(22px) saturate(1.1)!important;
+   opacity:0!important;pointer-events:none!important;
+   transform:translateY(12px)!important;
+   transition:opacity .22s linear,transform .28s ease!important;
+ }
+ .deck-pin .ref-card.is-open .chapter-body{
+   opacity:1!important;pointer-events:auto!important;transform:none!important;
+ }
+ .deck-pin .ref-card.is-past .chapter-body,
+ .deck-pin .ref-card.is-future .chapter-body{opacity:0!important;pointer-events:none!important}
+ .deck-pin .ref-card.is-open{filter:none!important;opacity:1!important}
+ .deck-pin .chapter-projects.is-open .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .deck-pin .chapter-skills.is-open .skillgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .deck-pin .chapter-experience.is-open .timeline{grid-template-columns:1fr!important;gap:10px!important}
+ .deck-pin .project p,.deck-pin .skillgrid p,.deck-pin .timeline p{line-height:1.58!important}
+}
