@@ -17,7 +17,7 @@ if (window.gsap && window.ScrollTrigger) {
     chapters[0].before(stage);
     stage.append(deck);
     chapters.forEach(card => deck.append(card));
-    gsap.set(chapters, {yPercent: i => i ? 102 : 0, zIndex: i => i + 1});
+    gsap.set(chapters, {yPercent: i => i ? 70 : 0, zIndex: i => i + 1});
     const hold = 0.65;
     const transition = 1;
     const cycle = hold + transition;
