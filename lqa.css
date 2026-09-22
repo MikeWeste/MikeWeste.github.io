@@ -552,3 +552,23 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .deck-pin .chapter-experience.is-open .timeline{grid-template-columns:1fr!important;gap:10px!important}
  .deck-pin .project p,.deck-pin .skillgrid p,.deck-pin .timeline p{line-height:1.58!important}
 }
+
+/* deck2 — stable readable full-viewport card deck */
+@media(min-width:701px){
+ .deck-pin{height:calc(100svh - 58px)!important;min-height:700px!important;padding:10px 18px 12px!important}
+ .deck-pin .ref-card{inset:10px 18px 12px!important;border-radius:24px!important}
+ .deck-pin .ref-card .chapter-head{
+   height:108px!important;min-height:108px!important;
+   padding:20px 28px 0!important;
+ }
+ .deck-pin .ref-card .chapter-body{
+   top:122px!important;bottom:22px!important;left:28px!important;right:28px!important;
+   padding:26px!important;
+ }
+ .deck-pin .ref-card.is-past{opacity:1!important}
+ .deck-pin .ref-card.is-past .chapter-head{opacity:.5!important}
+ .deck-pin .ref-card.is-open .chapter-head{opacity:1!important}
+ .deck-pin .ref-card.is-open .chapter-body{opacity:1!important}
+ .deck-pin .project p,.deck-pin .skillgrid p,.deck-pin .timeline p{font-size:14px!important;line-height:1.62!important;color:#eef1f3!important}
+ .deck-pin .project h3,.deck-pin .timeline h3{font-size:19px!important}
+}
