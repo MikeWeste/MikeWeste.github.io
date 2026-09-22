@@ -8,3 +8,14 @@
 @media(min-width:761px){body{background:radial-gradient(circle at 50% 0%,#101426 0,#080a10 34%,#06080d 100%);background-attachment:fixed}.hero{position:relative;z-index:1}.stage{perspective:1400px}.stage .panel{transform-origin:center top}.stage+.stage{margin-top:-12vh}}
 @media(max-width:760px){.stage{min-height:auto;padding-top:28px}.stage+.stage{margin-top:0}.stage .panel{border-radius:20px;padding:54px 20px}.contact-stage{min-height:auto}.contact-stage .contact{padding:70px 20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.stage{min-height:auto;padding-top:28px}.stage+.stage{margin-top:0}}
+
+/* v3: true stacked-scroll layout — compact spacing */
+@media(min-width:761px){
+  .stage{min-height:100vh;padding-top:0;display:flex;align-items:flex-start}
+  .stage+.stage{margin-top:0}
+  .stage .panel{width:100%;min-height:calc(100vh - 72px);margin:0;padding:clamp(46px,5vw,72px) clamp(28px,5vw,64px);border-radius:28px 28px 0 0}
+  #projects.panel{padding-top:52px;padding-bottom:52px}
+  .contact-stage{min-height:100vh}
+  .contact-stage .contact{padding-top:80px;padding-bottom:80px;display:flex;flex-direction:column;justify-content:center}
+  .section{border-bottom:0}
+}
