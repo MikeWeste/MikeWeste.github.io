@@ -19,5 +19,5 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
  gsap.to(".lamp-art",{y:-55,ease:"none",scrollTrigger:{trigger:".poster-hero",start:"top top",end:"bottom top",scrub:.5}});
  gsap.to(".frog-art",{y:-35,x:-20,rotation:-5,ease:"none",scrollTrigger:{trigger:".poster-hero",start:"top top",end:"bottom top",scrub:.55}});
  gsap.to(".ufo-art",{y:-85,x:25,rotation:3,ease:"none",scrollTrigger:{trigger:".poster-hero",start:"top top",end:"bottom top",scrub:.55}});
- gsap.utils.toArray(".chapter").forEach((ch,i)=>{const art=ch;gsap.fromTo(art,{filter:"brightness(.72)",scale:.985},{filter:"brightness(1)",scale:1,ease:"none",scrollTrigger:{trigger:ch,start:"top bottom",end:"top 28%",scrub:.3}});if(i<3)gsap.to(ch,{scale:.975,filter:"brightness(.55) saturate(.8)",transformOrigin:"center top",ease:"none",scrollTrigger:{trigger:chapters[i+1],start:"top bottom",end:"top top+=62",scrub:.3}})});
+ gsap.utils.toArray(".chapter").forEach((ch,i)=>{const art=ch;gsap.fromTo(art,{filter:"brightness(.72)",scale:.985},{filter:"brightness(1)",scale:1,ease:"none",scrollTrigger:{trigger:ch,start:"top 96%",end:"top 36%",scrub:.22}});if(i<3)gsap.to(ch,{scale:.985,filter:"brightness(.68) saturate(.88)",transformOrigin:"center top",ease:"none",scrollTrigger:{trigger:chapters[i+1],start:"top 94%",end:"top 18%",scrub:.22}})});
 }
