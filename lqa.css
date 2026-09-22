@@ -94,3 +94,15 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
 .ref-card{scroll-margin-top:60px}.chapter-body{transition:max-height .38s ease,opacity .28s ease,transform .38s ease}
 @media(min-width:701px){.ref-card:not(.active) .chapter-body{visibility:hidden}.ref-card.active .chapter-body{visibility:visible}.chapter-head{transition:transform .35s ease}.ref-card:focus-within .chapter-body{visibility:visible}}
 @media(max-width:700px){.hero-line{font-size:15px;max-width:92%}.top .brand{font-size:27px}.ref-card{scroll-margin-top:58px}.chapter-body{border-radius:0;border-left:0;border-right:0}}
+
+/* HQ artwork pass — full-size text-free scene backgrounds */
+.ref-hero{background-image:url("assets/hero-hq-web.png")!important;background-size:cover!important;background-position:center center!important}
+.chapter-projects{background-image:url("assets/projects-hq-web.png")!important}
+.chapter-skills{background-image:url("assets/skills-hq-web.png")!important}
+.chapter-experience{background-image:url("assets/experience-hq-web.png")!important}
+.chapter-contact{background-image:url("assets/contact-hq-web.png")!important}
+.ref-card{background-size:cover!important;background-repeat:no-repeat!important;background-position:center center!important}
+.ref-hero:after{background:linear-gradient(90deg,rgba(2,3,4,.93) 0%,rgba(2,3,4,.72) 32%,rgba(2,3,4,.22) 53%,rgba(2,3,4,.03) 75%)!important}
+.ref-card:after{background:linear-gradient(90deg,rgba(3,4,5,.97) 0%,rgba(3,4,5,.88) 28%,rgba(3,4,5,.43) 47%,rgba(3,4,5,.05) 70%)!important}
+@media(min-width:1100px){.ref-hero,.ref-card{background-position:center center!important}}
+@media(max-width:700px){.ref-hero,.ref-card{background-position:62% center!important}.ref-hero:after,.ref-card:after{background:linear-gradient(180deg,rgba(3,4,5,.35),rgba(3,4,5,.9) 72%)!important}}
