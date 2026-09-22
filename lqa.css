@@ -87,3 +87,14 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
 .lead{font-size:18px;max-width:590px}
 @media(max-width:980px){.poster-hero{background-position:62% center}.poster-hero:after{background:linear-gradient(90deg,rgba(3,4,6,.90),rgba(3,4,6,.48) 62%,rgba(3,4,6,.18))}}
 @media(max-width:700px){.poster-hero{background-position:66% center;background-size:auto 100%}.poster-hero:after{background:linear-gradient(180deg,rgba(3,4,6,.55),rgba(3,4,6,.90) 70%)}}
+
+/* v20 — asset quality pass */
+.chapter{background-position:center!important}
+.chapter-projects{background-image:url("assets/projects-art.webp")!important;background-size:cover!important}
+.chapter-skills,.chapter-experience,.chapter-contact{background-size:cover!important;image-rendering:auto}
+.chapter:before{backdrop-filter:none!important}
+.chapter:after{opacity:.92}
+@media(min-width:1200px){
+ .chapter-projects,.chapter-skills,.chapter-experience,.chapter-contact{background-position:center 45%!important}
+ .chapter-head{background:linear-gradient(90deg,rgba(4,5,7,.97),rgba(4,5,7,.74) 70%,transparent)!important}
+}
