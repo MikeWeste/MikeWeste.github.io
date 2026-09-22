@@ -58,3 +58,22 @@ body{background-image:radial-gradient(circle at 20% 10%,rgba(255,30,130,.035),tr
  .hero-copy{padding-top:55px}.hero h1{font-size:118px}
  .chapter-head{grid-template-columns:78px minmax(330px,1fr) 210px 60px}
 }
+
+/* ref27 — poster-like chapter composition */
+@media(min-width:701px){
+ .ref-card:after{background:linear-gradient(90deg,rgba(3,4,5,.98) 0%,rgba(3,4,5,.91) 31%,rgba(3,4,5,.35) 49%,rgba(3,4,5,.03) 72%)}
+ .chapter-head{align-content:start;padding-top:clamp(54px,8vh,92px);grid-template-rows:auto 1fr}
+ .chapter-no{align-self:start;line-height:.82}
+ .chapter-head h2{align-self:start;line-height:.82}
+ .chapter-head p{align-self:start;margin-top:4px}
+ .chapter-head>i{align-self:start}
+ .chapter-body{bottom:clamp(42px,7vh,76px);width:min(720px,48vw)}
+ .chapter-projects .chapter-body{width:min(780px,51vw)}
+ .chapter-projects .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .chapter-projects .project{min-height:102px}
+ .chapter-skills .chapter-body{width:min(620px,42vw)}
+ .chapter-experience .chapter-body{width:min(760px,50vw)}
+ .chapter-contact .chapter-body{width:min(660px,44vw)}
+}
+.chapter-head h2{position:relative}.chapter-head h2:after{content:"";display:block;width:58px;height:4px;margin-top:16px;background:currentColor;opacity:.8}
+.chapter-projects .chapter-head h2:after,.chapter-contact .chapter-head h2:after{background:var(--pink)}.chapter-skills .chapter-head h2:after{background:var(--lime)}.chapter-experience .chapter-head h2:after{background:var(--orange)}
