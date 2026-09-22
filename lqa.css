@@ -426,3 +426,28 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-hero{height:clamp(560px,60svh,700px)!important}
  .ref-card{margin-left:32px!important;margin-right:32px!important}
 }
+
+/* stack11 — active panel stays fully visible while wheel steps content */
+@media(min-width:701px){
+ .ref-card{scroll-margin-top:68px!important}
+ .ref-card.is-open{
+   top:68px!important;
+   height:calc(100svh - 82px)!important;
+   min-height:0!important;
+   max-height:calc(100svh - 82px)!important;
+   margin-top:10px!important;margin-bottom:10px!important;
+ }
+ .ref-card.is-open .chapter-head{height:116px!important;min-height:116px!important;padding-top:20px!important}
+ .ref-card.is-open .chapter-body{
+   top:126px!important;bottom:18px!important;
+   max-height:none!important;height:auto!important;
+   overflow:auto!important;
+   overscroll-behavior:contain!important;
+ }
+ .ref-card.is-past{
+   top:calc(68px + (var(--card-index,0) * 9px))!important;
+   height:72px!important;min-height:72px!important;
+ }
+ .ref-card.is-past .chapter-head{height:72px!important;min-height:72px!important}
+ .ref-card.is-future{height:92px!important;min-height:92px!important}
+}
