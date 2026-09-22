@@ -16,10 +16,12 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
    const panel=stage.querySelector(".panel"),art=stage.querySelector(".scene-art"),word=stage.querySelector(".big-word");
    gsap.set(panel,{zIndex:30+i});
    
-   if(i<stages.length-1) gsap.to(panel,{scale:.965,filter:"brightness(.58) saturate(.82)",ease:"none",scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:true,invalidateOnRefresh:true}});
+   if(i<stages.length-1) gsap.to(panel,{scale:.982,filter:"brightness(.76) saturate(.9)",ease:"none",scrollTrigger:{trigger:stages[i+1],start:"top 92%",end:"top 30%",scrub:.32,invalidateOnRefresh:true}});
    if(art) gsap.timeline({scrollTrigger:{trigger:stage,start:"top 88%",end:"bottom 18%",scrub:.7}}).fromTo(art,{autoAlpha:0,y:90,rotation:-12,scale:.75},{autoAlpha:.68,y:0,rotation:6,scale:1,ease:"none"}).to(art,{autoAlpha:0,y:-90,rotation:22,scale:1.12,ease:"none"});
    if(word) gsap.fromTo(word,{xPercent:10,autoAlpha:.12},{xPercent:-10,autoAlpha:.55,ease:"none",scrollTrigger:{trigger:stage,start:"top bottom",end:"bottom top",scrub:1}});
   });
+  gsap.timeline({scrollTrigger:{trigger:".stage-skills",start:"top 96%",end:"top 18%",scrub:.35}}).fromTo(".art-frog",{autoAlpha:0,x:180,y:100,rotation:16,scale:.72},{autoAlpha:.92,x:0,y:0,rotation:-8,scale:1,ease:"none"}).to(".art-frog",{autoAlpha:0,x:-90,y:-150,rotation:-18,scale:1.08,ease:"none"});
+  gsap.timeline({scrollTrigger:{trigger:".stage-experience",start:"top 96%",end:"top 18%",scrub:.35}}).fromTo(".art-bulb",{autoAlpha:0,x:-100,y:120,rotation:-10,scale:.8},{autoAlpha:.95,x:0,y:0,rotation:3,scale:1,ease:"none"}).to(".art-bulb",{autoAlpha:0,x:80,y:-130,rotation:10,scale:1.06,ease:"none"});
   gsap.to(".project-marquee span",{xPercent:-45,ease:"none",scrollTrigger:{trigger:".stage-projects",start:"top bottom",end:"bottom top",scrub:1}});
   gsap.to(".scroll-character",{y:()=>-(innerHeight+160),rotation:-9,ease:"none",scrollTrigger:{trigger:"main",start:"top top",end:"bottom bottom",scrub:.4}});
   gsap.to(".hero-orbit",{rotation:135,scale:1.2,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:.8}});
