@@ -6,67 +6,76 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
-let currentIndex=-1,wheelLock=false,touchStartY=0,stackMode=false;
-const TOP=68;
+let currentIndex=-1;
 
-function lockChapter(index){
+function activateChapter(index){
   index=Math.max(0,Math.min(chapters.length-1,index));
-  currentIndex=index; stackMode=true;
+  if(index===currentIndex)return;
+  currentIndex=index;
   chapters.forEach((ch,i)=>{
     ch.classList.toggle("is-open",i===index);
     ch.classList.toggle("active",i===index);
     ch.classList.toggle("is-past",i<index);
     ch.classList.toggle("is-future",i>index);
   });
-  const y=chapters[index].getBoundingClientRect().top+scrollY-TOP;
-  scrollTo({top:y,behavior:"instant"});
 }
-function unlockStack(dir){
-  stackMode=false;
-  if(dir<0){
-    currentIndex=-1;
-    chapters.forEach(ch=>ch.classList.remove("is-open","active","is-past","is-future"));
-  }
-}
-chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>lockChapter(i)));
 
-function stackIsReachable(){
-  const first=chapters[0].getBoundingClientRect();
-  const last=chapters[chapters.length-1].getBoundingClientRect();
-  return first.top<innerHeight*.82&&last.bottom>TOP;
-}
-function step(dir){
-  if(!stackMode){
-    if(!stackIsReachable())return false;
-    if(dir>0){lockChapter(0);return true}
-    return false;
+if(innerWidth>700 && window.gsap && window.ScrollTrigger){
+  gsap.registerPlugin(ScrollTrigger);
+
+  const lenis=window.Lenis ? new Lenis({duration:1.05,smoothWheel:true,wheelMultiplier:.82,touchMultiplier:1.1}) : null;
+  if(lenis){
+    lenis.on("scroll",ScrollTrigger.update);
+    gsap.ticker.add(t=>lenis.raf(t*1000));
+    gsap.ticker.lagSmoothing(0);
   }
-  if(dir>0&&currentIndex<chapters.length-1){lockChapter(currentIndex+1);return true}
-  if(dir<0&&currentIndex>0){lockChapter(currentIndex-1);return true}
-  if(dir<0&&currentIndex===0){unlockStack(-1);return false}
-  if(dir>0&&currentIndex===chapters.length-1){stackMode=false;return false}
-  return false;
+
+  chapters.forEach((ch,i)=>{
+    ScrollTrigger.create({
+      trigger:ch,
+      start:"top 72px",
+      end:()=>"+="+Math.max(innerHeight*.92,720),
+      pin:true,
+      pinSpacing:true,
+      anticipatePin:1,
+      invalidateOnRefresh:true,
+      onEnter:()=>activateChapter(i),
+      onEnterBack:()=>activateChapter(i)
+    });
+    if(i<chapters.length-1){
+      gsap.to(ch,{
+        scale:.982,
+        filter:"brightness(.58) saturate(.78)",
+        ease:"none",
+        scrollTrigger:{
+          trigger:chapters[i+1],
+          start:"top bottom",
+          end:"top 72px",
+          scrub:.7,
+          invalidateOnRefresh:true
+        }
+      });
+    }
+  });
+
+  chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{
+    activateChapter(i);
+    const y=ch.getBoundingClientRect().top+scrollY-72;
+    lenis ? lenis.scrollTo(y,{duration:1}) : scrollTo({top:y,behavior:"smooth"});
+  }));
+
+  document.querySelectorAll('nav a[href^="#"],.heroCta a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
+    const t=document.querySelector(a.getAttribute("href")),i=chapters.indexOf(t);
+    if(i>=0){
+      e.preventDefault();activateChapter(i);
+      const y=t.getBoundingClientRect().top+scrollY-72;
+      lenis ? lenis.scrollTo(y,{duration:1}) : scrollTo({top:y,behavior:"smooth"});
+    }
+  }));
+  addEventListener("load",()=>ScrollTrigger.refresh());
+}else{
+  chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>ch.classList.toggle("is-open")));
 }
-addEventListener("wheel",e=>{
-  if(innerWidth<=700||wheelLock||Math.abs(e.deltaY)<12)return;
-  const dir=Math.sign(e.deltaY);
-  if(step(dir)){
-    e.preventDefault();
-    wheelLock=true;
-    setTimeout(()=>wheelLock=false,850);
-  }
-},{passive:false});
-addEventListener("touchstart",e=>{touchStartY=e.touches[0]?.clientY||0},{passive:true});
-addEventListener("touchend",e=>{
-  if(innerWidth<=700)return;
-  const y=e.changedTouches[0]?.clientY||0,d=touchStartY-y;
-  if(Math.abs(d)>46)step(Math.sign(d));
-},{passive:true});
-document.querySelectorAll('nav a[href^="#"],.heroCta a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
- const t=document.querySelector(a.getAttribute("href")),i=chapters.indexOf(t);
- if(i>=0){e.preventDefault();lockChapter(i)}
-}));
-if(location.hash){const t=document.querySelector(location.hash),i=chapters.indexOf(t);if(i>=0)lockChapter(i)}
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{const t=document.querySelector(a.getAttribute("href"));if(t)t.scrollIntoView({behavior:"smooth",block:"start"})}));
 
 if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
