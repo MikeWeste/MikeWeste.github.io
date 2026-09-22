@@ -87,3 +87,10 @@ body{background-image:radial-gradient(circle at 20% 10%,rgba(255,30,130,.035),tr
 .chapter-body .project,.skillgrid>div,.timeline article{background:rgba(6,8,9,.68)}
 .scroll-note{position:absolute;right:24px;bottom:24px;font-size:9px;line-height:1.35;letter-spacing:.14em;color:#d8dbd6;text-align:right}.scroll-note:after{content:"↓";display:block;color:var(--lime);font-size:24px;margin-top:4px}
 @media(min-width:701px){.ref-card{overflow:hidden}.ref-card.active{box-shadow:0 -18px 60px rgba(0,0,0,.72)}.chapter-body{bottom:38px}.chapter-head h2:after{margin-top:13px}.chapter-projects .grid{gap:8px}.project p{line-height:1.35}}
+
+/* FINAL — reference lock */
+html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-width:520px;color:#f3f0ec;text-wrap:balance}
+.top{backdrop-filter:blur(16px);background:rgba(5,6,8,.88)}
+.ref-card{scroll-margin-top:60px}.chapter-body{transition:max-height .38s ease,opacity .28s ease,transform .38s ease}
+@media(min-width:701px){.ref-card:not(.active) .chapter-body{visibility:hidden}.ref-card.active .chapter-body{visibility:visible}.chapter-head{transition:transform .35s ease}.ref-card:focus-within .chapter-body{visibility:visible}}
+@media(max-width:700px){.hero-line{font-size:15px;max-width:92%}.top .brand{font-size:27px}.ref-card{scroll-margin-top:58px}.chapter-body{border-radius:0;border-left:0;border-right:0}}
