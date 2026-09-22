@@ -15,4 +15,39 @@ mm.add("(min-width: 761px)",()=>{
     gsap.from(el,{y:32,autoAlpha:0,duration:.7,ease:"power2.out",scrollTrigger:{trigger:el,start:"top 88%",toggleActions:"play none none reverse"}});
   });
 });
+};
+if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+ gsap.registerPlugin(ScrollTrigger);
+ const mm=gsap.matchMedia();
+ mm.add("(min-width: 761px)",()=>{
+   const stages=gsap.utils.toArray(".stage");
+   stages.forEach((stage,i)=>{
+     const panel=stage.querySelector(".panel");
+     if(i===0) gsap.set(panel,{yPercent:10,scale:.97,autoAlpha:.7});
+     ScrollTrigger.create({
+       trigger:stage,
+       start:"top top+=72",
+       end:"+=100%",
+       pin:panel,
+       pinSpacing:true,
+       anticipatePin:1
+     });
+     if(i===0){
+       gsap.to(panel,{yPercent:0,scale:1,autoAlpha:1,ease:"none",
+         scrollTrigger:{trigger:stage,start:"top 90%",end:"top 35%",scrub:true}});
+     }
+     if(i<stages.length-1){
+       const next=stages[i+1].querySelector(".panel");
+       gsap.fromTo(next,{yPercent:100,scale:.965,autoAlpha:.55},{yPercent:0,scale:1,autoAlpha:1,ease:"none",
+         scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:true}});
+       gsap.to(panel,{scale:.94,yPercent:-5,autoAlpha:.45,filter:"blur(3px)",ease:"none",
+         scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:true}});
+     }
+   });
+   gsap.utils.toArray(".panel h2,.panel .copy,.panel .sectionHead,.panel .skillgrid,.panel .timeline,.panel .heroCta").forEach(el=>{
+     gsap.from(el,{y:24,autoAlpha:0,duration:.55,ease:"power2.out",
+       scrollTrigger:{trigger:el,start:"top 90%",toggleActions:"play none none reverse"}});
+   });
+   return()=>ScrollTrigger.getAll().forEach(t=>t.kill());
+ });
 }
