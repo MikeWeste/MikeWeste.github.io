@@ -56,7 +56,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:20px;ma
  -webkit-backdrop-filter:blur(9px) saturate(1.15)!important
 }
 .projects-body .project,.skillgrid .skill-card,.timeline article,.contact-main,.contact-panel{
- background:linear-gradient(135deg,rgba(5,8,11,.56),rgba(6,9,12,.34))!important;
+ background:linear-gradient(135deg,rgba(5,8,11,.25),rgba(6,9,12,.34))!important;
  border-color:rgba(255,255,255,.2)!important;
  box-shadow:inset 0 1px rgba(255,255,255,.055),0 12px 30px rgba(0,0,0,.12)!important;
  backdrop-filter:blur(6px) saturate(1.12)!important;
