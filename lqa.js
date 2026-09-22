@@ -6,9 +6,7 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".chapter")];
-function setChapter(chapter,open=true){if(!chapter)return;chapters.forEach(c=>c.classList.toggle("open",c===chapter&&open));}
-chapters.forEach(ch=>{const head=ch.querySelector(".chapter-head");head.setAttribute("role","button");head.setAttribute("tabindex","0");head.setAttribute("aria-expanded","false");const toggle=()=>{const willOpen=!ch.classList.contains("open");chapters.forEach(c=>{c.classList.remove("open");c.querySelector(".chapter-head")?.setAttribute("aria-expanded","false")});if(willOpen){ch.classList.add("open");head.setAttribute("aria-expanded","true");setTimeout(()=>ch.scrollIntoView({behavior:"smooth",block:"start"}),80)}};head.addEventListener("click",toggle);head.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle()}})});
-document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{const id=a.getAttribute("href");const ch=document.querySelector(id)?.closest(".chapter")||document.querySelector(id);if(ch?.classList.contains("chapter")){chapters.forEach(c=>c.classList.remove("open"));ch.classList.add("open");ch.querySelector(".chapter-head")?.setAttribute("aria-expanded","true")}}));
+chapters.forEach(ch=>{const head=ch.querySelector(".chapter-head");head.removeAttribute("role");head.removeAttribute("tabindex");head.removeAttribute("aria-expanded");});
 
 const topbar=document.querySelector(".top");addEventListener("scroll",()=>topbar?.classList.toggle("scrolled",scrollY>20),{passive:true});
 
@@ -21,5 +19,5 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
  gsap.to(".lamp-art",{y:-55,ease:"none",scrollTrigger:{trigger:".poster-hero",start:"top top",end:"bottom top",scrub:.5}});
  gsap.to(".frog-art",{y:-35,x:-20,rotation:-5,ease:"none",scrollTrigger:{trigger:".poster-hero",start:"top top",end:"bottom top",scrub:.55}});
  gsap.to(".ufo-art",{y:-85,x:25,rotation:3,ease:"none",scrollTrigger:{trigger:".poster-hero",start:"top top",end:"bottom top",scrub:.55}});
- gsap.utils.toArray(".chapter").forEach((ch,i)=>gsap.from(ch,{y:70,autoAlpha:0,duration:.55,ease:"power2.out",scrollTrigger:{trigger:ch,start:"top 92%",once:true},delay:i*.02}));
+ gsap.utils.toArray(".chapter").forEach((ch,i)=>{const art=ch;gsap.fromTo(art,{filter:"brightness(.72)",scale:.985},{filter:"brightness(1)",scale:1,ease:"none",scrollTrigger:{trigger:ch,start:"top bottom",end:"top 28%",scrub:.3}});if(i<3)gsap.to(ch,{scale:.975,filter:"brightness(.55) saturate(.8)",transformOrigin:"center top",ease:"none",scrollTrigger:{trigger:chapters[i+1],start:"top bottom",end:"top top+=62",scrub:.3}})});
 }
