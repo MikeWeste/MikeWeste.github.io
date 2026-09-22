@@ -274,3 +274,40 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-card.is-past .chapter-body,.ref-card.is-future .chapter-body{display:none!important}
  .ref-card:before{height:2px!important}
 }
+
+/* stack8 — video review: slower panels, readable content, restrained stack */
+@media(min-width:701px){
+ .ref-card{
+   top:calc(68px + (var(--card-index,0) * 9px))!important;
+   margin:28px 22px 0!important;
+   transition:height 1s cubic-bezier(.18,.72,.16,1),transform .72s cubic-bezier(.2,.7,.2,1),filter .55s ease,opacity .5s ease,box-shadow .65s ease!important;
+ }
+ .ref-card.is-open{
+   height:calc(100svh - 104px)!important;
+   min-height:720px!important;
+   margin-top:34px!important;margin-bottom:46px!important;
+ }
+ .ref-card.is-past{opacity:.72!important;filter:brightness(.54) saturate(.72)!important}
+ .ref-card.is-open .chapter-body{
+   left:clamp(28px,4vw,64px)!important;
+   bottom:clamp(28px,5vh,52px)!important;
+   width:min(1180px,82vw)!important;
+   max-height:calc(100% - 180px)!important;
+   padding:26px!important;
+   background:rgba(5,7,10,.84)!important;
+   border:1px solid rgba(255,255,255,.24)!important;
+   box-shadow:0 24px 90px rgba(0,0,0,.72)!important;
+   backdrop-filter:blur(24px) saturate(1.12)!important;
+ }
+ .chapter-projects.is-open .grid{grid-template-columns:repeat(2,minmax(300px,1fr))!important;gap:14px!important}
+ .chapter-projects.is-open .project{min-height:170px!important;padding:20px 20px 42px!important}
+ .chapter-projects.is-open .project h3{font-size:20px!important}
+ .chapter-projects.is-open .project p{font-size:14px!important;line-height:1.62!important;color:#f0f2f4!important}
+ .chapter-projects.is-open .project .stack{font-size:10px!important;color:#c7cdd3!important}
+ .chapter-skills.is-open .skillgrid{gap:12px!important}
+ .chapter-skills.is-open .skillgrid>div{padding:24px!important;background:rgba(5,7,10,.84)!important}
+ .chapter-skills.is-open .skillgrid p{font-size:15px!important;line-height:1.65!important;color:#f0f2f4!important}
+ .chapter-experience.is-open .timeline article{padding:22px 24px!important;background:rgba(5,7,10,.84)!important}
+ .chapter-experience.is-open .timeline p{font-size:15px!important;line-height:1.62!important;color:#f0f2f4!important}
+ .chapter-contact.is-open .contact p{font-size:16px!important;color:#f1f3f4!important}
+}
