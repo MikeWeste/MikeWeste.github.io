@@ -128,3 +128,42 @@ body:before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;opa
  .project .stack{left:20px;right:20px;bottom:20px}
  footer{gap:20px;align-items:center}
 }
+
+/* v13 — canonical sticky section stack. Layout owns overlap; GSAP only adds depth. */
+@media(min-width:761px){
+ main{overflow:visible!important}
+ .stage{
+   position:sticky!important;
+   top:72px!important;
+   display:block!important;
+   width:100%!important;
+   height:calc(100vh - 72px)!important;
+   min-height:calc(100vh - 72px)!important;
+   padding:0!important;
+   margin:0!important;
+   perspective:none!important;
+ }
+ .stage+.stage{margin-top:0!important}
+ .stage .panel{
+   position:relative!important;
+   top:auto!important;
+   width:100%!important;
+   height:100%!important;
+   min-height:0!important;
+   margin:0!important;
+   overflow:hidden!important;
+   border-radius:28px 28px 0 0!important;
+   transform-origin:50% 0!important;
+ }
+ .stage-profile{z-index:31!important}
+ .stage-projects{z-index:32!important}
+ .stage-skills{z-index:33!important}
+ .stage-experience{z-index:34!important}
+ .contact-stage{z-index:35!important}
+ .stage:not(:last-of-type){padding-bottom:0!important}
+ .stage-projects{height:calc(100vh - 72px)!important;min-height:calc(100vh - 72px)!important}
+ .contact-stage{height:calc(100vh - 72px)!important;min-height:calc(100vh - 72px)!important}
+}
+@media(min-width:761px) and (max-height:720px){
+ .stage .panel{overflow:auto!important}
+}
