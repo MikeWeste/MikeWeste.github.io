@@ -15,8 +15,8 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
   stages.forEach((stage,i)=>{
    const panel=stage.querySelector(".panel"),art=stage.querySelector(".scene-art"),word=stage.querySelector(".big-word");
    gsap.set(panel,{zIndex:30+i});
-   if(i>0) gsap.fromTo(panel,{yPercent:100},{yPercent:0,ease:"none",scrollTrigger:{trigger:stage,start:"top bottom",end:"top top+=72",scrub:.45,invalidateOnRefresh:true}});
-   if(i<stages.length-1) gsap.to(panel,{scale:.965,filter:"brightness(.55) saturate(.8)",ease:"none",scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:.45,invalidateOnRefresh:true}});
+   
+   if(i<stages.length-1) gsap.to(panel,{scale:.965,filter:"brightness(.58) saturate(.82)",ease:"none",scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:true,invalidateOnRefresh:true}});
    if(art) gsap.timeline({scrollTrigger:{trigger:stage,start:"top 88%",end:"bottom 18%",scrub:.7}}).fromTo(art,{autoAlpha:0,y:90,rotation:-12,scale:.75},{autoAlpha:.68,y:0,rotation:6,scale:1,ease:"none"}).to(art,{autoAlpha:0,y:-90,rotation:22,scale:1.12,ease:"none"});
    if(word) gsap.fromTo(word,{xPercent:10,autoAlpha:.12},{xPercent:-10,autoAlpha:.55,ease:"none",scrollTrigger:{trigger:stage,start:"top bottom",end:"bottom top",scrub:1}});
   });
