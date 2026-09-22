@@ -66,3 +66,14 @@ body:before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;opa
 .project:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.035) 48%,transparent 72%);transform:translateX(-100%);transition:transform .7s ease}.project:hover:before{transform:translateX(100%)}
 .timeline article{transition:transform .25s,color .25s}.timeline article:hover{transform:translateX(9px)}.timeline article:hover h3{color:#fff}.skillgrid div{position:relative;overflow:hidden;transition:transform .25s,background .25s}.skillgrid div:hover{transform:translateY(-4px);background:#0e1417}.skillgrid div:after{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(95,255,209,.1);border-radius:50%;right:-38px;bottom:-45px}
 @media(max-width:760px){.big-word,.project-marquee{display:none}}
+
+/* v8 — case-file project presentation */
+.case-index{position:absolute;right:42px;top:36px;display:flex;align-items:baseline;gap:10px;color:#5d6474;font:700 10px/1 ui-monospace,monospace;letter-spacing:.16em}.case-index b{font-size:36px;color:rgba(255,255,255,.07);letter-spacing:-.08em}
+.case-no{position:absolute;right:22px;bottom:12px;font:900 72px/.8 ui-monospace,monospace;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.055);pointer-events:none;transition:.25s}
+.project:hover .case-no{transform:translate(-6px,-6px);-webkit-text-stroke-color:rgba(103,232,249,.18)}
+.project.featured .case-no{-webkit-text-stroke-color:rgba(167,139,250,.12);font-size:112px}
+.project .tag,.project h3,.project p,.project .stack,.project i{z-index:2}.project>*{position:relative}.project .stack,.project i{position:absolute}
+.project{isolation:isolate}.project:after{z-index:0}.project:before{z-index:1}
+.stage-projects .panel::-webkit-scrollbar{width:5px}.stage-projects .panel::-webkit-scrollbar-thumb{background:linear-gradient(#ff008f,#67e8f9);border-radius:10px}.stage-projects .panel::-webkit-scrollbar-track{background:transparent}
+.project h3:after{content:"";display:block;width:0;height:1px;margin-top:10px;background:linear-gradient(90deg,#67e8f9,#ff008f);transition:width .35s ease}.project:hover h3:after{width:58px}
+@media(max-width:760px){.case-index{display:none}.case-no{font-size:56px}.project.featured .case-no{font-size:70px}}
