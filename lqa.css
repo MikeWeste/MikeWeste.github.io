@@ -12,3 +12,34 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
 @media(max-width:980px){.poster-hero{grid-template-columns:1fr;min-height:auto;padding-top:70px}.hero-art{height:460px;margin-top:-20px}.hero h1{font-size:clamp(64px,14vw,108px)}.frog-art{width:330px;height:210px;right:3%}.lamp-art{left:48%}.ufo-art{right:1%;top:12px}.grid{grid-template-columns:1fr 1fr}.project.featured{grid-row:auto;min-height:260px}.skillgrid{grid-template-columns:1fr 1fr}.timeline{grid-template-columns:1fr}.chapter-head{grid-template-columns:54px 1fr auto 44px}}
 @media(max-width:700px){:root{--nav:60px}.top{padding:0 14px}nav,.resume{display:none}main,footer{width:min(100% - 18px,var(--max))}.poster-hero{padding:42px 14px 28px}.hero h1{font-size:clamp(50px,17vw,82px)}.lead{font-size:15px}.hero-art{height:360px}.lamp-art{left:42%;transform:scale(.72);transform-origin:top}.ufo-art{right:-24px;transform:scale(.68);transform-origin:top right}.frog-art{right:-40px;bottom:-38px;transform:scale(.72) rotate(-2deg);transform-origin:bottom right}.scribble.s1{left:3%;top:145px;font-size:18px}.scribble.s2,.scribble.s3,.scroll-note{display:none}.chapter{border-radius:22px}.chapter-head{min-height:92px;padding:18px 16px;grid-template-columns:46px 1fr 42px;gap:10px}.chapter-head p{display:none}.chapter-no{font-size:21px}.chapter-head h2{font-size:clamp(34px,11vw,52px)}.chapter-body,.chapter.open .chapter-body{padding-left:14px;padding-right:14px}.grid,.skillgrid{grid-template-columns:1fr}.project,.project.featured{min-height:230px}.hero-tags span{font-size:11px;padding:6px 9px}.heroCta{width:100%}.primary,.secondary{flex:1;min-width:140px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.chapter-body,.chapter,.project,.chapter-head>i,.primary,.secondary{transition:none!important}}
+
+/* v17 — generated chapter artwork + reversible scroll deck */
+@media(min-width:701px){
+ .poster-hero{min-height:calc(100svh - var(--nav))}
+ .chapter{position:sticky;top:var(--nav);height:calc(100svh - var(--nav));min-height:620px;margin-top:0!important;border-radius:28px 28px 0 0;overflow:hidden;background:#07090b;isolation:isolate;box-shadow:0 -18px 60px rgba(0,0,0,.62)}
+ .chapter:before{content:"";position:absolute;inset:0;z-index:-2;background-position:center;background-size:cover;background-repeat:no-repeat;filter:saturate(1.12) contrast(1.08);transform:scale(1.02)}
+ .chapter:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(4,5,7,.98) 0%,rgba(4,5,7,.92) 28%,rgba(4,5,7,.48) 52%,rgba(4,5,7,.10) 100%)}
+ .chapter-projects{z-index:21}.chapter-skills{z-index:22}.chapter-experience{z-index:23}.chapter-contact{z-index:24}
+ .chapter-projects:before{background-image:url("assets/projects-art.webp")}
+ .chapter-skills:before{background-image:url("assets/skills-art.webp")}
+ .chapter-experience:before{background-image:url("assets/experience-art.webp")}
+ .chapter-contact:before{background-image:url("assets/contact-art.webp")}
+ .chapter-head{position:absolute;z-index:3;left:0;top:0;width:43%;height:100%;min-height:0;padding:clamp(48px,7vh,84px) 34px;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto auto 1fr;align-content:start;align-items:start;gap:10px 18px;background:none!important;cursor:default}
+ .chapter-head:after{display:none}
+ .chapter-no{grid-row:1 / span 2;font-size:clamp(34px,4vw,58px)}
+ .chapter-head h2{font-size:clamp(54px,6vw,92px);align-self:start}
+ .chapter-head p{font-size:13px;line-height:1.55;margin-top:8px}
+ .chapter-head>i{grid-column:1;grid-row:3;align-self:end;justify-self:start;width:52px;height:52px;font-size:20px;transform:none!important}
+ .chapter-body,.chapter.open .chapter-body{position:absolute;z-index:4;left:110px;bottom:clamp(46px,8vh,90px);width:min(520px,36vw);max-height:none!important;overflow:visible;padding:0!important;opacity:1!important;transform:none!important;border:0!important;background:transparent}
+ .chapter-projects .chapter-body{left:34px;bottom:30px;width:min(760px,50vw);max-height:48vh!important;overflow:auto;padding:14px!important;border-radius:18px;background:rgba(4,5,7,.82);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08)!important}
+ .chapter-projects .filters{margin-bottom:10px}.chapter-projects .grid{grid-template-columns:1fr 1fr;gap:8px}.chapter-projects .project,.chapter-projects .project.featured{min-height:142px;grid-row:auto;padding:16px 16px 45px;background:rgba(10,12,15,.88)}.chapter-projects .project p{display:none}.chapter-projects .project h3{font-size:18px;margin:8px 0}.chapter-projects .project .stack{left:16px;bottom:13px;font-size:9px}
+ .chapter-skills .skillgrid{display:grid;grid-template-columns:1fr 1fr;width:min(570px,39vw);gap:1px;background:rgba(255,255,255,.1)}.chapter-skills .skillgrid>div{padding:15px;background:rgba(5,7,9,.82);backdrop-filter:blur(10px)}
+ .timeline{display:grid;grid-template-columns:1fr;gap:8px}.timeline article{padding:14px 16px;background:rgba(5,7,9,.82);backdrop-filter:blur(10px)}.timeline p{font-size:12px}.timeline h3{font-size:16px}
+ .chapter-contact .contact{text-align:left!important;align-items:flex-start;padding:0!important}.chapter-contact .contact h2{font-size:clamp(34px,4vw,56px)}
+}
+@media(max-width:700px){
+ .chapter:before{content:"";display:block;height:190px;margin:-1px -1px 0;background-position:center;background-size:cover}
+ .chapter-projects:before{background-image:url("assets/projects-art.webp")}.chapter-skills:before{background-image:url("assets/skills-art.webp")}.chapter-experience:before{background-image:url("assets/experience-art.webp")}.chapter-contact:before{background-image:url("assets/contact-art.webp")}
+ .chapter-body,.chapter.open .chapter-body{max-height:none;opacity:1;transform:none;padding:18px 14px 26px;border-top:1px solid rgba(255,255,255,.06)}
+ .chapter-head{cursor:default}.chapter-head>i{transform:none!important}
+}
