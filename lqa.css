@@ -20,10 +20,10 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
  .chapter:before{content:"";position:absolute;inset:0;z-index:-2;background-position:center;background-size:cover;background-repeat:no-repeat;filter:saturate(1.12) contrast(1.08);transform:scale(1.02)}
  .chapter:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(4,5,7,.98) 0%,rgba(4,5,7,.92) 28%,rgba(4,5,7,.48) 52%,rgba(4,5,7,.10) 100%)}
  .chapter-projects{z-index:21}.chapter-skills{z-index:22}.chapter-experience{z-index:23}.chapter-contact{z-index:24}
- .chapter-projects:before{background-image:url("assets/projects-art.webp")}
- .chapter-skills:before{background-image:url("assets/skills-art.webp")}
- .chapter-experience:before{background-image:url("assets/experience-art.webp")}
- .chapter-contact:before{background-image:url("assets/contact-art.webp")}
+ .chapter-projects:before{background-image:url("assets/projects-art.svg")}
+ .chapter-skills:before{background-image:url("assets/skills-art.svg")}
+ .chapter-experience:before{background-image:url("assets/experience-art.svg")}
+ .chapter-contact:before{background-image:url("assets/contact-art.svg")}
  .chapter-head{position:absolute;z-index:3;left:0;top:0;width:43%;height:100%;min-height:0;padding:clamp(48px,7vh,84px) 34px;display:grid;grid-template-columns:70px 1fr;grid-template-rows:auto auto 1fr;align-content:start;align-items:start;gap:10px 18px;background:none!important;cursor:default}
  .chapter-head:after{display:none}
  .chapter-no{grid-row:1 / span 2;font-size:clamp(34px,4vw,58px)}
@@ -39,7 +39,7 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
 }
 @media(max-width:700px){
  .chapter:before{content:"";display:block;height:190px;margin:-1px -1px 0;background-position:center;background-size:cover}
- .chapter-projects:before{background-image:url("assets/projects-art.webp")}.chapter-skills:before{background-image:url("assets/skills-art.webp")}.chapter-experience:before{background-image:url("assets/experience-art.webp")}.chapter-contact:before{background-image:url("assets/contact-art.webp")}
+ .chapter-projects:before{background-image:url("assets/projects-art.svg")}.chapter-skills:before{background-image:url("assets/skills-art.svg")}.chapter-experience:before{background-image:url("assets/experience-art.svg")}.chapter-contact:before{background-image:url("assets/contact-art.svg")}
  .chapter-body,.chapter.open .chapter-body{max-height:none;opacity:1;transform:none;padding:18px 14px 26px;border-top:1px solid rgba(255,255,255,.06)}
  .chapter-head{cursor:default}.chapter-head>i{transform:none!important}
 }
@@ -77,7 +77,7 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
  radial-gradient(circle at 58% 31%,rgba(255,83,0,.22),transparent 22%),
  radial-gradient(circle at 83% 42%,rgba(189,255,34,.10),transparent 23%),
  linear-gradient(90deg,rgba(3,5,6,.82),rgba(3,5,6,.38)),
- url("assets/hero-art.webp") center/cover no-repeat;
+ url("assets/hero-art.svg") center/cover no-repeat;
 }
 .hero-art{display:none!important}
 .poster-hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(3,4,6,.82) 0%,rgba(3,4,6,.52) 36%,rgba(3,4,6,.08) 68%,rgba(3,4,6,.18) 100%);z-index:1}
@@ -90,11 +90,20 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
 
 /* v20 — asset quality pass */
 .chapter{background-position:center!important}
-.chapter-projects{background-image:url("assets/projects-art.webp")!important;background-size:cover!important}
+.chapter-projects{background-image:url("assets/projects-art.svg")!important;background-size:cover!important}
 .chapter-skills,.chapter-experience,.chapter-contact{background-size:cover!important;image-rendering:auto}
 .chapter:before{backdrop-filter:none!important}
 .chapter:after{opacity:.92}
 @media(min-width:1200px){
  .chapter-projects,.chapter-skills,.chapter-experience,.chapter-contact{background-position:center 45%!important}
  .chapter-head{background:linear-gradient(90deg,rgba(4,5,7,.97),rgba(4,5,7,.74) 70%,transparent)!important}
+}
+
+/* v21 — final visual/function lock */
+@media(min-width:701px){
+ .poster-hero{background-size:cover!important;background-position:center!important}
+ .chapter:before{background-size:cover!important;background-position:center!important;filter:none!important;transform:none!important}
+ .chapter{transform-origin:center top;backface-visibility:hidden}
+ .chapter-head{pointer-events:none}
+ .chapter-body{pointer-events:auto}
 }
