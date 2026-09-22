@@ -50,4 +50,17 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
    });
    return()=>ScrollTrigger.getAll().forEach(t=>t.kill());
  });
+};
+if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+ gsap.registerPlugin(ScrollTrigger);
+ gsap.matchMedia().add("(min-width: 761px)",()=>{
+   const panels=gsap.utils.toArray(".stage .panel");
+   panels.forEach((panel,i)=>{
+     if(i<panels.length-1){
+       const next=panels[i+1];
+       gsap.to(panel,{scale:.965,filter:"brightness(.62)",borderRadius:"28px",ease:"none",
+         scrollTrigger:{trigger:next,start:"top bottom",end:"top top+=72",scrub:true}});
+     }
+   });
+ });
 }
