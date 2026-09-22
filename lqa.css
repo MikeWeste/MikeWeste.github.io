@@ -32,3 +32,12 @@ footer{min-height:76px;align-items:center;padding:16px 42px}footer>div{display:f
  .ref-card.active .chapter-body{max-height:230px}
 }
 @media(max-width:700px){footer{padding:18px 16px;gap:12px;flex-wrap:wrap}.footlinks{flex-wrap:wrap}.ref-hero{min-height:760px}}
+
+/* ref25 — tighter visual match */
+body{background-image:radial-gradient(circle at 20% 10%,rgba(255,30,130,.035),transparent 28%),linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px);background-size:auto,100% 4px}
+.top{border-bottom-color:rgba(255,255,255,.12)}nav a{position:relative}nav a:after{content:"";position:absolute;left:0;right:100%;bottom:-19px;height:2px;background:var(--lime);transition:right .2s ease}nav a:hover:after{right:0}
+.hero-tags span{backdrop-filter:blur(8px)}.primary{transition:transform .18s ease,box-shadow .18s ease}.primary:hover{transform:translateY(-2px);box-shadow:0 0 26px rgba(202,255,47,.14),inset 0 0 0 1px var(--pink)}
+.ref-card{will-change:transform}.chapter-head>i{transition:transform .25s ease,background .2s ease}.ref-card.active .chapter-head>i{transform:rotate(45deg);background:rgba(202,255,47,.08)}
+.project{transition:transform .18s ease,border-color .18s ease}.project:hover{transform:translateY(-3px);border-color:rgba(202,255,47,.55)}
+@media(min-width:701px){.ref-card{background-attachment:scroll}.chapter-projects{background-position:54% center}.chapter-skills{background-position:56% center}.chapter-experience{background-position:58% center}.chapter-contact{background-position:58% center}.chapter-head p{align-self:center}.ref-card.active .chapter-body{animation:panelIn .28s ease both}}
+@keyframes panelIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
