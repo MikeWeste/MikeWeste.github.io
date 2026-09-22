@@ -77,3 +77,12 @@ body:before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;opa
 .stage-projects .panel::-webkit-scrollbar{width:5px}.stage-projects .panel::-webkit-scrollbar-thumb{background:linear-gradient(#ff008f,#67e8f9);border-radius:10px}.stage-projects .panel::-webkit-scrollbar-track{background:transparent}
 .project h3:after{content:"";display:block;width:0;height:1px;margin-top:10px;background:linear-gradient(90deg,#67e8f9,#ff008f);transition:width .35s ease}.project:hover h3:after{width:58px}
 @media(max-width:760px){.case-index{display:none}.case-no{font-size:56px}.project.featured .case-no{font-size:70px}}
+
+/* final polish v9 */
+.availability{position:absolute;right:0;top:96px;display:flex;align-items:center;gap:8px;color:#8d95a6;font:750 9px/1 ui-monospace,monospace;letter-spacing:.12em}.availability i{width:7px;height:7px;border-radius:50%;background:#5fffd1;box-shadow:0 0 14px rgba(95,255,209,.7);animation:pulse 2s ease-in-out infinite}@keyframes pulse{50%{opacity:.35;transform:scale(.7)}}
+.hero{position:relative}.hero h1{max-width:920px}.hero .lead{position:relative;z-index:2}.heroCta a{transition:transform .18s,border-color .18s,box-shadow .18s}.heroCta a:hover{transform:translateY(-2px)}.primary:hover{box-shadow:0 10px 32px rgba(139,92,246,.24)}.secondary:hover{border-color:#59627a}
+.panel{scrollbar-width:thin;scrollbar-color:#444b5c transparent}.stage .panel{outline:1px solid rgba(255,255,255,.018);outline-offset:-2px}
+@media(min-width:761px){main{padding-bottom:0}.stage{height:100vh!important}.stage-projects{height:125vh!important}.contact-stage{height:calc(100vh - 72px)!important}.contact-stage .panel{border-radius:28px!important}.stage .panel{box-shadow:0 -24px 70px rgba(0,0,0,.46)}}
+@media(max-height:780px) and (min-width:761px){.stage .panel{padding-top:28px!important;padding-bottom:28px!important}.project{min-height:205px}.project.featured{min-height:422px}.project h3{margin-top:16px}.facts{margin-top:48px}}
+@media(max-width:760px){.availability{position:static;margin-top:16px}.hero{padding-top:68px}.facts{margin-top:42px}.stage .panel{box-shadow:none}.stage{padding-top:14px!important}.project-marquee,.big-word{display:none}}
+@media(prefers-reduced-motion:reduce){.availability i,.scroll-cue i{animation:none}.scene-art,.scroll-character,.hero-orbit{display:none!important}}
