@@ -35,16 +35,16 @@ if(innerWidth>700 && window.gsap && window.ScrollTrigger){
     scrollTrigger:{
       trigger:stage,
       start:"top top",
-      end:()=>"+="+(innerHeight*(count*1.18)),
+      end:()=>"+="+(innerHeight*(count*1.55)),
       pin:deck,
       pinSpacing:true,
-      scrub:.65,
+      scrub:1,
       anticipatePin:1,
       invalidateOnRefresh:true,
       snap:{
         snapTo:1/(count-1),
-        duration:{min:.18,max:.42},
-        delay:.08,
+        duration:{min:.28,max:.6},
+        delay:.12,
         ease:"power1.inOut"
       }
     }
