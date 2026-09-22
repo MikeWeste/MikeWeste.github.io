@@ -86,4 +86,32 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
    gsap.to(".hero-orbit",{rotation:110,scale:1.18,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:1}});
    ScrollTrigger.refresh();
  });
+};
+const topbar=document.querySelector(".top");
+addEventListener("scroll",()=>topbar?.classList.toggle("scrolled",scrollY>20),{passive:true});
+if(matchMedia("(hover:hover) and (pointer:fine)").matches){
+ addEventListener("pointermove",e=>{document.body.style.setProperty("--cx",e.clientX+"px");document.body.style.setProperty("--cy",e.clientY+"px")},{passive:true});
+}
+if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+ gsap.registerPlugin(ScrollTrigger);
+ gsap.matchMedia().add("(min-width: 761px)",()=>{
+   const stages=gsap.utils.toArray(".stage");
+   stages.forEach((stage,i)=>{
+     const panel=stage.querySelector(".panel"),art=stage.querySelector(".scene-art");
+     gsap.set(panel,{zIndex:10+i});
+     if(i>0)gsap.fromTo(panel,{yPercent:100,scale:.985},{yPercent:0,scale:1,ease:"none",scrollTrigger:{trigger:stage,start:"top bottom",end:"top top+=72",scrub:.55,invalidateOnRefresh:true}});
+     if(i<stages.length-1)gsap.to(panel,{scale:.955,filter:"brightness(.48) saturate(.72)",ease:"none",scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:.55,invalidateOnRefresh:true}});
+     if(art){
+       gsap.set(art,{autoAlpha:0});
+       gsap.timeline({scrollTrigger:{trigger:stage,start:"top 82%",end:"bottom 22%",scrub:.8}})
+         .fromTo(art,{autoAlpha:0,y:90,rotation:-12,scale:.75},{autoAlpha:.72,y:0,rotation:8,scale:1,ease:"none"})
+         .to(art,{autoAlpha:0,y:-100,rotation:28,scale:1.15,ease:"none"});
+     }
+   });
+   gsap.to(".scroll-character",{y:()=>-(innerHeight+160),rotation:-10,ease:"none",scrollTrigger:{trigger:"main",start:"top top",end:"bottom bottom",scrub:.45}});
+   gsap.to(".hero-orbit",{rotation:140,scale:1.22,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:.8}});
+   gsap.to(".ambient-a",{yPercent:80,xPercent:-20,ease:"none",scrollTrigger:{trigger:"main",start:"top top",end:"bottom bottom",scrub:1.5}});
+   gsap.to(".ambient-b",{yPercent:-70,xPercent:35,ease:"none",scrollTrigger:{trigger:"main",start:"top top",end:"bottom bottom",scrub:1.5}});
+   ScrollTrigger.refresh();
+ });
 }
