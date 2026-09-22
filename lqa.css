@@ -147,3 +147,15 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-card.active .timeline h3{font-size:16px}
  .chapter-contact.active .chapter-body{width:min(720px,58vw)}
 }
+
+/* stack3 — reference behavior: all four tabs visible under hero, active tab expands */
+@media(min-width:701px){
+ .ref-hero{min-height:calc(100svh - 60px)}
+ .ref-card{position:relative!important;top:auto!important;height:112px!important;min-height:112px!important;margin:-1px 20px 0!important;border-radius:20px!important;transform:none!important;filter:none!important;box-shadow:0 -5px 22px rgba(0,0,0,.58)!important}
+ .chapter-head{height:112px!important;min-height:112px!important;padding:0 24px!important;align-content:center!important}
+ .ref-card.active{height:calc(100svh - 60px)!important;min-height:620px!important}
+ .ref-card.active .chapter-head{height:142px!important;min-height:142px!important;padding-top:32px!important;align-content:start!important}
+ .ref-card:not(.active) .chapter-body{display:none!important}
+ .ref-card.active .chapter-body{display:block!important}
+ .chapter-projects{z-index:4}.chapter-skills{z-index:3}.chapter-experience{z-index:2}.chapter-contact{z-index:1}
+}
