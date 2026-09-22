@@ -63,4 +63,27 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
      }
    });
  });
+};
+if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+ gsap.registerPlugin(ScrollTrigger);
+ gsap.matchMedia().add("(min-width: 761px)",()=>{
+   const stages=gsap.utils.toArray(".stage");
+   stages.forEach((stage,i)=>{
+     const panel=stage.querySelector(".panel");
+     gsap.set(panel,{zIndex:10+i});
+     if(i>0) gsap.fromTo(panel,{yPercent:100,scale:.985},{yPercent:0,scale:1,ease:"none",
+       scrollTrigger:{trigger:stage,start:"top bottom",end:"top top+=72",scrub:.65,invalidateOnRefresh:true}});
+     if(i<stages.length-1){
+       gsap.to(panel,{scale:.955,filter:"brightness(.52) saturate(.75)",ease:"none",
+         scrollTrigger:{trigger:stages[i+1],start:"top bottom",end:"top top+=72",scrub:.65,invalidateOnRefresh:true}});
+     }
+   });
+   const climber=document.querySelector(".scroll-character");
+   if(climber){
+     gsap.to(climber,{y:()=>-(innerHeight+120),rotation:-8,ease:"none",
+       scrollTrigger:{trigger:"main",start:"top top",end:"bottom bottom",scrub:.5}});
+   }
+   gsap.to(".hero-orbit",{rotation:110,scale:1.18,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:1}});
+   ScrollTrigger.refresh();
+ });
 }
