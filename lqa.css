@@ -70,3 +70,20 @@ main,footer{width:min(var(--max),calc(100% - 32px));margin:auto}.poster-hero{pos
  .chapter-head{width:39%}
  .chapter-projects .chapter-body{width:min(720px,46vw)}
 }
+
+/* v19 — hero rebuilt to match reference composition */
+.poster-hero{
+ background:
+ radial-gradient(circle at 58% 31%,rgba(255,83,0,.22),transparent 22%),
+ radial-gradient(circle at 83% 42%,rgba(189,255,34,.10),transparent 23%),
+ linear-gradient(90deg,rgba(3,5,6,.82),rgba(3,5,6,.38)),
+ url("assets/hero-art.webp") center/cover no-repeat;
+}
+.hero-art{display:none!important}
+.poster-hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(3,4,6,.82) 0%,rgba(3,4,6,.52) 36%,rgba(3,4,6,.08) 68%,rgba(3,4,6,.18) 100%);z-index:1}
+.hero-copy,.scroll-note{z-index:4}
+.hero-copy{align-self:center;max-width:650px}
+.hero h1{font-size:clamp(76px,7.6vw,126px);line-height:.80}
+.lead{font-size:18px;max-width:590px}
+@media(max-width:980px){.poster-hero{background-position:62% center}.poster-hero:after{background:linear-gradient(90deg,rgba(3,4,6,.90),rgba(3,4,6,.48) 62%,rgba(3,4,6,.18))}}
+@media(max-width:700px){.poster-hero{background-position:66% center;background-size:auto 100%}.poster-hero:after{background:linear-gradient(180deg,rgba(3,4,6,.55),rgba(3,4,6,.90) 70%)}}
