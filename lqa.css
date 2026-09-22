@@ -311,3 +311,38 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .chapter-experience.is-open .timeline p{font-size:15px!important;line-height:1.62!important;color:#f0f2f4!important}
  .chapter-contact.is-open .contact p{font-size:16px!important;color:#f1f3f4!important}
 }
+
+/* stack9 — fixes observed in supplied scroll recording */
+@media(min-width:701px){
+ .ref-card{
+   margin-top:42px!important;
+   top:calc(66px + (var(--card-index,0) * 14px))!important;
+ }
+ .ref-card.is-open{
+   height:calc(100svh - 92px)!important;
+   min-height:740px!important;
+   margin-top:54px!important;
+   margin-bottom:110px!important;
+ }
+ .ref-card.is-past{
+   height:92px!important;min-height:92px!important;
+   opacity:.56!important;
+   transform:scale(.988)!important;
+ }
+ .ref-card.is-past .chapter-head{height:92px!important;min-height:92px!important}
+ .ref-card.is-past .chapter-head h2{font-size:clamp(32px,3vw,46px)!important}
+ .ref-card.is-past .chapter-no{font-size:28px!important}
+ .ref-card.is-open .chapter-body{
+   width:min(1200px,80vw)!important;
+   max-height:calc(100% - 172px)!important;
+   overflow:auto!important;
+   scrollbar-width:thin;
+ }
+ .chapter-projects.is-open .chapter-body{width:min(1220px,82vw)!important}
+ .chapter-projects.is-open .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .chapter-projects.is-open .project{min-height:182px!important}
+ .chapter-projects.is-open .project p{font-size:14px!important;line-height:1.65!important}
+ .chapter-skills.is-open .chapter-body{width:min(1100px,76vw)!important}
+ .chapter-experience.is-open .chapter-body{width:min(1060px,74vw)!important}
+ .chapter-contact.is-open .chapter-body{width:min(860px,64vw)!important}
+}
