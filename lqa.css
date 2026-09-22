@@ -572,3 +572,67 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .deck-pin .project p,.deck-pin .skillgrid p,.deck-pin .timeline p{font-size:14px!important;line-height:1.62!important;color:#eef1f3!important}
  .deck-pin .project h3,.deck-pin .timeline h3{font-size:19px!important}
 }
+
+/* rebuild1 — final isolated scroll-story layer */
+@media(min-width:701px){
+ .story-stage{position:relative!important;margin:0!important;padding:0!important}
+ .story-viewport{
+   position:relative!important;
+   height:100svh!important;
+   min-height:700px!important;
+   overflow:hidden!important;
+   isolation:isolate!important;
+   background:#050608!important;
+ }
+ .story-viewport .ref-card{
+   position:absolute!important;
+   top:72px!important;left:22px!important;right:22px!important;bottom:18px!important;
+   width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;
+   margin:0!important;
+   border-radius:24px!important;
+   overflow:hidden!important;
+   transform-origin:50% 0!important;
+   box-shadow:0 24px 90px rgba(0,0,0,.66)!important;
+   will-change:transform,filter!important;
+ }
+ .story-viewport .chapter-head{
+   height:112px!important;min-height:112px!important;
+   padding:22px 28px 0!important;
+   grid-template-columns:72px minmax(300px,1fr) 190px 52px!important;
+   align-content:start!important;
+ }
+ .story-viewport .chapter-body{
+   display:block!important;visibility:visible!important;
+   position:absolute!important;
+   top:126px!important;left:28px!important;right:28px!important;bottom:24px!important;
+   width:auto!important;height:auto!important;max-height:none!important;
+   padding:24px!important;
+   overflow:auto!important;overscroll-behavior:contain!important;
+   border-radius:18px!important;
+   background:linear-gradient(180deg,rgba(4,6,9,.89),rgba(4,6,9,.75))!important;
+   border:1px solid rgba(255,255,255,.18)!important;
+   box-shadow:0 20px 70px rgba(0,0,0,.58)!important;
+   backdrop-filter:blur(20px) saturate(1.12)!important;
+   opacity:0!important;pointer-events:none!important;
+   transform:translateY(10px)!important;
+   transition:opacity .22s ease,transform .3s ease!important;
+ }
+ .story-viewport .ref-card.is-open .chapter-body{
+   opacity:1!important;pointer-events:auto!important;transform:none!important;
+ }
+ .story-viewport .ref-card.is-open{opacity:1!important;filter:none!important}
+ .story-viewport .ref-card.is-past .chapter-body,
+ .story-viewport .ref-card.is-future .chapter-body{opacity:0!important;pointer-events:none!important}
+ .story-viewport .chapter-projects.is-open .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .story-viewport .chapter-skills.is-open .skillgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+ .story-viewport .chapter-experience.is-open .timeline{grid-template-columns:1fr!important;gap:10px!important}
+ .story-viewport .project,.story-viewport .skillgrid>div,.story-viewport .timeline article{
+   background:rgba(5,8,11,.82)!important;
+ }
+ .story-viewport .project p,.story-viewport .skillgrid p,.story-viewport .timeline p{
+   display:block!important;font-size:14px!important;line-height:1.6!important;color:#f0f2f4!important;
+ }
+}
+@media(max-width:700px){
+ .story-stage,.story-viewport{display:contents!important}
+}
