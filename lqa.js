@@ -6,7 +6,7 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
-chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{if(innerWidth<=700)ch.classList.toggle("active")}));
+chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{chapters.forEach(x=>x.classList.toggle("active",x===ch));if(innerWidth>700)ch.scrollIntoView({behavior:"smooth",block:"start"});else ch.classList.toggle("active")}));
 function updateActive(){
   const marker=innerHeight*.58;
   let active=chapters[0];
