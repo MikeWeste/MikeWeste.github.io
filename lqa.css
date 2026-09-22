@@ -451,3 +451,47 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-card.is-past .chapter-head{height:72px!important;min-height:72px!important}
  .ref-card.is-future{height:92px!important;min-height:92px!important}
 }
+
+/* scrolltrigger1 — native reversible pinned storytelling */
+@media(min-width:701px){
+ .ref-card{
+   position:relative!important;
+   top:auto!important;
+   height:calc(100svh - 88px)!important;
+   min-height:680px!important;
+   max-height:860px!important;
+   margin:18px 22px 0!important;
+   border-radius:22px!important;
+   overflow:hidden!important;
+   transform-origin:50% 0!important;
+ }
+ .ref-card .chapter-head{
+   height:116px!important;min-height:116px!important;
+   padding:24px 26px 0!important;align-content:start!important;
+ }
+ .ref-card .chapter-body{
+   display:block!important;visibility:visible!important;
+   left:30px!important;right:30px!important;top:132px!important;bottom:24px!important;
+   width:auto!important;height:auto!important;max-height:none!important;
+   padding:24px!important;overflow:auto!important;
+   opacity:0!important;pointer-events:none!important;
+   transform:translateY(18px)!important;
+   border-radius:18px!important;
+   background:linear-gradient(180deg,rgba(5,7,10,.88),rgba(5,7,10,.74))!important;
+   border:1px solid rgba(255,255,255,.2)!important;
+   box-shadow:0 24px 80px rgba(0,0,0,.62)!important;
+   backdrop-filter:blur(22px) saturate(1.12)!important;
+   transition:opacity .38s ease,transform .5s cubic-bezier(.2,.75,.2,1)!important;
+ }
+ .ref-card.is-open .chapter-body{opacity:1!important;pointer-events:auto!important;transform:none!important}
+ .ref-card.is-past .chapter-body,.ref-card.is-future .chapter-body{opacity:0!important;pointer-events:none!important}
+ .ref-card.is-open{filter:none!important;opacity:1!important}
+ .chapter-projects.is-open .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .chapter-skills.is-open .skillgrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .chapter-experience.is-open .timeline{grid-template-columns:1fr!important}
+ .gsap-pin-spacer{overflow:visible!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .ref-card{position:relative!important;transform:none!important;filter:none!important}
+ .ref-card .chapter-body{opacity:1!important;transform:none!important}
+}
