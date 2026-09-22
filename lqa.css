@@ -176,3 +176,25 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-card:not(.is-open) .chapter-head>i{transform:none!important}
  .ref-card.is-open .chapter-head>i{transform:rotate(45deg)!important}
 }
+
+/* stack5 — scroll-driven accordion + fuller readable panels */
+@media(min-width:701px){
+ .ref-card{scroll-margin-top:72px!important}
+ .ref-card.is-open{height:min(780px,calc(100svh - 72px))!important}
+ .ref-card.is-open .chapter-body{max-height:calc(100% - 168px)!important}
+ .chapter-skills.is-open .chapter-body{width:min(900px,66vw)!important}
+ .chapter-skills.is-open .skillgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:transparent}
+ .chapter-skills.is-open .skillgrid>div{padding:18px;border-radius:12px}
+ .chapter-skills.is-open .skillgrid b{font-size:12px;letter-spacing:.08em}
+ .chapter-skills.is-open .skillgrid p{font-size:13px;line-height:1.55;margin-top:8px}
+ .chapter-experience.is-open .chapter-body{width:min(980px,70vw)!important}
+ .chapter-experience.is-open .timeline{gap:10px}
+ .chapter-experience.is-open .timeline article{padding:18px;min-height:150px}
+ .chapter-experience.is-open .timeline h3{font-size:18px;margin:7px 0}
+ .chapter-experience.is-open .timeline p{font-size:12px;line-height:1.55}
+ .chapter-contact.is-open .chapter-body{width:min(760px,58vw)!important;padding:24px!important}
+ .chapter-contact.is-open .contact{display:block}
+ .chapter-contact.is-open .contact h2{font-size:clamp(34px,3vw,48px);margin:8px 0 14px}
+ .chapter-contact.is-open .contact p{font-size:14px;max-width:620px}
+ .ref-card.is-open .chapter-head>i{background:rgba(202,255,47,.10)}
+}
