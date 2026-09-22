@@ -6,75 +6,95 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
-let currentIndex=-1;
-
-function activateChapter(index){
-  index=Math.max(0,Math.min(chapters.length-1,index));
-  if(index===currentIndex)return;
-  currentIndex=index;
-  chapters.forEach((ch,i)=>{
-    ch.classList.toggle("is-open",i===index);
-    ch.classList.toggle("active",i===index);
-    ch.classList.toggle("is-past",i<index);
-    ch.classList.toggle("is-future",i>index);
-  });
-}
 
 if(innerWidth>700 && window.gsap && window.ScrollTrigger){
   gsap.registerPlugin(ScrollTrigger);
 
-  const lenis=window.Lenis ? new Lenis({duration:1.05,smoothWheel:true,wheelMultiplier:.82,touchMultiplier:1.1}) : null;
-  if(lenis){
-    lenis.on("scroll",ScrollTrigger.update);
-    gsap.ticker.add(t=>lenis.raf(t*1000));
-    gsap.ticker.lagSmoothing(0);
+  let stage=document.querySelector(".deck-stage");
+  if(!stage){
+    stage=document.createElement("section");
+    stage.className="deck-stage";
+    const first=chapters[0];
+    first.parentNode.insertBefore(stage,first);
+    const deck=document.createElement("div");
+    deck.className="deck-pin";
+    stage.appendChild(deck);
+    chapters.forEach(ch=>deck.appendChild(ch));
   }
 
-  chapters.forEach((ch,i)=>{
-    ScrollTrigger.create({
-      trigger:ch,
-      start:"top 72px",
-      end:()=>"+="+Math.max(innerHeight*.92,720),
-      pin:true,
+  const deck=stage.querySelector(".deck-pin");
+  const count=chapters.length;
+  const STEP=1/count;
+
+  chapters.forEach((card,i)=>{
+    gsap.set(card,{zIndex:20+i});
+    card.style.setProperty("--deck-i",i);
+  });
+
+  const tl=gsap.timeline({
+    scrollTrigger:{
+      trigger:stage,
+      start:"top top",
+      end:()=>"+="+(innerHeight*(count*1.18)),
+      pin:deck,
       pinSpacing:true,
+      scrub:.65,
       anticipatePin:1,
       invalidateOnRefresh:true,
-      onEnter:()=>activateChapter(i),
-      onEnterBack:()=>activateChapter(i)
-    });
-    if(i<chapters.length-1){
-      gsap.to(ch,{
-        scale:.982,
-        filter:"brightness(.58) saturate(.78)",
-        ease:"none",
-        scrollTrigger:{
-          trigger:chapters[i+1],
-          start:"top bottom",
-          end:"top 72px",
-          scrub:.7,
-          invalidateOnRefresh:true
-        }
-      });
+      snap:{
+        snapTo:1/(count-1),
+        duration:{min:.18,max:.42},
+        delay:.08,
+        ease:"power1.inOut"
+      }
     }
   });
 
+  chapters.forEach((card,i)=>{
+    if(i===0){
+      gsap.set(card,{yPercent:0,scale:1,opacity:1});
+    }else{
+      gsap.set(card,{yPercent:112,scale:1,opacity:1});
+      const at=(i-1);
+      tl.to(card,{yPercent:0,ease:"none",duration:1},at);
+      tl.to(chapters[i-1],{
+        y:-10-(i*5),scale:1-(i*.012),filter:"brightness(.56) saturate(.76)",
+        ease:"none",duration:1
+      },at);
+    }
+  });
+
+  function updateOpen(){
+    const p=tl.scrollTrigger.progress;
+    const idx=Math.min(count-1,Math.max(0,Math.round(p*(count-1))));
+    chapters.forEach((ch,i)=>{
+      ch.classList.toggle("is-open",i===idx);
+      ch.classList.toggle("active",i===idx);
+      ch.classList.toggle("is-past",i<idx);
+      ch.classList.toggle("is-future",i>idx);
+    });
+  }
+  tl.eventCallback("onUpdate",updateOpen);
+  updateOpen();
+
   chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{
-    activateChapter(i);
-    const y=ch.getBoundingClientRect().top+scrollY-72;
-    lenis ? lenis.scrollTo(y,{duration:1}) : scrollTo({top:y,behavior:"smooth"});
+    const st=tl.scrollTrigger;
+    const target=st.start+(st.end-st.start)*(i/(count-1));
+    scrollTo({top:target,behavior:"smooth"});
   }));
 
   document.querySelectorAll('nav a[href^="#"],.heroCta a[href^="#"]').forEach(a=>a.addEventListener("click",e=>{
     const t=document.querySelector(a.getAttribute("href")),i=chapters.indexOf(t);
     if(i>=0){
-      e.preventDefault();activateChapter(i);
-      const y=t.getBoundingClientRect().top+scrollY-72;
-      lenis ? lenis.scrollTo(y,{duration:1}) : scrollTo({top:y,behavior:"smooth"});
+      e.preventDefault();
+      const st=tl.scrollTrigger;
+      scrollTo({top:st.start+(st.end-st.start)*(i/(count-1)),behavior:"smooth"});
     }
   }));
+
   addEventListener("load",()=>ScrollTrigger.refresh());
 }else{
-  chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>ch.classList.toggle("is-open")));
+  chapters.forEach(ch=>ch.classList.add("is-open"));
 }
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{const t=document.querySelector(a.getAttribute("href"));if(t)t.scrollIntoView({behavior:"smooth",block:"start"})}));
 
