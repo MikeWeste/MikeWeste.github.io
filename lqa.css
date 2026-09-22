@@ -159,3 +159,20 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .ref-card.active .chapter-body{display:block!important}
  .chapter-projects{z-index:4}.chapter-skills{z-index:3}.chapter-experience{z-index:2}.chapter-contact{z-index:1}
 }
+
+/* stack4 hotfix — deterministic accordion; no scroll-state conflict */
+@media(min-width:701px){
+ .ref-hero{min-height:calc(100svh - 60px)!important}
+ .ref-card{position:relative!important;top:auto!important;height:118px!important;min-height:118px!important;margin:0 18px!important;border-radius:20px!important;overflow:hidden!important;transform:none!important;filter:none!important}
+ .ref-card+.ref-card{margin-top:6px!important}
+ .chapter-head{height:118px!important;min-height:118px!important;padding:0 24px!important;align-content:center!important;grid-template-columns:72px minmax(280px,1fr) 190px 54px!important;cursor:pointer}
+ .ref-card.is-open{height:min(760px,calc(100svh - 76px))!important;min-height:620px!important}
+ .ref-card.is-open .chapter-head{height:138px!important;min-height:138px!important;padding:28px 24px 0!important;align-content:start!important}
+ .ref-card .chapter-body{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}
+ .ref-card.is-open .chapter-body{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;left:36px!important;bottom:28px!important;width:min(980px,70vw)!important;max-height:calc(100% - 175px)!important;overflow:auto!important;transform:none!important}
+ .ref-card.is-open:after{background:linear-gradient(90deg,rgba(2,3,4,.97) 0%,rgba(2,3,4,.80) 40%,rgba(2,3,4,.16) 68%,rgba(2,3,4,.02) 100%)!important}
+ .ref-card:not(.is-open) .chapter-head h2{font-size:clamp(38px,4vw,58px)!important}
+ .ref-card:not(.is-open) .chapter-no{font-size:34px!important}
+ .ref-card:not(.is-open) .chapter-head>i{transform:none!important}
+ .ref-card.is-open .chapter-head>i{transform:rotate(45deg)!important}
+}
