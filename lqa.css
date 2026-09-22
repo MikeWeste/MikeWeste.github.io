@@ -13,3 +13,22 @@ footer{display:flex;justify-content:space-between;padding:22px 42px 30px;border-
 .hero-copy{padding-top:38px}.hero-line{font-size:20px;font-weight:500;color:#f2f2f2;margin-top:16px}.hero h1{max-width:650px}
 .ref-card{background-position:center center}.ref-card:after{background:linear-gradient(90deg,rgba(3,4,5,.98) 0%,rgba(3,4,5,.94) 26%,rgba(3,4,5,.52) 43%,rgba(3,4,5,.05) 64%,rgba(3,4,5,0) 100%)}
 @media(min-width:701px){.chapter-head{grid-template-columns:72px minmax(280px,1fr) 180px 54px}.chapter-head h2{text-shadow:0 3px 0 rgba(0,0,0,.4)}.ref-card.active{filter:none!important}.ref-card:not(.active) .chapter-head{opacity:.96}}
+
+/* ref24 — final layout rhythm, stacked reveal and reference footer */
+.top{height:60px}.brand{font-size:30px}.resume{border-color:var(--lime);padding-inline:20px}
+.ref-hero{min-height:calc(100svh - 60px);padding-top:38px}
+.hero-copy{padding-top:20px}.hero h1{font-size:clamp(74px,7.4vw,120px)}.hero-line{max-width:520px}
+footer{min-height:76px;align-items:center;padding:16px 42px}footer>div{display:flex;align-items:center;gap:18px}footer b{font-size:30px;color:#fff}footer .dot{color:var(--lime)}footer small{font-size:9px;line-height:1.5;color:#c4c8cb}.footlinks{gap:20px}
+@media(min-width:701px){
+ .reference-layout{overflow:visible}
+ .ref-card{height:calc(100svh - 60px);top:60px;min-height:610px}
+ .ref-card:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;z-index:5;background:linear-gradient(90deg,var(--pink),transparent 70%)}
+ .chapter-skills:before{background:linear-gradient(90deg,var(--lime),transparent 70%)}.chapter-experience:before{background:linear-gradient(90deg,var(--orange),transparent 70%)}.chapter-contact:before{background:linear-gradient(90deg,var(--pink),transparent 70%)}
+ .chapter-head{padding:34px 42px;grid-template-columns:74px minmax(300px,1fr) 190px 56px}
+ .chapter-no{font-size:54px}.chapter-head h2{font-size:clamp(60px,5.3vw,84px)}
+ .chapter-head>i{width:56px;height:56px}
+ .chapter-body{left:116px;bottom:46px}
+ .ref-card.active .chapter-head{transform:translateY(-7vh);transition:transform .35s ease}
+ .ref-card.active .chapter-body{max-height:230px}
+}
+@media(max-width:700px){footer{padding:18px 16px;gap:12px;flex-wrap:wrap}.footlinks{flex-wrap:wrap}.ref-hero{min-height:760px}}
