@@ -6,45 +6,50 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
-let clickLock=0, raf=0, currentIndex=-1;
-function openChapter(ch,scroll=false){
-  if(!ch)return;
-  chapters.forEach(x=>x.classList.toggle("is-open",x===ch));
-  chapters.forEach(x=>x.classList.toggle("active",x===ch));
-  currentIndex=chapters.indexOf(ch);
+let clickLock=0,raf=0,currentIndex=-1;
+function setChapter(index,scroll=false){
+  if(index<0||index>=chapters.length)return;
+  chapters.forEach((x,i)=>{
+    x.classList.toggle("is-open",i===index);
+    x.classList.toggle("active",i===index);
+    x.classList.toggle("is-past",i<index);
+    x.classList.toggle("is-future",i>index);
+  });
+  currentIndex=index;
+  document.documentElement.style.setProperty("--stack-index",index);
   if(scroll&&innerWidth>700){
-    clickLock=Date.now()+900;
-    ch.scrollIntoView({behavior:"smooth",block:"center"});
+    clickLock=Date.now()+1000;
+    const top=chapters[index].offsetTop-76;
+    window.scrollTo({top,behavior:"smooth"});
   }
 }
-chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>openChapter(ch,true)));
+function clearChapters(){
+  chapters.forEach(x=>x.classList.remove("active","is-open","is-past","is-future"));
+  currentIndex=-1;
+}
+chapters.forEach((ch,i)=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>setChapter(i,true)));
 
 function syncChapterToScroll(){
   if(innerWidth<=700||Date.now()<clickLock)return;
   cancelAnimationFrame(raf);
   raf=requestAnimationFrame(()=>{
-    const vh=innerHeight;
-    let candidate=-1;
+    const trigger=innerHeight*.34;
+    let next=-1;
     chapters.forEach((ch,i)=>{
       const r=ch.getBoundingClientRect();
-      /* A panel changes only after its header reaches the upper third.
-         This creates a much longer reading dwell than the old center-probe. */
-      if(r.top<=vh*.30) candidate=i;
+      if(r.top<=trigger)next=i;
     });
-    if(candidate>=0&&candidate!==currentIndex) openChapter(chapters[candidate],false);
-    if(candidate<0&&currentIndex!==-1){
-      chapters.forEach(x=>x.classList.remove("active","is-open"));
-      currentIndex=-1;
-    }
+    if(next<0){if(currentIndex!==-1)clearChapters();return}
+    if(next!==currentIndex)setChapter(next,false);
   });
 }
 addEventListener("scroll",syncChapterToScroll,{passive:true});
 addEventListener("resize",syncChapterToScroll,{passive:true});
 if(location.hash){
   const target=document.querySelector(location.hash);
-  if(target?.classList.contains("ref-card"))openChapter(target,false);
-}
-syncChapterToScroll();
+  const i=chapters.indexOf(target);
+  if(i>=0)setChapter(i,false);
+}else syncChapterToScroll();
 document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener("click",()=>{const t=document.querySelector(a.getAttribute("href"));if(t)t.scrollIntoView({behavior:"smooth",block:"start"})}));
 
 if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
