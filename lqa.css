@@ -128,3 +128,22 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .chapter-projects{z-index:9}.chapter-skills{z-index:8}.chapter-experience{z-index:7}.chapter-contact{z-index:6}
  .chapter-projects{background-position:center 46%!important}.chapter-skills{background-position:center 48%!important}.chapter-experience{background-position:center 48%!important}.chapter-contact{background-position:center 52%!important}
 }
+
+/* stack2 — readable expanded panel content */
+@media(min-width:701px){
+ .ref-card.active:after{background:linear-gradient(90deg,rgba(2,3,4,.96) 0%,rgba(2,3,4,.78) 38%,rgba(2,3,4,.16) 67%,rgba(2,3,4,.02) 100%)!important}
+ .ref-card.active .chapter-head{height:142px;min-height:142px;padding-top:34px}
+ .ref-card.active .chapter-body{left:38px;right:auto;bottom:30px;width:min(940px,68vw);max-height:calc(100svh - 190px)!important;padding:18px 18px 16px;background:rgba(3,4,6,.88);border:1px solid rgba(255,255,255,.18);box-shadow:0 22px 70px rgba(0,0,0,.72);backdrop-filter:blur(18px)}
+ .chapter-projects.active .chapter-body{width:min(980px,70vw)}
+ .chapter-projects.active .grid{grid-template-columns:repeat(3,minmax(190px,1fr));gap:10px}
+ .chapter-projects.active .project{min-height:126px;padding:15px 15px 34px;background:rgba(4,5,7,.92);border-color:rgba(255,255,255,.17)}
+ .chapter-projects.active .project h3{font-size:17px;line-height:1.18}
+ .chapter-projects.active .project p{display:block;font-size:11px;line-height:1.4;color:#c8cdd2;margin:7px 0 0}
+ .chapter-projects.active .project .stack{font-size:9px;bottom:11px}
+ .ref-card.active .filters button{font-size:12px;padding:7px 12px}
+ .ref-card.active .skillgrid>div,.ref-card.active .timeline article{background:rgba(4,5,7,.92);border:1px solid rgba(255,255,255,.14)}
+ .ref-card.active .skillgrid p,.ref-card.active .timeline p{font-size:12px;line-height:1.45;color:#d0d4d8}
+ .ref-card.active .skillgrid b{font-size:11px}
+ .ref-card.active .timeline h3{font-size:16px}
+ .chapter-contact.active .chapter-body{width:min(720px,58vw)}
+}
