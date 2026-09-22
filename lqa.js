@@ -139,3 +139,12 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
    ScrollTrigger.refresh();
  });
 }
+;(()=>{const cards=[...document.querySelectorAll(".project")];if(!cards.length)return;
+cards.forEach((card,i)=>{
+ card.addEventListener("mouseenter",()=>document.body.dataset.case=String(i+1));
+ card.addEventListener("mouseleave",()=>delete document.body.dataset.case);
+});
+if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches){
+ gsap.from(cards,{y:34,autoAlpha:0,stagger:.07,duration:.5,ease:"power2.out",scrollTrigger:{trigger:"#projects .grid",start:"top 86%",once:true}});
+}
+})();
