@@ -33,7 +33,7 @@ function syncChapterToScroll(){
   if(innerWidth<=700||Date.now()<clickLock)return;
   cancelAnimationFrame(raf);
   raf=requestAnimationFrame(()=>{
-    const trigger=innerHeight*.22;
+    const trigger=innerHeight*.16;
     let next=-1;
     chapters.forEach((ch,i)=>{
       const r=ch.getBoundingClientRect();
