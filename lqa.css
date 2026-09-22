@@ -77,3 +77,13 @@ body{background-image:radial-gradient(circle at 20% 10%,rgba(255,30,130,.035),tr
 }
 .chapter-head h2{position:relative}.chapter-head h2:after{content:"";display:block;width:58px;height:4px;margin-top:16px;background:currentColor;opacity:.8}
 .chapter-projects .chapter-head h2:after,.chapter-contact .chapter-head h2:after{background:var(--pink)}.chapter-skills .chapter-head h2:after{background:var(--lime)}.chapter-experience .chapter-head h2:after{background:var(--orange)}
+
+/* ref28 — cleanup and final-reference styling */
+.hero-art{display:none!important}.ref-hero{isolation:isolate}.ref-hero:before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(circle at 74% 54%,rgba(202,255,47,.08),transparent 23%),radial-gradient(circle at 67% 25%,rgba(255,92,25,.12),transparent 19%);mix-blend-mode:screen}.hero-copy,.scroll-note{z-index:3}
+.eyebrow{letter-spacing:.18em}.hero-tags{gap:7px}.hero-tags span{border-color:rgba(255,255,255,.22);background:rgba(5,6,8,.42)}
+.chapter-head{z-index:4}.chapter-head h2{letter-spacing:-.055em}.chapter-no{font-weight:900;letter-spacing:-.08em}.chapter-head>p{font-weight:800;letter-spacing:.08em}
+.chapter-projects .chapter-head h2,.chapter-contact .chapter-head h2{color:#f7f3ef}.chapter-skills .chapter-no{color:var(--lime)}.chapter-experience .chapter-no{color:var(--orange)}.chapter-contact .chapter-no{color:var(--pink)}
+.chapter-body{background:linear-gradient(90deg,rgba(4,5,6,.86),rgba(4,5,6,.58));border:1px solid rgba(255,255,255,.09);box-shadow:0 18px 50px rgba(0,0,0,.34);padding:16px;border-radius:14px;backdrop-filter:blur(12px)}
+.chapter-body .project,.skillgrid>div,.timeline article{background:rgba(6,8,9,.68)}
+.scroll-note{position:absolute;right:24px;bottom:24px;font-size:9px;line-height:1.35;letter-spacing:.14em;color:#d8dbd6;text-align:right}.scroll-note:after{content:"↓";display:block;color:var(--lime);font-size:24px;margin-top:4px}
+@media(min-width:701px){.ref-card{overflow:hidden}.ref-card.active{box-shadow:0 -18px 60px rgba(0,0,0,.72)}.chapter-body{bottom:38px}.chapter-head h2:after{margin-top:13px}.chapter-projects .grid{gap:8px}.project p{line-height:1.35}}
