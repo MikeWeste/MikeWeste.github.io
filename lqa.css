@@ -198,3 +198,43 @@ html{scroll-padding-top:60px}.hero-line{font-size:19px;line-height:1.45;max-widt
  .chapter-contact.is-open .contact p{font-size:14px;max-width:620px}
  .ref-card.is-open .chapter-head>i{background:rgba(202,255,47,.10)}
 }
+
+/* stack6 — slower reading rhythm + high-legibility glass content */
+@media(min-width:701px){
+ .ref-card{margin-top:18px!important;transition:height .72s cubic-bezier(.22,.72,.18,1),box-shadow .45s ease!important}
+ .ref-card.is-open{height:min(820px,calc(100svh - 76px))!important;min-height:680px!important;margin-top:26px!important;margin-bottom:26px!important}
+ .ref-card.is-open .chapter-body{
+   left:32px!important;bottom:30px!important;width:min(1080px,74vw)!important;
+   max-height:calc(100% - 170px)!important;padding:24px!important;
+   background:rgba(5,7,10,.76)!important;
+   border:1px solid rgba(255,255,255,.22)!important;
+   border-radius:18px!important;
+   box-shadow:0 24px 80px rgba(0,0,0,.62)!important;
+   backdrop-filter:blur(22px) saturate(1.15)!important;
+ }
+ .ref-card.is-open .chapter-body:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(120deg,rgba(255,255,255,.055),transparent 42%)}
+ .chapter-projects.is-open .chapter-body{width:min(1120px,77vw)!important}
+ .chapter-projects.is-open .grid{grid-template-columns:repeat(2,minmax(250px,1fr))!important;gap:12px!important}
+ .chapter-projects.is-open .project{min-height:154px!important;padding:18px 18px 38px!important;background:rgba(4,7,10,.78)!important;border-color:rgba(255,255,255,.18)!important}
+ .chapter-projects.is-open .project h3{font-size:19px!important}
+ .chapter-projects.is-open .project p{display:block!important;font-size:13px!important;line-height:1.55!important;color:#e0e3e7!important}
+ .chapter-projects.is-open .project .stack{font-size:10px!important;color:#b9c0c8!important}
+ .chapter-skills.is-open .chapter-body,.chapter-experience.is-open .chapter-body{width:min(1040px,72vw)!important}
+ .chapter-skills.is-open .skillgrid>div,.chapter-experience.is-open .timeline article{
+   background:rgba(4,7,10,.72)!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:14px!important
+ }
+ .chapter-skills.is-open .skillgrid>div{padding:22px!important}
+ .chapter-skills.is-open .skillgrid b{font-size:13px!important}
+ .chapter-skills.is-open .skillgrid p{font-size:14px!important;line-height:1.65!important;color:#e1e5e8!important}
+ .chapter-experience.is-open .timeline{grid-template-columns:1fr!important;gap:10px!important}
+ .chapter-experience.is-open .timeline article{min-height:auto!important;padding:18px 20px!important}
+ .chapter-experience.is-open .timeline article>span{font-size:11px!important;color:#b8bec5!important}
+ .chapter-experience.is-open .timeline h3{font-size:19px!important}
+ .chapter-experience.is-open .timeline p{font-size:14px!important;line-height:1.6!important;color:#e0e4e7!important}
+ .chapter-contact.is-open .chapter-body{width:min(820px,62vw)!important;background:rgba(5,7,10,.72)!important}
+ .chapter-contact.is-open .contact p{font-size:15px!important;line-height:1.6!important;color:#e2e5e8!important}
+}
+@media(max-width:700px){
+ .chapter-body{background:rgba(5,7,10,.82)!important;backdrop-filter:blur(16px)!important}
+ .project p,.skillgrid p,.timeline p{color:#e0e4e7!important;line-height:1.55!important}
+}
