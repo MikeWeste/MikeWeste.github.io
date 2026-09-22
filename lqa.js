@@ -6,6 +6,7 @@ document.getElementById("year").textContent=new Date().getFullYear();
 document.querySelectorAll("[data-filter]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();document.querySelectorAll("[data-filter]").forEach(x=>x.classList.remove("active"));b.classList.add("active");const f=b.dataset.filter;document.querySelectorAll("[data-cat]").forEach(c=>c.classList.toggle("hidden",f!=="all"&&c.dataset.cat!==f))}));
 
 const chapters=[...document.querySelectorAll(".ref-card")];
+chapters.forEach(ch=>ch.querySelector(".chapter-head")?.addEventListener("click",()=>{if(innerWidth<=700)ch.classList.toggle("active")}));
 function updateActive(){
   const marker=innerHeight*.58;
   let active=chapters[0];
@@ -20,6 +21,7 @@ if(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: redu
  gsap.registerPlugin(ScrollTrigger);
  gsap.from(".hero-copy>*",{y:20,autoAlpha:0,stagger:.065,duration:.5,ease:"power2.out"});
  chapters.forEach((ch,i)=>{
+  gsap.from(ch.querySelectorAll(".chapter-no,.chapter-head h2,.chapter-head p,.chapter-head>i"),{y:28,autoAlpha:0,stagger:.035,duration:.35,ease:"power2.out",scrollTrigger:{trigger:ch,start:"top 78%",toggleActions:"play none none reverse"}});
   if(i<chapters.length-1)gsap.to(ch,{scale:.986,filter:"brightness(.72) saturate(.9)",ease:"none",scrollTrigger:{trigger:chapters[i+1],start:"top 96%",end:"top 18%",scrub:.18}});
  });
 }
