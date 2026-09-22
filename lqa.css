@@ -41,3 +41,20 @@ body{background-image:radial-gradient(circle at 20% 10%,rgba(255,30,130,.035),tr
 .project{transition:transform .18s ease,border-color .18s ease}.project:hover{transform:translateY(-3px);border-color:rgba(202,255,47,.55)}
 @media(min-width:701px){.ref-card{background-attachment:scroll}.chapter-projects{background-position:54% center}.chapter-skills{background-position:56% center}.chapter-experience{background-position:58% center}.chapter-contact{background-position:58% center}.chapter-head p{align-self:center}.ref-card.active .chapter-body{animation:panelIn .28s ease both}}
 @keyframes panelIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ref26 — reference geometry: hero scale + compact preview cards before sticky expansion */
+@media(min-width:1100px){
+ .ref-hero{min-height:calc(100svh - 60px);padding-left:48px;padding-right:48px;background-position:center center}
+ .hero-copy{width:44vw;max-width:650px;padding-top:44px}
+ .hero h1{font-size:clamp(82px,7.2vw,118px);line-height:.79;margin-top:10px}
+ .hero-line{font-size:19px;margin:16px 0 18px}
+ .heroCta{margin-top:28px}
+ .ref-card{height:calc(100svh - 60px);min-height:640px}
+ .chapter-head{padding-left:38px;padding-right:38px}
+ .chapter-no{font-size:50px}.chapter-head h2{font-size:clamp(58px,5vw,80px)}
+ .chapter-projects{background-position:61% center}.chapter-skills{background-position:61% center}.chapter-experience{background-position:62% center}.chapter-contact{background-position:62% center}
+}
+@media(min-width:1500px){
+ .hero-copy{padding-top:55px}.hero h1{font-size:118px}
+ .chapter-head{grid-template-columns:78px minmax(330px,1fr) 210px 60px}
+}
