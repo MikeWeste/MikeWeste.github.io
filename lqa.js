@@ -130,6 +130,9 @@ function build() {
         gsap.from(items, {y: 26, autoAlpha: 0, duration: .6, stagger: .05, ease: 'power2.out', clearProps: 'opacity,visibility,transform',
           scrollTrigger: {trigger: card, start: 'top 88%', once: true}});
         ScrollTrigger.create({trigger: card, start: 'top 50%', end: 'bottom 50%', onToggle: s => s.isActive && setActiveNav(card.id)});
+        gsap.fromTo(card, {scale: .92, clipPath: 'inset(0% 4% 0% 4% round 28px)'}, {scale: 1, clipPath: 'inset(0% 0% 0% 0% round 22px)', ease: 'none', scrollTrigger: {trigger: card, start: 'top bottom', end: 'top 35%', scrub: .4}});
+        const next = card.nextElementSibling && card.nextElementSibling.classList.contains('ref-card') ? card.nextElementSibling : null;
+        if (next && card._dim) gsap.fromTo(card._dim, {opacity: 0}, {opacity: .55, ease: 'none', scrollTrigger: {trigger: next, start: 'top 90%', end: 'top 20%', scrub: .4}});
       });
     }
     if (!reduced.matches && $('.ref-hero')) {

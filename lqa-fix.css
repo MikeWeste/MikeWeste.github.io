@@ -225,3 +225,5 @@ nav a.active{color:#fff}
 
 .fx-lamp-beacon{-webkit-mask-image:radial-gradient(closest-side at 50% 58%,#000 22%,rgba(0,0,0,.75) 40%,rgba(0,0,0,.3) 65%,transparent 100%)!important;mask-image:radial-gradient(closest-side at 50% 58%,#000 22%,rgba(0,0,0,.75) 40%,rgba(0,0,0,.3) 65%,transparent 100%)!important;filter:brightness(.55) saturate(.95)}
 .fx-lamp-beacon:after{content:"";position:absolute;inset:20% 22% 18%;border-radius:50%;background:radial-gradient(closest-side at 50% 62%,rgba(255,110,40,.35),rgba(255,80,20,.12) 55%,transparent);mix-blend-mode:screen;pointer-events:none}
+
+@media(max-width:700px){.ref-card{transform-origin:50% 0;will-change:transform,clip-path}.ref-card .chapter-head{position:sticky;top:var(--nav);z-index:5;background:linear-gradient(180deg,rgba(3,4,5,.92) 70%,transparent);margin:0 -14px;padding-inline:14px!important}}
