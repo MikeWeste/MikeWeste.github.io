@@ -226,4 +226,16 @@ nav a.active{color:#fff}
 .fx-lamp-beacon{-webkit-mask-image:radial-gradient(closest-side at 50% 58%,#000 22%,rgba(0,0,0,.75) 40%,rgba(0,0,0,.3) 65%,transparent 100%)!important;mask-image:radial-gradient(closest-side at 50% 58%,#000 22%,rgba(0,0,0,.75) 40%,rgba(0,0,0,.3) 65%,transparent 100%)!important;filter:brightness(.55) saturate(.95)}
 .fx-lamp-beacon:after{content:"";position:absolute;inset:20% 22% 18%;border-radius:50%;background:radial-gradient(closest-side at 50% 62%,rgba(255,110,40,.35),rgba(255,80,20,.12) 55%,transparent);mix-blend-mode:screen;pointer-events:none}
 
-@media(max-width:700px){.ref-card{transform-origin:50% 0;will-change:transform,clip-path}.ref-card .chapter-head{position:sticky;top:var(--nav);z-index:5;background:linear-gradient(180deg,rgba(3,4,5,.92) 70%,transparent);margin:0 -14px;padding-inline:14px!important}}
+@media(max-width:700px){.ref-card{transform-origin:50% 0;will-change:transform}.ref-card .chapter-head{position:sticky;top:var(--nav);z-index:5;background:linear-gradient(180deg,rgba(3,4,5,.92) 70%,transparent);margin:0 -14px;padding-inline:14px!important}}
+
+/* experience projects list */
+.ref-card .exp-projects{justify-content:flex-start!important;gap:0}
+.ref-card .exp-projects h3{margin:8px 0 14px}
+.ref-card .exp-projects ul{display:grid;gap:0;margin:0 0 16px;padding:0;list-style:none}
+.ref-card .exp-projects li{display:grid;gap:3px;padding:10px 0;border-top:1px solid rgba(255,255,255,.1)}
+.ref-card .exp-projects li:first-child{border-top:0;padding-top:0}
+.ref-card .exp-projects li b{font-size:15px;color:#fff}
+.ref-card .exp-projects li span{font-size:13px;line-height:1.45;color:#b9bec4}
+.ref-card .exp-projects .experience-focus{margin-top:auto}
+@media(min-width:701px) and (max-height:820px){.ref-card .exp-projects li{padding:7px 0}.ref-card .exp-projects li span{font-size:12px}.ref-card .exp-projects h3{margin:4px 0 8px;font-size:22px!important}}
+.lights-off .ref-card .exp-projects li span{color:#8f959c}
