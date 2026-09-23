@@ -1,0 +1,47 @@
+/* lqa-fix.css — подключать ПОСЛЕ lqa.css */
+html,body{overflow-x:clip}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+
+/* Прогресс скролла */
+.fx-progress{position:fixed;left:0;top:0;z-index:200;width:100%;height:2px;background:linear-gradient(90deg,var(--pink),var(--lime));transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
+
+/* Активный пункт меню */
+nav a{position:relative;transition:color .2s}
+nav a:after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--lime);transform:scaleX(0);transform-origin:right;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+nav a:hover:after,nav a.active:after{transform:scaleX(1);transform-origin:left}
+nav a.active{color:#fff}
+.top{transition:background-color .25s,border-color .25s}
+.top.scrolled{background:rgba(3,4,5,.92)}
+
+/* Дека: контент помещается целиком, внутреннего скролла нет — колесо не застревает */
+.is-deck .deck-pin .chapter-body{overflow:hidden}
+.deck-pin .ref-card{transform-origin:center top;backface-visibility:hidden}
+.deck-pin .ref-card:not(.is-open){pointer-events:none}
+
+/* Ховеры */
+.fx-card{transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .25s,background .25s!important;will-change:transform}
+.fx-card:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(202,255,47,.09),transparent 60%)}
+.fx-card:hover:before{opacity:1}
+.project>i{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.project:hover>i{transform:translate(3px,-3px)}
+.fx-magnet{transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s;will-change:transform}
+.primary:hover{background:rgba(202,255,47,.08)}
+.secondary:hover{border-color:#6b737c}
+.filters button{transition:border-color .2s,color .2s,background .2s}
+.filters button:hover{border-color:#6b737c;color:#fff}
+.langs button{transition:background .2s,color .2s}
+
+/* Мобильный: меню было скрыто полностью — возвращаем второй строкой */
+@media(max-width:700px){
+  :root{--nav:98px}
+  .top{height:auto;min-height:58px;flex-wrap:wrap;row-gap:0;padding-top:8px}
+  .top nav{display:flex;order:3;width:100%;margin:0 -14px;padding:10px 14px 12px;gap:22px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .top nav::-webkit-scrollbar{display:none}
+  .ref-hero{min-height:0}
+  .hero-tags{max-width:100%}
+  .heroCta{gap:10px}
+  .heroCta a{flex:1 1 auto}
+  .projects-body .project:active,.skill-card:active,.timeline article:active{transform:scale(.985)}
+}
+@media(prefers-reduced-motion:reduce){.fx-progress{display:none}}
