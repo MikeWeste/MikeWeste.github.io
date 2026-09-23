@@ -1,123 +1,227 @@
-/* lqa-fix.css — подключать ПОСЛЕ lqa.css */
+/* lqa-fix.css — поверх lqa.css. Сборка: lqa.css + lqa-fix.css → lqa.min.css */
+
+/* ===== Base ===== */
 html,body{overflow-x:clip}
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
-
-/* Прогресс скролла */
 .fx-progress{position:fixed;left:0;top:0;z-index:200;width:100%;height:2px;background:linear-gradient(90deg,var(--pink),var(--lime));transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
+.js-lazybg .ref-card:not(.bg-in){background-image:none}
+footer a:hover{color:#fff}
 
-/* Активный пункт меню */
+/* ===== Header / nav ===== */
+.top{transition:background-color .25s,border-color .25s}
+.top.scrolled{background:rgba(3,4,5,.92)}
 nav a{position:relative;transition:color .2s}
 nav a:after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--lime);transform:scaleX(0);transform-origin:right;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 nav a:hover:after,nav a.active:after{transform:scaleX(1);transform-origin:left}
 nav a.active{color:#fff}
-.top{transition:background-color .25s,border-color .25s}
-.top.scrolled{background:rgba(3,4,5,.92)}
+.langs button{transition:background .2s,color .2s}
 
-/* Дека: контент помещается целиком, внутреннего скролла нет — колесо не застревает */
-.is-deck .deck-pin .chapter-body{overflow:hidden}
-.deck-pin .ref-card{transform-origin:center top;backface-visibility:hidden}
-.deck-pin .ref-card:not(.is-open){pointer-events:none}
-
-/* Ховеры */
+/* ===== Hover states ===== */
 .fx-card{transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .25s,background .25s!important;will-change:transform}
 .fx-card:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .3s;background:radial-gradient(320px circle at var(--mx,50%) var(--my,50%),rgba(202,255,47,.09),transparent 60%)}
 .fx-card:hover:before{opacity:1}
-.project>i{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
-.project:hover>i{transform:translate(3px,-3px)}
 .fx-magnet{transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s;will-change:transform}
 .primary:hover{background:rgba(202,255,47,.08)}
 .secondary:hover{border-color:#6b737c}
-.filters button{transition:border-color .2s,color .2s,background .2s}
-.filters button:hover{border-color:#6b737c;color:#fff}
-.langs button{transition:background .2s,color .2s}
 
-/* Мобильный: меню было скрыто полностью — возвращаем второй строкой */
-@media(max-width:700px){
-  :root{--nav:98px}
-  .top{height:auto;min-height:58px;flex-wrap:wrap;row-gap:0;padding-top:8px}
-  .top nav{display:flex;order:3;width:100%;margin:0 -14px;padding:10px 14px 12px;gap:22px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .top nav::-webkit-scrollbar{display:none}
-  .ref-hero{min-height:0}
-  .hero-tags{max-width:100%}
-  .heroCta{gap:10px}
-  .heroCta a{flex:1 1 auto}
-  .projects-body .project:active,.skill-card:active,.timeline article:active{transform:scale(.985)}
-}
-@media(prefers-reduced-motion:reduce){.fx-progress{display:none}}
+/* ===== Hero ===== */
+.ref-hero{background-image:url('assets/frog-eyes-open.webp')}
+.ref-hero .hero-copy{position:relative;z-index:3;pointer-events:none}
+.ref-hero .hero-copy a,.ref-hero .hero-copy button,.ref-hero .hero-tags{pointer-events:auto}
+.ref-hero .scroll-note{z-index:3}
 
-/* layout2 — наполнение блоков */
-/* Фон: иллюстрации снова видны, подложка только у карточек */
-.ref-card .chapter-body,.is-deck .deck-pin .chapter-body{background:transparent!important;border-color:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0 0 4px!important}
+/* ===== Chapter cards (shared) ===== */
+.ref-card{padding:0 28px 22px}
 .ref-card:before{background:linear-gradient(90deg,rgba(3,4,5,.9),rgba(3,4,5,.6) 40%,rgba(3,4,5,.25) 75%,rgba(3,4,5,.1))!important}
-.ref-card .projects-body .project,.ref-card .skillgrid .skill-card,.ref-card .timeline article,.ref-card .experience-side,.ref-card .contact-main,.ref-card .contact-panel{background:rgba(5,7,10,.74)!important;backdrop-filter:blur(10px) saturate(1.1)!important;-webkit-backdrop-filter:blur(10px) saturate(1.1)!important;border-color:rgba(255,255,255,.14)!important}
+.ref-card .chapter-body,.is-deck .deck-pin .chapter-body{background:transparent!important;border-color:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0 0 4px!important}
+.ref-card .projects-body .project,.ref-card .skillgrid .skill-card,.ref-card .timeline article,.ref-card .experience-side,.ref-card .contact-main,.ref-card .contact-panel{background:rgba(5,7,10,.74)!important;backdrop-filter:blur(10px) saturate(1.1)!important;-webkit-backdrop-filter:blur(10px) saturate(1.1)!important;border-color:rgba(255,255,255,.14)!important;transition:border-color .6s ease,box-shadow .6s ease,background-color .6s ease,transform .35s cubic-bezier(.2,.8,.2,1)}
 .ref-card .projects-body .project:hover,.ref-card .skillgrid .skill-card:hover{background:rgba(8,11,14,.86)!important;border-color:rgba(202,255,47,.45)!important}
-
-/* Иконки-квадраты убраны */
-.ref-card .project-icon,.ref-card .skill-icon,.ref-card .exp-icon{display:none!important}
+.ref-card{transition:border-color .6s ease,box-shadow .6s ease}
 .ref-card .timeline:before{display:none!important}
-
-/* Теги: крупнее, максимум 3 */
-.ref-card .project-meta span,.ref-card .skill-pills span,.ref-card .exp-pills span{font-size:10px!important;padding:5px 8px!important;letter-spacing:.04em}
+.ref-card .project-meta span,.ref-card .skill-pills span,.ref-card .exp-pills span{font-size:12px!important;padding:6px 11px!important;letter-spacing:.04em;transition:transform .2s}
 .ref-card .project-meta span:nth-child(n+4),.ref-card .skill-pills span:nth-child(n+4),.ref-card .exp-pills span:nth-child(n+4){display:none}
+@media(max-width:1000px){.chapter-head p{display:none}.chapter-head{grid-template-columns:auto minmax(0,1fr) 40px!important}}
 
-/* Projects: главная карточка на 2 колонки + 4 */
-.ref-card .projects-body .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important}
-.ref-card .projects-body .project{min-height:0!important;padding:22px 22px 18px!important;gap:0}
-.ref-card .projects-body .project.featured{grid-column:span 2}
-.ref-card .projects-body .project-index{position:static;order:-1;margin-bottom:14px;font-size:11px;color:rgba(255,255,255,.4)}
-.ref-card .projects-body .tag{font-size:10px!important;letter-spacing:.1em}
-.ref-card .projects-body .project h3{font-size:20px!important;line-height:1.15;margin:8px 0 8px!important;letter-spacing:-.02em}
-.ref-card .projects-body .project.featured h3{font-size:clamp(24px,2.2vw,32px)!important}
-.ref-card .projects-body .project p{font-size:13px!important;line-height:1.5!important;margin:0 0 16px!important;color:#cfd4d8!important;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.ref-card .projects-body .project.featured p{font-size:15px!important;max-width:52ch;-webkit-line-clamp:4}
-.ref-card .projects-body .project>i{top:20px;right:20px;font-size:18px}
-
-/* Skills */
-.ref-card .skillgrid .skill-card{min-height:0!important;padding:22px 24px 20px!important}
-.ref-card .skillgrid .skill-card>b{font-size:18px!important;letter-spacing:.02em;margin:0 0 10px!important}
-.ref-card .skillgrid .skill-card>p{font-size:14px!important;color:#cfd4d8!important}
-.ref-card .skill-index{font-size:11px}
-
-/* Experience: шкала времени — дата слева, описание справа */
-.ref-card .timeline{gap:10px!important}
-.ref-card .experience-layout .timeline article,.ref-card .timeline article{display:grid;grid-template-columns:150px minmax(0,1fr);column-gap:24px;align-items:start;padding:20px 24px!important;min-height:0!important}
-.ref-card .timeline .exp-date{grid-column:1;grid-row:1/span 3;font-size:12px!important;line-height:1.4!important;color:#ff9567!important;padding-top:4px}
-.ref-card .timeline article h3,.ref-card .timeline article p,.ref-card .timeline .exp-pills{grid-column:2}
-.ref-card .timeline article h3{margin:0 0 6px!important;font-size:19px!important}
-.ref-card .timeline article p{margin:0 0 12px!important;font-size:13px!important;line-height:1.55!important;color:#cfd4d8!important}
-.ref-card .timeline .exp-index{display:none}
-
-@media(min-width:701px) and (max-height:800px){.ref-card .projects-body .project{padding:16px 18px 14px!important}.ref-card .projects-body .project p{-webkit-line-clamp:2}.ref-card .projects-body .project.featured p{-webkit-line-clamp:3}.ref-card .skillgrid .skill-card{padding:16px 18px!important}.ref-card .timeline article{padding:14px 18px!important}}
-@media(max-width:900px){.ref-card .projects-body .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ref-card .projects-body .project.featured{grid-column:1/-1}}
-@media(max-width:700px){.ref-card .projects-body .grid{grid-template-columns:1fr!important}.ref-card .timeline article,.ref-card .experience-layout .timeline article{grid-template-columns:1fr;padding:18px 16px!important}.ref-card .timeline .exp-date{grid-row:auto;margin-bottom:6px}.ref-card .timeline article h3,.ref-card .timeline article p,.ref-card .timeline .exp-pills{grid-column:1}}
-
-/* final — полировка */
-.ref-card .timeline article{padding-bottom:16px!important}
-.ref-card .timeline article p{margin-bottom:10px!important}
-.ref-card .exp-pills{margin-top:0!important}
-.ref-card .skillgrid{grid-auto-rows:1fr}
-.ref-card .skillgrid .skill-card{display:flex;flex-direction:column}
-.ref-card .skill-pills{margin-top:auto!important;padding-top:14px}
-.ref-card .projects-body .project{display:flex;flex-direction:column}
+/* ===== Projects ===== */
+.ref-card .chapter-body.projects-body{gap:14px}
+.ref-card .filters{margin:0!important}
+.ref-card .filters button{font-size:13px!important;padding:8px 14px!important;transition:border-color .2s,color .2s,background .2s}
+.ref-card .filters button:hover{border-color:#6b737c;color:#fff}
+.ref-card .projects-body .grid{flex:0 0 auto;grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:auto!important;gap:14px!important}
+.ref-card .projects-body .project{display:flex;flex-direction:column;gap:0;min-height:0!important;padding:26px 26px 22px!important}
+.ref-card .projects-body .project.hidden{display:none!important}
+.ref-card .projects-body .project.featured{grid-column:span 2;grid-row:auto!important}
+.ref-card .projects-body .project-index{position:static;order:-1;margin-bottom:4px;font-size:13px!important;color:rgba(255,255,255,.4)}
+.ref-card .projects-body .tag{padding-right:34px!important;font-size:12px!important;letter-spacing:.08em}
+.ref-card .projects-body .project h3{margin:10px 0 12px!important;font-size:clamp(22px,1.9vw,30px)!important;line-height:1.15;letter-spacing:-.02em}
+.ref-card .projects-body .project.featured h3{margin:14px 0 18px!important;font-size:clamp(34px,3.2vw,52px)!important;line-height:1.02}
+.ref-card .projects-body .project p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;margin:0 0 16px!important;font-size:15px!important;line-height:1.55!important;color:#cfd4d8!important}
+.ref-card .projects-body .project.featured p{max-width:62ch!important;font-size:18px!important;-webkit-line-clamp:6}
 .ref-card .projects-body .project-meta{margin-top:auto}
-.ref-card .experience-side{display:flex!important;flex-direction:column}
-.ref-card .workflow>div{min-height:0!important}
+.ref-card .projects-body .project>i{top:24px;right:24px;font-size:22px;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.ref-card .projects-body .project:hover>i{transform:translate(3px,-3px)}
 
-/* Контакты: чистый список без рамок-коробок */
+/* ===== Skills ===== */
+.ref-card .chapter-body.skillgrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:auto!important;gap:14px!important;align-content:stretch!important}
+.ref-card .skillgrid .skill-card{display:flex;flex-direction:column;min-height:0!important;padding:30px 32px 26px!important}
+.ref-card .skillgrid .skill-card>b{margin:6px 0 14px!important;font-size:clamp(24px,2.2vw,34px)!important;letter-spacing:-.01em}
+.ref-card .skillgrid .skill-card>p{max-width:44ch;font-size:17px!important;line-height:1.55!important;color:#cfd4d8!important}
+.ref-card .skill-index{font-size:13px!important}
+.ref-card .skill-pills{margin-top:auto!important;padding-top:14px}
+
+/* ===== Experience ===== */
+.ref-card .experience-layout{flex:1 1 auto}
+.ref-card .timeline{gap:10px!important}
+.ref-card .experience-layout .timeline{grid-auto-rows:auto!important}
+.ref-card .timeline article,.ref-card .experience-layout .timeline article{display:grid;grid-template-columns:190px minmax(0,1fr)!important;column-gap:24px;align-items:start;align-content:center;min-height:0!important;padding:24px 28px!important}
+.ref-card .timeline .exp-date{grid-column:1;grid-row:1/span 3;padding-top:4px;font-size:14px!important;line-height:1.4!important;color:#ff9567!important}
+.ref-card .timeline article h3,.ref-card .timeline article p,.ref-card .timeline .exp-pills{grid-column:2}
+.ref-card .timeline article h3{margin:0 0 8px!important;font-size:clamp(22px,1.8vw,28px)!important}
+.ref-card .timeline article p{margin:0 0 10px!important;font-size:15px!important;line-height:1.55!important;color:#cfd4d8!important}
+.ref-card .exp-pills{margin-top:0!important}
+.ref-card .experience-side{display:flex!important;flex-direction:column;justify-content:space-between;padding:28px!important}
+.ref-card .experience-side h3{font-size:clamp(24px,2vw,32px)!important;line-height:1.15}
+.ref-card .experience-side p{font-size:15px!important}
+.ref-card .workflow>div{min-height:0!important}
+.ref-card .workflow span,.ref-card .workflow small{font-size:13px!important}
+
+/* ===== Contact ===== */
+.ref-card .contact-main h2{font-size:clamp(36px,3.6vw,60px)!important;line-height:1.05!important}
+.ref-card .contact-main p{font-size:18px!important}
+.ref-card .contact-status span{font-size:12px!important}
+.ref-card .contact-main .heroCta{gap:10px}
+.ref-card .contact-main .heroCta a{padding:12px 18px;font-size:15px}
+.ref-card .contact-main .primary{border-color:var(--lime);background:var(--lime)!important;color:#050608;box-shadow:none}
+.ref-card .contact-main .primary:hover{background:#d8ff5c!important}
 .ref-card .contact-panel{display:flex!important;flex-direction:column;justify-content:center;gap:0;padding:22px 24px!important}
-.ref-card .contact-panel .contact-label{margin:0!important;padding-top:14px;color:rgba(255,255,255,.45)!important}
+.ref-card .contact-panel .contact-label{margin:0!important;padding-top:14px;font-size:12px!important;color:rgba(255,255,255,.45)!important}
 .ref-card .contact-panel .contact-label:first-child{padding-top:0}
-.ref-card .contact-panel strong{margin:6px 0 0!important;padding:0 0 14px!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.1)!important;border-radius:0!important;background:none!important;font-size:14px!important}
+.ref-card .contact-panel strong{margin:6px 0 0!important;padding:0 0 14px!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.1)!important;border-radius:0!important;background:none!important;font-size:17px!important}
 .ref-card .contact-panel strong:last-child{border-bottom:0!important;padding-bottom:0!important}
 .ref-card .contact-panel a:hover{color:var(--lime)}
-.ref-card .contact-main .heroCta{gap:10px}
-.ref-card .contact-main .primary{background:var(--lime)!important;color:#050608;border-color:var(--lime);box-shadow:none}
-.ref-card .contact-main .primary:hover{background:#d8ff5c!important}
-
-/* Шапка разделов: убрать лишний декор на средних экранах */
-@media(max-width:1000px){.chapter-head p{display:none}.chapter-head{grid-template-columns:auto minmax(0,1fr) 40px!important}}
-footer a:hover{color:#fff}
-@media(max-width:700px){.ref-card .contact-panel{display:flex!important}.ref-card .contact-main .heroCta a{flex:1 1 40%}.ref-card .skillgrid{grid-auto-rows:auto}}
-
 @media(min-width:701px) and (max-width:1200px){.ref-card .contact-panel{display:grid!important;grid-template-columns:130px minmax(0,1fr);align-items:baseline;column-gap:16px}.ref-card .contact-panel .contact-label{padding:12px 0!important;border-bottom:1px solid rgba(255,255,255,.1)}.ref-card .contact-panel strong{margin:0!important;padding:12px 0!important}.ref-card .contact-panel .contact-label:nth-last-child(2){border-bottom:0}}
+
+/* ===== Responsive ===== */
+@media(min-width:701px) and (max-height:820px){
+ .ref-card .projects-body .project{padding:18px 20px 16px!important}
+ .ref-card .projects-body .project p{font-size:14px!important;-webkit-line-clamp:2}
+ .ref-card .projects-body .project.featured p{font-size:16px!important;-webkit-line-clamp:4}
+ .ref-card .projects-body .project.featured h3{font-size:clamp(28px,2.6vw,40px)!important}
+ .ref-card .skillgrid .skill-card{padding:20px 24px!important}
+ .ref-card .skillgrid .skill-card>p{font-size:15px!important}
+ .ref-card .timeline article{padding:16px 22px!important}
+}
+@media(max-width:900px){.ref-card .projects-body .grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}.ref-card .projects-body .project.featured{grid-column:1/-1}}
+@media(max-width:700px){
+ :root{--nav:98px}
+ .top{height:auto;min-height:58px;flex-wrap:wrap;row-gap:0;padding-top:8px}
+ .top nav{display:flex;order:3;width:100%;margin:0 -14px;padding:10px 14px 12px;gap:22px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+ .top nav::-webkit-scrollbar{display:none}
+ .ref-hero{min-height:0}
+ .hero-tags{max-width:100%}
+ .heroCta{gap:10px}
+ .heroCta a{flex:1 1 auto}
+ .ref-card{padding:0 14px 14px}
+ .ref-card .projects-body .grid,.ref-card .chapter-body.skillgrid{grid-template-columns:1fr!important}
+ .ref-card .projects-body .project.featured h3{font-size:30px!important}
+ .ref-card .skillgrid .skill-card>b{font-size:24px!important}
+ .ref-card .timeline article,.ref-card .experience-layout .timeline article{grid-template-columns:1fr!important;padding:18px 16px!important}
+ .ref-card .timeline .exp-date{grid-row:auto;margin-bottom:6px}
+ .ref-card .timeline article h3,.ref-card .timeline article p,.ref-card .timeline .exp-pills{grid-column:1}
+ .ref-card .contact-main .heroCta a{flex:1 1 40%}
+ .projects-body .project:active,.skill-card:active,.timeline article:active{transform:scale(.985)}
+}
+
+/* ===== Deck (stacked chapters, desktop) ===== */
+.deck-pin .ref-card{inset:auto;left:0;right:0;bottom:auto;transform:none;transform-origin:center top;backface-visibility:hidden;cursor:default;box-shadow:0 -18px 40px -20px rgba(0,0,0,.8)}
+.deck-pin .ref-card:not(.is-open) .chapter-body{pointer-events:none}
+.deck-pin .ref-card:not(.is-open) .chapter-head{cursor:pointer}
+.deck-pin .ref-card:not(.is-open) .chapter-head:hover>i{background:var(--lime);color:#050608}
+.deck-pin .ref-card:not(.is-open) .chapter-head:hover h2{color:#fff;transform:translateX(6px)}
+.deck-pin .chapter-head{height:68px;min-height:68px!important;padding:0!important}
+.deck-pin .chapter-head h2{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.deck-pin .chapter-head>i{transition:transform .5s cubic-bezier(.2,.8,.2,1),background .2s,color .2s}
+.deck-pin .ref-card.is-open .chapter-head>i{transform:rotate(-90deg)}
+.deck-pin .chapter-body{display:flex;flex-direction:column;overflow:hidden!important}
+.deck-pin .projects-body .grid{flex:1 1 auto;grid-auto-rows:minmax(0,1fr)!important}
+.deck-pin .projects-body .project.featured{grid-row:span 2!important;grid-column:auto}
+.deck-pin .projects-body .project.featured p{max-width:34ch!important}
+.deck-pin .projects-body .project:not(.featured){padding:18px 22px 16px!important}
+.deck-pin .projects-body .project:not(.featured) h3{margin:6px 0 8px!important;font-size:clamp(20px,1.6vw,26px)!important}
+.deck-pin .projects-body .project:not(.featured) p{margin-bottom:12px!important;-webkit-line-clamp:2}
+.deck-pin .projects-body .project-index{margin-bottom:2px!important}
+.deck-pin .chapter-body.skillgrid,.deck-pin .experience-layout .timeline{grid-auto-rows:minmax(0,1fr)!important}
+.deck-pin .contact{flex:1 1 auto!important;align-items:stretch;max-width:none!important;margin-top:0!important}
+.fx-dim{position:absolute;inset:0;z-index:20;border-radius:inherit;background:#030405;opacity:0;pointer-events:none}
+
+/* ===== Hero scene ===== */
+.fx-scene{position:absolute;inset:0;z-index:2;overflow:hidden;border-radius:inherit;pointer-events:none}
+.fx-scene>*{position:absolute}
+.hero-idle .fx-scene *{animation-play-state:paused!important}
+.fx-hit{padding:0;border:0;border-radius:50%;background:none;cursor:pointer;pointer-events:auto;-webkit-tap-highlight-color:transparent}
+.fx-hit:focus-visible{outline:1px dashed var(--lime);outline-offset:4px}
+.fx-hit-frog{border-radius:45% 45% 30% 30%}
+.frog-asleep .fx-hit-frog{cursor:alarm,pointer}
+.fx-frog{inset:0;width:auto;height:auto;background-repeat:no-repeat;opacity:0;transition:opacity .35s ease;pointer-events:none}
+.fx-scene.jolt .fx-frog{animation:fxJolt .35s ease-out}
+.fx-zzz{overflow:visible}
+.fx-z{position:absolute;left:0;bottom:0;font-weight:900;color:#dfff7a;text-shadow:0 0 10px rgba(202,255,47,.8);pointer-events:none}
+.fx-night{inset:0!important;width:auto!important;height:auto!important;background:radial-gradient(ellipse at 41% 37%,rgba(0,0,0,.55),rgba(0,0,0,.35) 40%,rgba(0,0,0,.2));opacity:0;transition:opacity .5s}
+.fx-ambient{background:radial-gradient(closest-side,rgba(255,110,40,.16),transparent 70%);mix-blend-mode:screen;opacity:calc(.6 + var(--lamp,0) * .6);transition:opacity .3s}
+.fx-lamp-glow{mix-blend-mode:screen;opacity:calc(.6 + var(--lamp,0) * .4);transition:opacity .25s}
+.fx-lamp-core{position:absolute;inset:0;background:radial-gradient(closest-side at 50% 42%,rgba(255,170,90,.9),rgba(255,100,30,.45) 38%,rgba(255,80,20,.12) 62%,transparent 78%);animation:fxFlicker 7s infinite}
+.fx-lamp-dark{background:radial-gradient(closest-side,rgba(6,4,3,.96) 55%,rgba(6,4,3,.75) 75%,transparent);opacity:0;transition:opacity .25s}
+.lamp-off .fx-night{opacity:1}
+.lamp-off .fx-lamp-dark{opacity:.55}
+.lamp-off .fx-lamp-glow,.lamp-off .fx-ambient{opacity:0}
+.fx-beam-wrap{transform-origin:50% 0;will-change:transform}
+.fx-beam-wrap>.fx-beam,.fx-beam-wrap>.fx-dust{position:absolute;inset:0;clip-path:polygon(40% 0,60% 0,100% 100%,0 100%)}
+.fx-beam{background:linear-gradient(180deg,rgba(202,255,47,.55),rgba(202,255,47,.12) 65%,transparent);mix-blend-mode:screen;opacity:var(--beam,.3);transition:opacity .4s}
+.ufo-hot .fx-beam{filter:brightness(1.35)}
+.ufo-zap .fx-beam{animation:fxZap .9s ease-out}
+.fx-ufo-ring{background:radial-gradient(closest-side,rgba(202,255,47,.5),transparent 70%);mix-blend-mode:screen;opacity:calc(.35 + var(--pull,0) * .6);animation:fxPulse 3.2s ease-in-out infinite}
+.fx-ufo-flash{background:radial-gradient(closest-side,rgba(230,255,140,.95),rgba(202,255,47,.4) 40%,transparent 70%);mix-blend-mode:screen;opacity:0}
+.fx-ufo-flash.go{animation:fxFlash .9s ease-out}
+.fx-spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#e6ff8a;box-shadow:0 0 6px #caff2f}
+
+/* ===== Lights off / night theme ===== */
+.fx-lights{position:fixed;inset:0;z-index:150;background:radial-gradient(circle 200px at var(--fx,50%) var(--fy,40%),rgba(2,3,4,0) 0,rgba(2,3,4,.55) 55%,rgba(2,3,4,.95) 100%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,visibility 0s .2s}
+.lights-off .fx-lights{opacity:1;visibility:visible;transition:opacity .2s}
+.fx-lights-btn{position:fixed;right:22px;bottom:22px;z-index:160;display:flex;align-items:center;gap:10px;padding:11px 16px;border:1px solid var(--orange);border-radius:99px;background:rgba(5,6,8,.9);color:#ffd2b8;font:800 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;cursor:pointer;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .3s,transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
+.fx-lights-btn i{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange)}
+.fx-lights-btn:hover{box-shadow:0 0 24px rgba(255,92,25,.45)}
+.lights-off .fx-lights-btn{opacity:1;transform:none;pointer-events:auto}
+.fx-lamp-beacon{position:fixed;z-index:155;padding:0;border:0;background-color:transparent;background-repeat:no-repeat;cursor:pointer;opacity:0;pointer-events:none;filter:brightness(.5) saturate(.9);-webkit-mask-image:radial-gradient(ellipse 50% 58% at 50% 52%,#000 45%,rgba(0,0,0,.5) 70%,transparent 100%);mask-image:radial-gradient(ellipse 50% 58% at 50% 52%,#000 45%,rgba(0,0,0,.5) 70%,transparent 100%);transition:opacity .6s .5s}
+.fx-lamp-beacon:hover{filter:brightness(.8) saturate(1.1)}
+.lights-off .fx-lamp-beacon{opacity:1;pointer-events:auto;animation:fxEmber 3.2s ease-in-out 1.1s infinite}
+.lights-off .fx-lamp-core{animation:none}
+.lights-off .top .brand span,.lights-off .hero h1 em{text-shadow:0 0 18px rgba(202,255,47,.55)}
+.lights-off .deck-stage{position:relative;z-index:151}
+.lights-off .ref-card{z-index:151;border-color:color-mix(in srgb,var(--accent) 70%,transparent)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 40%,transparent),0 0 34px -6px color-mix(in srgb,var(--accent) 75%,transparent),inset 0 0 60px -30px var(--accent)!important}
+.lights-off .ref-card:before{background:linear-gradient(90deg,rgba(2,3,4,.96),rgba(2,3,4,.9) 50%,rgba(2,3,4,.8))!important}
+.lights-off .ref-card:after{height:3px;box-shadow:0 0 14px var(--accent)}
+.lights-off .chapter-no{text-shadow:0 0 14px var(--accent),0 0 2px var(--accent)}
+.lights-off .chapter-head h2{color:#fff;text-shadow:0 0 18px color-mix(in srgb,var(--accent) 60%,transparent)}
+.lights-off .chapter-head p{color:color-mix(in srgb,var(--accent) 70%,#fff)}
+.lights-off .chapter-head>i{border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px -2px var(--accent)}
+.lights-off .ref-card .projects-body .project,.lights-off .ref-card .skillgrid .skill-card,.lights-off .ref-card .timeline article,.lights-off .ref-card .experience-side,.lights-off .ref-card .contact-main,.lights-off .ref-card .contact-panel{background:rgba(3,4,6,.92)!important;border-color:color-mix(in srgb,var(--accent) 55%,transparent)!important;box-shadow:0 0 22px -8px color-mix(in srgb,var(--accent) 80%,transparent),inset 0 0 24px -16px var(--accent)!important}
+.lights-off .ref-card .projects-body .project:hover,.lights-off .ref-card .skillgrid .skill-card:hover{border-color:var(--accent)!important;box-shadow:0 0 30px -4px var(--accent),inset 0 0 30px -14px var(--accent)!important}
+.lights-off .ref-card h3,.lights-off .ref-card .skill-card>b,.lights-off .contact-main h2{text-shadow:0 0 14px color-mix(in srgb,var(--accent) 45%,transparent)}
+.lights-off .ref-card p,.lights-off .ref-card small{color:#9ba1a8!important}
+.lights-off .ref-card .tag,.lights-off .ref-card .exp-date,.lights-off .ref-card .eyebrow{text-shadow:0 0 10px currentColor}
+.lights-off .ref-card .project-meta span,.lights-off .ref-card .skill-pills span,.lights-off .ref-card .exp-pills span,.lights-off .filters button{border-color:color-mix(in srgb,var(--accent) 45%,transparent)!important;color:#c9ced3}
+.lights-off .filters button.active{border-color:var(--accent)!important;box-shadow:0 0 12px -2px var(--accent);color:#fff}
+.lights-off .fx-dim{background:#010102}
+
+/* ===== Keyframes ===== */
+@keyframes fxFlicker{0%,100%{opacity:1}2%{opacity:.55}3%{opacity:1}4%{opacity:.7}5%,58%{opacity:1}59%{opacity:.6}60%{opacity:1}}
+@keyframes fxPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes fxZap{0%{opacity:1;filter:brightness(2)}100%{opacity:.7;filter:none}}
+@keyframes fxFlash{0%{opacity:0;transform:scale(.4)}20%{opacity:1}100%{opacity:0;transform:scale(1.6)}}
+@keyframes fxJolt{0%{transform:translateY(0)}30%{transform:translateY(-6px)}60%{transform:translateY(2px)}100%{transform:none}}
+@keyframes fxEmber{0%,100%{opacity:.8}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){.fx-progress{display:none}.fx-lamp-core,.fx-ufo-ring,.lights-off .fx-lamp-beacon{animation:none}}
+
+.fx-lamp-beacon{-webkit-mask-image:radial-gradient(closest-side at 50% 58%,#000 22%,rgba(0,0,0,.75) 40%,rgba(0,0,0,.3) 65%,transparent 100%)!important;mask-image:radial-gradient(closest-side at 50% 58%,#000 22%,rgba(0,0,0,.75) 40%,rgba(0,0,0,.3) 65%,transparent 100%)!important;filter:brightness(.55) saturate(.95)}
+.fx-lamp-beacon:after{content:"";position:absolute;inset:20% 22% 18%;border-radius:50%;background:radial-gradient(closest-side at 50% 62%,rgba(255,110,40,.35),rgba(255,80,20,.12) 55%,transparent);mix-blend-mode:screen;pointer-events:none}
