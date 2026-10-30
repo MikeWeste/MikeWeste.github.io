@@ -317,3 +317,30 @@ nav a.active{color:#fff}
 @media(hover:none),(pointer:coarse){.ref-hero .hero-tags span.is-phys{pointer-events:none}}
 /* narrow screens: the lamp sits under the title, so in the dark the copy goes above the lamp beacon and is dimmed by a filter instead of the overlay */
 @media(max-width:700px){.lights-off .ref-hero .hero-copy{z-index:156;filter:brightness(.32) saturate(.8)}.lights-off .ref-hero .hero-copy .hero-tags span,.lights-off .ref-hero .heroCta a{pointer-events:none}}
+
+/* ===== Card content: checklists, project footer ===== */
+.skill-list,.project-points{list-style:none;margin:0;padding:0;display:grid;gap:7px 20px}
+.skill-list{grid-template-columns:repeat(2,minmax(0,1fr));margin:16px 0 4px}
+.project-points{margin:0 0 16px}
+.skill-list li,.project-points li{position:relative;padding-left:18px;font-size:14px;line-height:1.4;color:#d9dee2}
+.skill-list li:before,.project-points li:before{content:"";position:absolute;left:1px;top:.42em;width:7px;height:7px;border:1.5px solid var(--accent,var(--lime));border-radius:2px;transform:rotate(45deg)}
+.ref-card .skillgrid .skill-card>p{margin:0!important;color:#aeb4ba!important}
+.project-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:auto}
+.ref-card .projects-body .project-foot .project-meta{margin:0!important;min-width:0}
+.project-link{flex:none;padding:0 0 7px;font:800 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--lime);white-space:nowrap;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.project:hover .project-link{transform:translateX(-3px)}
+.ref-card .projects-body .project.featured p{margin-bottom:14px!important}
+.experience-focus span{font-size:10px!important;padding:6px 9px!important}
+.ref-card .timeline article,.ref-card .experience-layout .timeline article{grid-template-columns:150px minmax(0,1fr)!important}
+@media(max-width:1100px){.skill-list{grid-template-columns:1fr}}
+@media(min-width:701px) and (max-height:940px){
+ .is-deck .deck-pin .skill-list{margin:10px 0 2px;gap:4px 16px}
+ .is-deck .deck-pin .skill-list li,.is-deck .deck-pin .project-points li{font-size:13px}
+ .is-deck .deck-pin .project-points{margin-bottom:10px;gap:4px}
+}
+@media(min-width:701px) and (max-height:800px){
+ .is-deck .deck-pin .skillgrid .skill-card>p{display:none}
+ .is-deck .deck-pin .skill-list{margin-top:6px}
+ .is-deck .deck-pin .projects-body .project:not(.featured) .project-index{display:none}
+}
+@media(max-width:700px){.project-foot{flex-wrap:wrap}.project-link{padding:0}}
