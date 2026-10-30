@@ -437,7 +437,7 @@ function initScene() {
     off: {b: [1, .1, .85, .15, 1, .05, 0], at: [0, .1, .18, .32, .44, .62, 1]},
     on: {b: [0, .75, .1, .9, .3, 1, 1], at: [0, .12, .22, .36, .5, .66, 1]},
   };
-  const lampLayers = [[lights, b => 1 - b], [night, b => 1 - b], [glow, b => b], [lampOnImg, b => b], [ambient, b => b * .8]];
+  const lampLayers = [[lights, b => 1 - b], [night, b => 1 - b], [glow, b => b], [lampOnImg, b => b], [beacon, b => 1 - b], [ambient, b => b * .8]];
   const flick = ({b, at}) => lampLayers.filter(([el]) => el.animate).map(([el, f]) =>
     el.animate(b.map((v, i) => ({opacity: f(v), offset: at[i], easing: 'steps(1,end)'})), {duration: 560, fill: 'forwards'}));
   const setLights = v => {
@@ -461,7 +461,8 @@ function initScene() {
   const W0 = 3.4, DAMP = .8; // natural frequency (rad/s), damping (1/s)
   const bulbPos = () => { const k = map.dw / 1672, L = LAMP.h * k * LAMP.bulb, px = map.ox + LAMP.px * k, py = map.oy + LAMP.py * k;
     return {x: px - L * Math.sin(th), y: py + L * Math.cos(th), L, r: 75 * k}; };
-  const renderLamp = () => { const t = 'rotate(' + th.toFixed(4) + 'rad)'; pend.style.transform = t; if (!on) beacon.style.transform = t; };
+  // the beacon always follows the lamp, otherwise it freezes while fading and the lamp looks doubled
+  const renderLamp = () => { const t = 'rotate(' + th.toFixed(4) + 'rad)'; pend.style.transform = t; beacon.style.transform = t; };
   const swingStep = now => {
     const dt = Math.min(.033, (now - swingLast) / 1000); swingLast = now;
     om += (-W0 * W0 * Math.sin(th) - DAMP * om) * dt; th += om * dt;

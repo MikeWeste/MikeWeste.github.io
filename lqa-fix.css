@@ -361,3 +361,6 @@ nav a.active{color:#fff}
 .fx-lamp .fx-hit-lamp{left:-15%;right:-15%;top:57%;bottom:-2%;width:auto;height:auto;border-radius:45% 45% 50% 50%}
 .fx-lamp-beacon{-webkit-mask-image:none!important;mask-image:none!important;background-size:100% 100%!important;background-position:0 0!important;transform-origin:50% 0;clip-path:inset(39% -60% 0 -60%);filter:brightness(.6) saturate(1.05)}
 .fx-lamp-beacon:after{inset:62% 6% 2%!important}
+
+/* the beacon fades only through the lamp flicker (in sync with the bulb), never on its own delayed transition */
+.fx-lamp-beacon{transition:none!important}
