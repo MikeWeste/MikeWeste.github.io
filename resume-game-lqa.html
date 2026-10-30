@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Vitalii Eremenko — Game LQA / QA candidate with hands-on game asset, Android development and technical support experience." />
   <title>Vitalii Eremenko — Game LQA / QA Resume</title>
+  <meta name="theme-color" content="#080a10" />
+  <link rel="canonical" href="https://mikeweste.github.io/resume-game-lqa.html" />
   <link rel="stylesheet" href="styles.css" />
 <style>
 :root{--lqa:#7c5cff;--lqa2:#22d3ee;--ink:#eef2ff;--panel:#111522}
@@ -155,8 +157,8 @@ body.resume-page{background:#080a10;color:var(--ink);min-height:100vh}
 <script>
 const en=document.querySelector('[data-lang="en"]'),ru=document.querySelector('[data-lang="ru"]');
 const enBtn=document.getElementById('langEN'),ruBtn=document.getElementById('langRU');
-function setLang(lang){const isRu=lang==='ru';en.hidden=isRu;ru.hidden=!isRu;enBtn.classList.toggle('active',!isRu);ruBtn.classList.toggle('active',isRu);document.documentElement.lang=lang;localStorage.setItem('resumeLang',lang)}
-enBtn.addEventListener('click',()=>setLang('en'));ruBtn.addEventListener('click',()=>setLang('ru'));setLang(localStorage.getItem('resumeLang')||'en');
+function setLang(lang){const isRu=lang==='ru';en.hidden=isRu;ru.hidden=!isRu;enBtn.classList.toggle('active',!isRu);ruBtn.classList.toggle('active',isRu);document.documentElement.lang=lang;try{localStorage.setItem('resumeLang',lang)}catch(e){}}
+enBtn.addEventListener('click',()=>setLang('en'));ruBtn.addEventListener('click',()=>setLang('ru'));let saved=null;try{saved=localStorage.getItem('resumeLang')}catch(e){}setLang(saved||'en');
 </script>
 </body>
 </html>
