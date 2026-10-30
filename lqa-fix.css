@@ -315,3 +315,5 @@ nav a.active{color:#fff}
 .fx-tongue:after{content:"";position:absolute;right:-.5em;top:50%;width:1.6em;height:1.6em;transform:translateY(-50%);border-radius:50%;background:#ff6aa1}
 @keyframes fxGlow{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.15)}}
 @media(hover:none),(pointer:coarse){.ref-hero .hero-tags span.is-phys{pointer-events:none}}
+/* narrow screens: the lamp sits under the title, so in the dark the copy goes above the lamp beacon and is dimmed by a filter instead of the overlay */
+@media(max-width:700px){.lights-off .ref-hero .hero-copy{z-index:156;filter:brightness(.32) saturate(.8)}.lights-off .ref-hero .hero-copy .hero-tags span,.lights-off .ref-hero .heroCta a{pointer-events:none}}
