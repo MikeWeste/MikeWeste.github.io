@@ -331,7 +331,11 @@ nav a.active{color:#fff}
 .project:hover .project-link{transform:translateX(-3px)}
 .ref-card .projects-body .project.featured p{margin-bottom:14px!important}
 .experience-focus span{font-size:10px!important;padding:6px 9px!important}
-.ref-card .timeline article,.ref-card .experience-layout .timeline article{grid-template-columns:150px minmax(0,1fr)!important}
+@media(min-width:701px){.ref-card .timeline article,.ref-card .experience-layout .timeline article{grid-template-columns:150px minmax(0,1fr)!important}}
+/* small project cards: two tool pills next to the link label, so the footer stays on one line */
+.projects-body .project:not(.featured) .project-foot:has(.project-link) .project-meta span:nth-child(n+3){display:none}
+.projects-body .project:not(.featured) .project-foot .project-meta{flex-wrap:nowrap}
+.projects-body .project-meta span{white-space:nowrap}
 @media(max-width:1100px){.skill-list{grid-template-columns:1fr}}
 @media(min-width:701px) and (max-height:940px){
  .is-deck .deck-pin .skill-list{margin:10px 0 2px;gap:4px 16px}
@@ -342,5 +346,9 @@ nav a.active{color:#fff}
  .is-deck .deck-pin .skillgrid .skill-card>p{display:none}
  .is-deck .deck-pin .skill-list{margin-top:6px}
  .is-deck .deck-pin .projects-body .project:not(.featured) .project-index{display:none}
+ /* short screens: drop the pills on small cards and give the text two full lines instead */
+ .is-deck .deck-pin .projects-body .project:not(.featured) .project-meta{display:none}
+ .is-deck .deck-pin .projects-body .project:not(.featured) .project-foot{justify-content:flex-end;min-height:18px}
+ .is-deck .deck-pin .projects-body .project:not(.featured) p{-webkit-line-clamp:2!important;margin-bottom:6px!important}
 }
 @media(max-width:700px){.project-foot{flex-wrap:wrap}.project-link{padding:0}}
