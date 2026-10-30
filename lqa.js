@@ -349,7 +349,8 @@ function initScene() {
   hero.append(scene);
 
   // page-wide darkness with flashlight
-  const lights = mk('fx-lights'), lightsBtn = mk('fx-lights-btn', 'button');
+  const lights = mk('fx-lights'), spot = mk('fx-lights-spot'), lightsBtn = mk('fx-lights-btn', 'button');
+  lights.append(spot);
   lightsBtn.type = 'button'; lightsBtn.innerHTML = '<i></i><span>LIGHTS ON</span>';
   const beacon = mk('fx-lamp-beacon', 'button'); beacon.type = 'button'; beacon.setAttribute('aria-label', 'Lights on');
   document.body.append(lights, beacon, lightsBtn);
@@ -362,7 +363,7 @@ function initScene() {
   let fx = 0, fy = 0, lightRaf = 0;
   addEventListener('pointermove', e => {
     if (on) return; fx = e.clientX; fy = e.clientY;
-    if (!lightRaf) lightRaf = requestAnimationFrame(() => { lightRaf = 0; lights.style.setProperty('--fx', fx + 'px'); lights.style.setProperty('--fy', fy + 'px'); });
+    if (!lightRaf) lightRaf = requestAnimationFrame(() => { lightRaf = 0; spot.style.transform = 'translate3d(' + fx + 'px,' + fy + 'px,0)'; });
   }, {passive: true});
 
   let map = null;
@@ -395,20 +396,28 @@ function initScene() {
   new IntersectionObserver(([e]) => { visible = e.isIntersecting; hero.classList.toggle('hero-idle', !visible); }).observe(hero);
   const active = () => visible && !document.hidden;
 
-  /* --- lamp = site lights --- */
-  let on = true, busy = false;
-  const flicker = (el, seq) => el.animate ? el.animate(seq.map(o => ({opacity: o})), {duration: 650, easing: 'steps(1,end)'}) : null;
+  /* --- lamp = site lights: page darkness and the lamp glow flicker in sync --- */
+  let on = true, busy = false, sleepT = 0;
+  // lamp brightness per step; easing sits on each keyframe so values jump (a plain steps() on the whole
+  // animation would hold the first value for the entire duration)
+  const FLICKER = {
+    off: {b: [1, .1, .85, .15, 1, .05, 0], at: [0, .1, .18, .32, .44, .62, 1]},
+    on: {b: [0, .75, .1, .9, .3, 1, 1], at: [0, .12, .22, .36, .5, .66, 1]},
+  };
+  const lampLayers = [[lights, b => 1 - b], [night, b => 1 - b], [dark, b => (1 - b) * .55], [glow, b => b], [ambient, b => b * .8]];
+  const flick = ({b, at}) => lampLayers.filter(([el]) => el.animate).map(([el, f]) =>
+    el.animate(b.map((v, i) => ({opacity: f(v), offset: at[i], easing: 'steps(1,end)'})), {duration: 560, fill: 'forwards'}));
   const setLights = v => {
-    if (busy || v === on) return; busy = true; on = v;
-    if (!v) {
-      placeBeacon(); root.classList.add('lights-off'); hero.classList.add('lamp-off');
-      flicker(lights, [0, .9, .2, 1, .6, 1]);
-      setTimeout(() => frog.sleep(true), 700);
-    } else {
-      flicker(lights, [1, .2, .9, .1, .5, 0]);
-      setTimeout(() => { root.classList.remove('lights-off'); hero.classList.remove('lamp-off'); if (glow.animate) glow.animate([{opacity: 0}, {opacity: 1, offset: .2}, {opacity: .2, offset: .35}, {opacity: 1}], {duration: 500}); frog.wake(true); }, 120);
-    }
-    setTimeout(() => busy = false, 700);
+    if (busy || v === on) return; busy = true; on = v; clearTimeout(sleepT);
+    if (!v) { placeBeacon(); root.classList.add('lights-off'); hero.classList.add('lamp-off'); }
+    const anims = reduced.matches ? [] : flick(v ? FLICKER.on : FLICKER.off);
+    const end = () => {
+      if (v) { root.classList.remove('lights-off'); hero.classList.remove('lamp-off'); frog.wake(true); }
+      else sleepT = setTimeout(() => frog.sleep(true), 150);
+      anims.forEach(a => a.cancel());
+      busy = false;
+    };
+    if (anims.length) anims[0].onfinish = end; else end();
   };
   lampHit.addEventListener('click', e => { e.stopPropagation(); setLights(!on); });
   lightsBtn.addEventListener('click', () => setLights(true));

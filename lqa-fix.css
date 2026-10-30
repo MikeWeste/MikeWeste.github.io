@@ -227,8 +227,9 @@ nav a.active{color:#fff}
 .fx-spark{position:absolute;width:3px;height:3px;border-radius:50%;background:#e6ff8a;box-shadow:0 0 6px #caff2f}
 
 /* ===== Lights off / night theme ===== */
-.fx-lights{position:fixed;inset:0;z-index:150;background:radial-gradient(circle 200px at var(--fx,50%) var(--fy,40%),rgba(2,3,4,0) 0,rgba(2,3,4,.55) 55%,rgba(2,3,4,.95) 100%);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .2s,visibility 0s .2s}
-.lights-off .fx-lights{opacity:1;visibility:visible;transition:opacity .2s}
+.fx-lights{position:fixed;inset:0;z-index:150;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none}
+.fx-lights-spot{position:absolute;left:0;top:0;width:300vmax;height:300vmax;margin:-150vmax 0 0 -150vmax;background:radial-gradient(circle 200px at 50% 50%,rgba(2,3,4,0) 0,rgba(2,3,4,.55) 55%,rgba(2,3,4,.95) 100%);transform:translate3d(50vw,40vh,0);will-change:transform}
+.lights-off .fx-lights{opacity:1;visibility:visible}
 .fx-lights-btn{position:fixed;right:22px;bottom:22px;z-index:160;display:flex;align-items:center;gap:10px;padding:11px 16px;border:1px solid var(--orange);border-radius:99px;background:rgba(5,6,8,.9);color:#ffd2b8;font:800 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;cursor:pointer;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .3s,transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
 .fx-lights-btn i{width:8px;height:8px;border-radius:50%;background:var(--orange);box-shadow:0 0 10px var(--orange)}
 .fx-lights-btn:hover{box-shadow:0 0 24px rgba(255,92,25,.45)}
