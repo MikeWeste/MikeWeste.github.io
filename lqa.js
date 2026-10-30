@@ -235,13 +235,14 @@ addEventListener('scroll', () => { clearTimeout(snapT); snapT = setTimeout(snapD
 
 /* ---------- progress bar ---------- */
 const bar = document.createElement('div'); bar.className = 'fx-progress'; document.body.append(bar);
-let raf = 0;
+let raf = 0, maxScroll = 0;
+const measureMax = () => { maxScroll = document.documentElement.scrollHeight - innerHeight; };
+measureMax(); addEventListener('resize', measureMax); new ResizeObserver(measureMax).observe(document.body);
 addEventListener('scroll', () => {
   if (raf) return;
   raf = requestAnimationFrame(() => {
     raf = 0;
-    const max = document.documentElement.scrollHeight - innerHeight;
-    bar.style.transform = 'scaleX(' + (max > 0 ? scrollY / max : 0) + ')';
+    bar.style.transform = 'scaleX(' + (maxScroll > 0 ? Math.min(1, scrollY / maxScroll) : 0) + ')';
     header && header.classList.toggle('scrolled', scrollY > 8);
     if (scrollY < 40) setActiveNav('home');
   });
@@ -355,10 +356,8 @@ function initScene() {
   const beacon = mk('fx-lamp-beacon', 'button'); beacon.type = 'button'; beacon.setAttribute('aria-label', 'Lights on');
   document.body.append(lights, beacon, lightsBtn);
   const placeBeacon = () => { if (!map) return; const r = hero.getBoundingClientRect(); const u0 = .30, v0 = .0, u1 = .52, v1 = .58;
-    Object.assign(beacon.style, {left: r.left + map.ox + u0 * map.dw + 'px', top: r.top + map.oy + v0 * map.dh + 'px', width: (u1 - u0) * map.dw + 'px', height: (v1 - v0) * map.dh + 'px',
+    Object.assign(beacon.style, {left: r.left + scrollX + map.ox + u0 * map.dw + 'px', top: r.top + scrollY + map.oy + v0 * map.dh + 'px', width: (u1 - u0) * map.dw + 'px', height: (v1 - v0) * map.dh + 'px',
       backgroundImage: 'url(' + IMG.open + ')', backgroundSize: map.dw + 'px ' + map.dh + 'px', backgroundPosition: (-u0 * map.dw) + 'px ' + (-v0 * map.dh) + 'px'}); };
-  let beaconRaf = 0;
-  addEventListener('scroll', () => { if (on || beaconRaf) return; beaconRaf = requestAnimationFrame(() => { beaconRaf = 0; placeBeacon(); }); }, {passive: true});
   beacon.addEventListener('click', () => setLights(true));
   let fx = 0, fy = 0, lightRaf = 0;
   addEventListener('pointermove', e => {
@@ -430,11 +429,11 @@ function initScene() {
     if (!map) return;
     const r = hero.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
     const d = Math.hypot(x - (map.ox + .41 * map.dw), y - (map.oy + .37 * map.dh)) / (map.dw * .25);
-    hero.style.setProperty('--lamp', Math.max(0, 1 - d).toFixed(3));
+    const lampV = Math.max(0, 1 - d).toFixed(3); glow.style.setProperty('--lamp', lampV); ambient.style.setProperty('--lamp', lampV);
     target = Math.max(-8, Math.min(8, -(x - (map.ox + .755 * map.dw)) / (map.dw * .3) * 8));
     if (!rafS) rafS = requestAnimationFrame(loop);
   });
-  hero.addEventListener('pointerleave', () => { hero.style.setProperty('--lamp', 0); target = 0; if (!rafS) rafS = requestAnimationFrame(loop); });
+  hero.addEventListener('pointerleave', () => { glow.style.setProperty('--lamp', 0); ambient.style.setProperty('--lamp', 0); target = 0; if (!rafS) rafS = requestAnimationFrame(loop); });
 
   /* --- UFO: clicks charge the beam --- */
   const spark = burst => {
@@ -449,8 +448,8 @@ function initScene() {
   ufoHit.addEventListener('click', e => {
     e.stopPropagation();
     charge = Math.min(5, charge + 1); clearTimeout(chargeT);
-    chargeT = setTimeout(() => { charge = 0; beam.style.setProperty('--beam', .3); hero.style.setProperty('--pull', 0); }, 2500);
-    beam.style.setProperty('--beam', (.3 + charge * .12).toFixed(2)); hero.style.setProperty('--pull', (charge / 5).toFixed(2));
+    chargeT = setTimeout(() => { charge = 0; beam.style.setProperty('--beam', .3); ring.style.setProperty('--pull', 0); }, 2500);
+    beam.style.setProperty('--beam', (.3 + charge * .12).toFixed(2)); ring.style.setProperty('--pull', (charge / 5).toFixed(2));
     for (let i = 0; i < 12 + charge * 6; i++) setTimeout(() => spark(true), i * 16);
     replay(hero, 'ufo-zap'); replay(flash, 'go');
     if (charge === 5) { frog.startle(); tags.abduct(); } else tags.tug(charge);
