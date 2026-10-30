@@ -70,6 +70,28 @@ function waveTitle(card) {
   gsap.fromTo(card._chars, {yPercent: 70, autoAlpha: 0, rotate: 8}, {yPercent: 0, autoAlpha: 1, rotate: 0, duration: .7, stagger: .035, ease: 'back.out(1.7)', overwrite: true, clearProps: 'opacity,visibility,transform'});
 }
 
+/* ---------- text cards: unfold top-down, then their contents rise in one after another ---------- */
+const CARD_SEL = '.project:not(.hidden), .skill-card, .timeline article, .experience-side, .contact-main, .contact-panel';
+const PILL_SEL = '.project-meta span, .skill-pills span, .exp-pills span, .contact-status span, .experience-focus span, .heroCta a';
+function resetCards(items) {
+  if (!window.gsap || !items.length) return;
+  gsap.killTweensOf(items); gsap.killTweensOf(items.flatMap(it => [...it.children, ...$$(PILL_SEL, it)]));
+  gsap.set(items, {clearProps: 'opacity,visibility,transform,clipPath'});
+}
+function revealCards(items, delay = 0) {
+  if (!window.gsap || reduced.matches || !items.length) return;
+  resetCards(items);
+  items.forEach((it, n) => {
+    const r = getComputedStyle(it).borderTopLeftRadius || '16px', at = delay + n * .08;
+    const parts = [...it.children].filter(el => el.tagName !== 'I' && !el.classList.contains('fx-dim'));
+    const pills = $$(PILL_SEL, it), arrow = $(':scope > i', it);
+    gsap.fromTo(it, {clipPath: `inset(0 0 100% 0 round ${r})`, y: 18, autoAlpha: 0}, {clipPath: `inset(0 0 0% 0 round ${r})`, y: 0, autoAlpha: 1, duration: .75, delay: at, ease: 'expo.out', clearProps: 'opacity,visibility,transform,clipPath'});
+    gsap.fromTo(parts, {y: 14, autoAlpha: 0}, {y: 0, autoAlpha: 1, duration: .5, delay: at + .12, stagger: .045, ease: 'power3.out', clearProps: 'opacity,visibility,transform'});
+    if (pills.length) gsap.fromTo(pills, {scale: .8, autoAlpha: 0}, {scale: 1, autoAlpha: 1, duration: .45, delay: at + .3, stagger: .03, ease: 'back.out(2)', clearProps: 'opacity,visibility,transform'});
+    if (arrow) gsap.fromTo(arrow, {rotate: -90, autoAlpha: 0}, {rotate: 0, autoAlpha: 1, duration: .6, delay: at + .25, ease: 'back.out(1.8)', clearProps: 'opacity,visibility,transform'});
+  });
+}
+
 /* ---------- deck (desktop only, only if every chapter fits the screen) ---------- */
 const chapters = $$('.ref-card');
 chapters.forEach(c => { const h = $('.chapter-head h2', c); if (h) c._chars = splitTitle(h); });
@@ -115,6 +137,7 @@ function contentFits() {
 
 function build() {
   teardown();
+  resetCards($$(CARD_SEL));
   if (!window.gsap || !window.ScrollTrigger || !chapters.length) return;
   gsap.registerPlugin(ScrollTrigger);
   chapters.forEach(c => {
@@ -151,7 +174,7 @@ function build() {
         if (idx === activeIndex) return;
         activeIndex = idx;
         chapters.forEach((c, i) => { if (c._body) c._body.inert = i !== idx; c.classList.toggle('is-open', i === idx); });
-        if (idx >= 0) { setActiveNav(chapters[idx].id); waveTitle(chapters[idx]); }
+        if (idx >= 0) { setActiveNav(chapters[idx].id); waveTitle(chapters[idx]); if (chapters[idx]._body) revealCards($$(CARD_SEL, chapters[idx]._body), .1); }
       };
       deck.sync = () => { const st = tl.scrollTrigger; tl.progress(st.progress); syncDeck(tl.time()); };
       for (let k = 0; k < n; k++) {
@@ -162,7 +185,6 @@ function build() {
           if (prev.dim !== next.dim) tl.to(c._dim, {opacity: next.dim}, at);
           if (prev.body !== next.body && c._body) tl.to(c._body, {autoAlpha: next.body, y: 0, duration: next.body ? trans * .6 : trans * .35, ease: 'power2.out'}, next.body ? at + trans * .4 : at);
         });
-        if (chapters[k]._body) tl.fromTo($$('.project:not(.hidden), .skill-card, .timeline article, .experience-side, .contact-main, .contact-panel', chapters[k]._body), {y: 24}, {y: 0, stagger: .05, duration: trans * .6, ease: 'power2.out', immediateRender: false}, at + trans * .4);
       }
       tl.to({}, {duration: hold}, n * cycle - hold);
       activeIndex = -2;
@@ -171,9 +193,11 @@ function build() {
     } else {
       chapters.forEach(card => {
         if (reduced.matches) return;
-        const items = $$('.chapter-head, .filters, .project:not(.hidden), .skill-card, .timeline article, .experience-side, .contact-main, .contact-panel', card);
-        gsap.from(items, {y: 26, autoAlpha: 0, duration: .6, stagger: .05, ease: 'power2.out', clearProps: 'opacity,visibility,transform',
+        gsap.from($$('.chapter-head, .filters', card), {y: 26, autoAlpha: 0, duration: .6, stagger: .05, ease: 'power2.out', clearProps: 'opacity,visibility,transform',
           scrollTrigger: {trigger: card, start: 'top 88%', once: true}});
+        const cards = $$(CARD_SEL, card);
+        gsap.set(cards, {autoAlpha: 0});
+        ScrollTrigger.batch(cards, {start: 'top 92%', once: true, onEnter: batch => revealCards(batch)});
         if (card._chars) { gsap.set(card._chars, {autoAlpha: 0}); ScrollTrigger.create({trigger: card, start: 'top 80%', once: true, onEnter: () => waveTitle(card)}); }
         ScrollTrigger.create({trigger: card, start: 'top 50%', end: 'bottom 50%', onToggle: s => s.isActive && setActiveNav(card.id)});
         gsap.fromTo(card, {scale: .92}, {scale: 1, ease: 'none', scrollTrigger: {trigger: card, start: 'top bottom', end: 'top 35%', scrub: .4}});
@@ -304,6 +328,7 @@ function initHover() {
   $$('.projects-body .project, .skillgrid .skill-card, .timeline article, .workflow > div').forEach(card => {
     card.classList.add('fx-card');
     const sp = spring({rx: 0, ry: 0, z: 0}, (v, moving) => {
+      if (gsap.isTweening(card)) return; // let the reveal finish first
       card.style.transform = moving || v.z ? `perspective(900px) rotateX(${v.rx.toFixed(2)}deg) rotateY(${v.ry.toFixed(2)}deg) translateY(${v.z.toFixed(2)}px)` : '';
     });
     card.addEventListener('pointermove', e => {
