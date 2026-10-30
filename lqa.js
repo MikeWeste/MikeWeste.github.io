@@ -218,6 +218,21 @@ $$('a[href^="#"]').forEach(link => link.addEventListener('click', e => {
 chapters.forEach(c => { const h = $('.chapter-head', c); if (h) h.addEventListener('click', () => { if (deck && !c.classList.contains('is-open')) { history.replaceState(null, '', '#' + c.id); navigateTo(c.id, !reduced.matches); } }); });
 addEventListener('hashchange', () => navigateTo(location.hash.slice(1) || 'home', false));
 
+/* ---------- deck snap: when scrolling stops mid-way, settle on the nearest chapter ---------- */
+let snapT = 0;
+function snapDeck() {
+  if (!deck || !deck.tl || reduced.matches) return;
+  const st = deck.tl.scrollTrigger, y = scrollY;
+  if (y <= st.start + 2 || y >= st.end - 2) return;
+  const at = time => st.start + (st.end - st.start) * time / deck.duration;
+  const points = [st.start, ...chapters.map((_, i) => at(i * deck.cycle + deck.trans + deck.hold / 2)), st.end];
+  const target = points.reduce((best, p) => Math.abs(p - y) < Math.abs(best - y) ? p : best);
+  if (Math.abs(target - y) < 4) return;
+  if (lenis) lenis.scrollTo(target, {duration: .8, easing: t => 1 - Math.pow(1 - t, 3)});
+  else scrollTo({top: target, behavior: 'smooth'});
+}
+addEventListener('scroll', () => { clearTimeout(snapT); snapT = setTimeout(snapDeck, 180); }, {passive: true});
+
 /* ---------- progress bar ---------- */
 const bar = document.createElement('div'); bar.className = 'fx-progress'; document.body.append(bar);
 let raf = 0;
@@ -252,30 +267,64 @@ function initLenis(cb) {
   document.head.append(s);
 }
 
-/* ---------- hover interactions ---------- */
+/* ---------- springs: damped oscillators driven by one shared rAF loop ---------- */
+const springs = new Set();
+let springRaf = 0, springLast = 0;
+function stepSprings(now) {
+  const dt = Math.min(.032, (now - springLast) / 1000); springLast = now;
+  springs.forEach(s => {
+    let moving = false;
+    for (const key in s.tgt) {
+      const a = -s.k * (s.cur[key] - s.tgt[key]) - s.d * s.vel[key];
+      s.vel[key] += a * dt; s.cur[key] += s.vel[key] * dt;
+      if (Math.abs(s.vel[key]) > .01 || Math.abs(s.cur[key] - s.tgt[key]) > .01) moving = true;
+      else { s.cur[key] = s.tgt[key]; s.vel[key] = 0; }
+    }
+    s.apply(s.cur, moving);
+    if (!moving) springs.delete(s);
+  });
+  springRaf = springs.size ? requestAnimationFrame(stepSprings) : 0;
+}
+function spring(init, apply, k = 170, d = 14) {
+  const s = {cur: {...init}, vel: {}, tgt: {...init}, apply, k, d};
+  for (const key in init) s.vel[key] = 0;
+  s.to = (t, opts) => {
+    Object.assign(s.tgt, t);
+    if (opts) { s.k = opts.k ?? s.k; s.d = opts.d ?? s.d; }
+    springs.add(s);
+    if (!springRaf) { springLast = performance.now(); springRaf = requestAnimationFrame(stepSprings); }
+  };
+  return s;
+}
+
+/* ---------- hover interactions: cards tilt and buttons pull with inertia ---------- */
 function initHover() {
   if (!finePointer.matches || reduced.matches) return;
   $$('.projects-body .project, .skillgrid .skill-card, .timeline article, .workflow > div').forEach(card => {
     card.classList.add('fx-card');
+    const sp = spring({rx: 0, ry: 0, z: 0}, (v, moving) => {
+      card.style.transform = moving || v.z ? `perspective(900px) rotateX(${v.rx.toFixed(2)}deg) rotateY(${v.ry.toFixed(2)}deg) translateY(${v.z.toFixed(2)}px)` : '';
+    });
     card.addEventListener('pointermove', e => {
       const r = card.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
       card.style.setProperty('--mx', x * 100 + '%');
       card.style.setProperty('--my', y * 100 + '%');
-      card.style.transform = `perspective(900px) rotateX(${(.5 - y) * 4}deg) rotateY(${(x - .5) * 5}deg) translateY(-3px)`;
+      sp.to({rx: (.5 - y) * 6, ry: (x - .5) * 8, z: -4}, {k: 180, d: 18});
     });
-    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+    // softer damping on release, so the card wobbles back into place
+    card.addEventListener('pointerleave', () => sp.to({rx: 0, ry: 0, z: 0}, {k: 140, d: 9}));
   });
   $$('.heroCta a').forEach(btn => {
     btn.classList.add('fx-magnet');
+    const sp = spring({x: 0, y: 0}, (v, moving) => { btn.style.transform = moving || v.x || v.y ? `translate(${v.x.toFixed(2)}px, ${v.y.toFixed(2)}px)` : ''; });
     btn.addEventListener('pointermove', e => {
       const r = btn.getBoundingClientRect();
-      btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .15}px, ${(e.clientY - r.top - r.height / 2) * .25}px)`;
+      sp.to({x: (e.clientX - r.left - r.width / 2) * .25, y: (e.clientY - r.top - r.height / 2) * .35}, {k: 220, d: 16});
     });
-    btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+    btn.addEventListener('pointerleave', () => sp.to({x: 0, y: 0}, {k: 260, d: 8}));
   });
 }
-
 
 /* ---------- hero scene: lamp, UFO, frog ---------- */
 function initScene() {
@@ -395,7 +444,7 @@ function initScene() {
     beam.style.setProperty('--beam', (.3 + charge * .12).toFixed(2)); hero.style.setProperty('--pull', (charge / 5).toFixed(2));
     for (let i = 0; i < 12 + charge * 6; i++) setTimeout(() => spark(true), i * 16);
     replay(hero, 'ufo-zap'); replay(flash, 'go');
-    if (charge === 5) frog.startle();
+    if (charge === 5) { frog.startle(); tags.abduct(); } else tags.tug(charge);
   });
   let hoverT = 0;
   ufoHit.addEventListener('pointerenter', () => { hero.classList.add('ufo-hot'); clearInterval(hoverT); hoverT = setInterval(() => spark(false), 90); });
@@ -444,6 +493,198 @@ function initScene() {
     show('open'); schedule();
     frogHit.addEventListener('click', e => { e.stopPropagation(); state === 'awake' ? api.sleep() : api.wake(true); });
     return api;
+  })();
+
+  /* --- hero tags as physical bodies: UFO tractor beam, gravity, drag & throw --- */
+  const tags = (() => {
+    const els = $$('.hero-tags span', hero);
+    if (!els.length || reduced.matches) return {tug() {}, abduct() {}};
+    const G = 2400, MAXV = 3200;
+    const bodies = els.map(el => ({el, x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, on: false, home: null, drag: null}));
+    let raf = 0, last = 0, beamUntil = 0, restAt = 0, freeAt = 0, homing = false;
+    const wake = b => {
+      if (b.on) return;
+      const h = hero.getBoundingClientRect(), r = b.el.getBoundingClientRect();
+      b.home = {l: r.left - h.left, t: r.top - h.top, r: r.right - h.left, b: r.bottom - h.top, w: r.width, h: r.height};
+      b.on = true; b.el.classList.add('is-phys');
+    };
+    const render = b => { b.el.style.transform = 'translate(' + b.x.toFixed(1) + 'px,' + b.y.toFixed(1) + 'px) rotate(' + b.a.toFixed(1) + 'deg)'; };
+    const reset = () => {
+      bodies.forEach(b => { Object.assign(b, {x: 0, y: 0, vx: 0, vy: 0, a: 0, va: 0, on: false, drag: null}); b.el.style.transform = ''; b.el.classList.remove('is-phys', 'is-drag'); });
+      homing = false; beamUntil = 0; freeAt = 0; raf = 0;
+    };
+    const clampV = b => { const v = Math.hypot(b.vx, b.vy); if (v > MAXV) { b.vx *= MAXV / v; b.vy *= MAXV / v; } };
+    const center = b => ({x: (b.home.l + b.home.r) / 2 + b.x, y: (b.home.t + b.home.b) / 2 + b.y});
+    const limits = (b, H) => ({minX: 6 - b.home.l, maxX: H.width - 6 - b.home.r, minY: 6 - b.home.t, maxY: H.height - 10 - b.home.b});
+    // tag-to-tag collisions (axis-aligned boxes): they jostle in the beam and pile up on the floor
+    const collide = () => {
+      for (let i = 0; i < bodies.length; i++) for (let j = i + 1; j < bodies.length; j++) {
+        const p = bodies[i], q = bodies[j];
+        if (!p.on || !q.on) continue;
+        const a = center(p), c = center(q), dx = c.x - a.x, dy = c.y - a.y;
+        const ox = (p.home.w + q.home.w) / 2 - Math.abs(dx), oy = (p.home.h + q.home.h) / 2 - Math.abs(dy);
+        if (ox <= 0 || oy <= 0) continue;
+        const pm = p.drag ? 0 : 1, qm = q.drag ? 0 : 1, inv = pm + qm;
+        if (!inv) continue;
+        const [nx, ny, depth] = ox < oy ? [Math.sign(dx) || 1, 0, ox] : [0, Math.sign(dy) || 1, oy];
+        p.x -= nx * depth * pm / inv; p.y -= ny * depth * pm / inv;
+        q.x += nx * depth * qm / inv; q.y += ny * depth * qm / inv;
+        const vn = (q.vx - p.vx) * nx + (q.vy - p.vy) * ny;
+        if (vn < 0) {
+          const imp = -1.3 * vn / inv;
+          p.vx -= imp * pm * nx; p.vy -= imp * pm * ny; q.vx += imp * qm * nx; q.vy += imp * qm * ny;
+          p.va += (Math.random() - .5) * imp * .2 * pm; q.va += (Math.random() - .5) * imp * .2 * qm;
+        }
+      }
+    };
+    const step = now => {
+      if (!active() || !map) return reset();
+      const dt = Math.min(.033, (now - last) / 1000); last = now;
+      const H = hero.getBoundingClientRect(), beamOn = now < beamUntil;
+      const bx = map.ox + .755 * map.dw;
+      let moving = false;
+      bodies.forEach((b, i) => {
+        if (!b.on || b.drag) { if (b.drag) moving = true; return; }
+        const c = center(b);
+        if (homing) { // spring back to the original spot
+          b.vx += (-120 * b.x - 13 * b.vx) * dt; b.vy += (-120 * b.y - 13 * b.vy) * dt; b.va += (-120 * b.a - 13 * b.va) * dt;
+        } else if (beamOn) { // rise in a swaying column inside the beam
+          const tx = bx + Math.sin(now / 330 + i * 1.9) * map.dw * .025, ty = map.oy + (.2 + i * .055) * map.dh;
+          b.vx += ((tx - c.x) * 16 - b.vx * 5) * dt; b.vy += ((ty - c.y) * 16 - b.vy * 5) * dt;
+          b.va += (Math.sin(now / 260 + i) * 220 - b.va) * dt * 2;
+        } else {
+          b.vy += G * dt; b.va *= .995;
+        }
+        b.x += b.vx * dt; b.y += b.vy * dt; b.a += b.va * dt;
+        if (Math.abs(b.vx) + Math.abs(b.vy) + Math.abs(b.va) > 6 || (homing && Math.abs(b.x) + Math.abs(b.y) + Math.abs(b.a) > .6)) moving = true;
+      });
+      if (!homing) {
+        collide();
+        bodies.forEach(b => {
+          if (!b.on) return;
+          const L = limits(b, H);
+          if (b.x < L.minX) { b.x = L.minX; b.vx = Math.abs(b.vx) * .5; b.va *= -.6; }
+          if (b.x > L.maxX) { b.x = L.maxX; b.vx = -Math.abs(b.vx) * .5; b.va *= -.6; }
+          if (b.y < L.minY) { b.y = L.minY; b.vy = Math.abs(b.vy) * .4; }
+          if (b.y > L.maxY) { // floor: bounce, friction, roll flat
+            b.y = L.maxY;
+            if (b.vy > 90) { b.vy = -b.vy * .42; b.va += b.vx * .25; } else b.vy = 0;
+            b.vx *= .9; b.va *= .82;
+          }
+          // resting on the floor or on another tag: friction and settle flat
+          if (Math.abs(b.vy) < 40 && !beamOn && !b.drag) { b.vx *= .94; b.va *= .85; b.a += (Math.round(b.a / 180) * 180 - b.a) * .12; }
+        });
+      }
+      bodies.forEach(b => b.on && render(b));
+      if (homing && !moving) return reset();
+      // fly home once things settle, or 5s after the last throw / beam at the latest (piles can jitter forever)
+      if (!homing && !beamOn && !bodies.some(b => b.drag)) {
+        if (!freeAt) freeAt = now;
+        if (moving) restAt = now;
+        if (now - restAt > 2200 || now - freeAt > 5000) homing = true;
+      } else freeAt = 0;
+      raf = requestAnimationFrame(step);
+    };
+    const start = () => { if (!raf) { last = restAt = performance.now(); raf = requestAnimationFrame(step); } };
+    if (finePointer.matches) bodies.forEach(b => {
+      b.el.addEventListener('pointerdown', e => {
+        e.preventDefault(); wake(b); homing = false;
+        try { b.el.setPointerCapture(e.pointerId); } catch (_) {}
+        b.drag = {px: e.clientX, py: e.clientY, t: performance.now()}; b.vx = b.vy = 0;
+        b.el.classList.add('is-drag'); start();
+      });
+      b.el.addEventListener('pointermove', e => {
+        if (!b.drag) return;
+        const t = performance.now(), ms = Math.max(8, t - b.drag.t), dx = e.clientX - b.drag.px, dy = e.clientY - b.drag.py;
+        b.x += dx; b.y += dy;
+        b.vx = b.vx * .4 + dx / ms * 600; b.vy = b.vy * .4 + dy / ms * 600; b.va = b.vx * .12;
+        Object.assign(b.drag, {px: e.clientX, py: e.clientY, t});
+      });
+      const drop = () => { if (!b.drag) return; b.drag = null; clampV(b); b.el.classList.remove('is-drag'); restAt = performance.now(); freeAt = 0; };
+      b.el.addEventListener('pointerup', drop); b.el.addEventListener('pointercancel', drop);
+    });
+    return {
+      tug(power) { // each UFO click: tags hop and spring back
+        if (bodies.some(b => b.on && !homing)) return;
+        bodies.forEach((b, i) => { wake(b); b.vy -= 260 + power * 110 + Math.random() * 90; b.vx += (Math.random() - .5) * 140 + power * 40; b.va += (Math.random() - .5) * 240; });
+        homing = true; start();
+      },
+      abduct() { // full charge: pulled into the beam, then dropped
+        bodies.forEach(b => { wake(b); b.drag = null; b.el.classList.remove('is-drag'); });
+        homing = false; beamUntil = performance.now() + 1900; start();
+      },
+    };
+  })();
+
+  /* --- fireflies circle the lamp and dodge the cursor; click one and the frog grabs it --- */
+  (() => {
+    if (reduced.matches || !scene.animate) return;
+    const tongue = mk('fx-tongue'); scene.append(tongue);
+    const lamp = () => ({x: map.ox + .41 * map.dw, y: map.oy + .38 * map.dh, r: .11 * map.dw});
+    const mouth = () => ({x: map.ox + .625 * map.dw, y: map.oy + .615 * map.dh});
+    const spawn = f => { const L = lamp(), t = Math.random() * 6.28; f.x = L.x + Math.cos(t) * L.r; f.y = L.y + Math.sin(t) * L.r; f.vx = f.vy = 0; };
+    const flies = Array.from({length: finePointer.matches ? 7 : 4}, (_, i) => {
+      const el = mk('fx-fly', 'button'); el.type = 'button'; el.tabIndex = -1; el.setAttribute('aria-hidden', 'true');
+      el.style.setProperty('--d', (-i * .37).toFixed(2) + 's');
+      scene.append(el);
+      const f = {el, x: 0, y: 0, vx: 0, vy: 0, w: Math.random() * 6.28, gone: false}; spawn(f);
+      el.addEventListener('click', e => { e.stopPropagation(); grab(f); });
+      return f;
+    });
+    let ptr = null, raf = 0, last = 0, licking = false;
+    hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); ptr = {x: e.clientX - r.left, y: e.clientY - r.top}; }, {passive: true});
+    hero.addEventListener('pointerleave', () => { ptr = null; });
+    const step = now => {
+      if (!active() || !map) { raf = 0; return; }
+      const dt = Math.min(.033, (now - last) / 1000); last = now;
+      const L = lamp();
+      flies.forEach(f => {
+        if (f.gone) return;
+        f.w += (Math.random() - .5) * 5 * dt;
+        let ax = Math.cos(f.w) * 140, ay = Math.sin(f.w) * 140;
+        const dx = L.x - f.x, dy = L.y - f.y, d = Math.hypot(dx, dy) || 1;
+        if (d > L.r) { ax += dx / d * (d - L.r) * 4; ay += dy / d * (d - L.r) * 4; } // drawn to the light
+        if (ptr) { // scatter from the cursor
+          const px = f.x - ptr.x, py = f.y - ptr.y, pd = Math.hypot(px, py) || 1;
+          if (pd < 130) { const k = (130 - pd) * 30; ax += px / pd * k; ay += py / pd * k; }
+        }
+        f.vx = (f.vx + ax * dt) * .985; f.vy = (f.vy + ay * dt) * .985;
+        const v = Math.hypot(f.vx, f.vy), max = 220; if (v > max) { f.vx *= max / v; f.vy *= max / v; }
+        f.x += f.vx * dt; f.y += f.vy * dt;
+        f.el.style.transform = 'translate(' + f.x.toFixed(1) + 'px,' + f.y.toFixed(1) + 'px)';
+      });
+      raf = requestAnimationFrame(step);
+    };
+    const start = () => { if (!raf && active()) { last = performance.now(); raf = requestAnimationFrame(step); } };
+    new IntersectionObserver(([e]) => { if (e.isIntersecting) start(); }).observe(hero);
+    document.addEventListener('visibilitychange', start);
+    start();
+
+    function grab(f) {
+      if (f.gone || licking) return;
+      if (hero.classList.contains('frog-asleep')) { frog.wake(true); setTimeout(() => grab(f), 380); return; }
+      licking = true; f.gone = true; f.el.classList.add('gone');
+      const M = mouth(), dx = f.x - M.x, dy = f.y - M.y, len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+      const thick = Math.max(6, map.dw * .007);
+      Object.assign(tongue.style, {left: M.x + 'px', top: M.y - thick / 2 + 'px', width: len + 'px', height: thick + 'px', fontSize: thick * .75 + 'px'});
+      const rot = 'rotate(' + ang.toFixed(1) + 'deg) ';
+      tongue.animate([
+        {transform: rot + 'scaleX(0)'},
+        {transform: rot + 'scaleX(1.04)', offset: .35, easing: 'cubic-bezier(.2,.7,.3,1)'},
+        {transform: rot + 'scaleX(1)', offset: .45, easing: 'cubic-bezier(.6,0,.8,.6)'},
+        {transform: rot + 'scaleX(0)'},
+      ], {duration: 520});
+      // the fly rides the tongue tip back into the mouth
+      const ride = f.el.animate([
+        {transform: 'translate(' + f.x + 'px,' + f.y + 'px)'},
+        {transform: 'translate(' + f.x + 'px,' + f.y + 'px)', offset: .45, easing: 'cubic-bezier(.6,0,.8,.6)'},
+        {transform: 'translate(' + M.x + 'px,' + M.y + 'px) scale(.2)', opacity: 0},
+      ], {duration: 520, fill: 'forwards'});
+      ride.onfinish = () => {
+        licking = false; replay(scene, 'jolt');
+        setTimeout(() => { ride.cancel(); spawn(f); f.gone = false; f.el.classList.remove('gone'); f.el.animate([{opacity: 0}, {opacity: 1}], {duration: 900}); }, 2500 + Math.random() * 2500);
+      };
+    }
   })();
 }
 
