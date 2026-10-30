@@ -11,29 +11,68 @@ const navH = () => header ? header.offsetHeight : 0;
 /* ---------- i18n ---------- */
 const dict = {ru:{navProjects:"Проекты",navSkills:"Навыки",navExperience:"Опыт",resume:"Резюме",lead:"Делаю игровой опыт лучше: QA-мышление, игровые ассеты, Android-разработка и техническая диагностика.",seeWork:"Смотреть работы →",openResume:"Открыть резюме ↗",all:"Все",filterGame:"Игры / Арт",filterDev:"Разработка",filterSupport:"QA / Поддержка",rustTitle:"Скины и игровой пайплайн",rustText:"Blender, Substance 3D Painter и Photoshop. UV, PBR-материалы и ограничения texture maps для игровых ассетов.",jellyText:"Android-игра-головоломка, опубликованная в Google Play. Gameplay, UI, тестирование, сборки и релиз.",timeText:"Разработал и опубликовал Android-приложение: UI, сборки, тестирование на устройстве и релиз.",lookText:"Проект на Python/API с Telegram Mini App и инструментами развёртывания.",supportTitle:"Техническая диагностика",supportText:"Опыт 1–2 линии: воспроизведение проблемы, поиск вероятной причины, фиксация симптомов и шагов, эскалация с контекстом и сопровождение до решения.",s1:"Воспроизведение проблем · внимание к UI/UX · повторные проверки · понятное описание",supportRole:"Техническая и чат-поддержка",supportExp:"Поддержка в чатах на английском, диагностика Windows и ПО, логи, оформление обращений, эскалация и сопровождение до решения.",projHead:"Что я сделал",pBot:"Бот на Python: команды, пользовательские сценарии, интеграции с API и деплой.",pMini:"Фронтенд Mini App, связанный с Python-бэкендом через REST API.",pMcp:"MCP-серверы и API-коннекторы, связывающие AI-инструменты с внешними сервисами и данными.",pTime:"Android-приложение: UI, сборки, тесты на устройствах, релиз в Google Play.",pJelly:"Игра-головоломка: геймплей, UI, тестирование, релиз в Google Play.",pRust:"Скины в Blender и Substance 3D: UV, PBR, текстурные карты.",present:"н.в.",leadRole:"Бригадир · Операционная работа",leadText:"Координация команды, приоритизация, контроль качества и работа с инцидентами под нагрузкой.",adminRole:"Администратор · FIX PRICE",adminText:"Работа с клиентами, внутренними системами и операционными вопросами.",target:"ЦЕЛЕВАЯ РОЛЬ",contactTitle:"Game LQA · Game QA<br>Тестирование на русском",contactText:"Открыт к удалённым вакансиям Game LQA / QA. Русский — родной · английский — Intermediate.",resume2:"Смотреть резюме"}};
 dict.en = Object.fromEntries($$('[data-t]').map(el => [el.dataset.t, el.innerHTML]));
-function lang(l) {
+function lang(l, animate) {
+  if (animate && l === document.documentElement.lang) return;
   document.documentElement.lang = l;
   $$('[data-lang]').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
-  $$('[data-t]').forEach(el => { const v = dict[l]?.[el.dataset.t]; if (v !== undefined) el.innerHTML = v; });
   store.set('portfolioLang', l);
-  scheduleRebuild();
+  const els = $$('[data-t]').filter(el => dict[l]?.[el.dataset.t] !== undefined && el.innerHTML !== dict[l][el.dataset.t]);
+  const apply = () => { els.forEach(el => { el.innerHTML = dict[l][el.dataset.t]; }); };
+  if (!animate || reduced.matches || !window.gsap || !els.length) { apply(); return scheduleRebuild(); }
+  // crossfade: blur text out, swap, blur back in with a light stagger
+  const token = lang.token = (lang.token || 0) + 1;
+  gsap.to(els, {autoAlpha: 0, y: -6, filter: 'blur(4px)', duration: .18, ease: 'power1.in', overwrite: true, onComplete() {
+    if (token !== lang.token) return;
+    apply();
+    gsap.fromTo(els, {autoAlpha: 0, y: 8, filter: 'blur(4px)'}, {autoAlpha: 1, y: 0, filter: 'blur(0px)', duration: .4, ease: 'power2.out', stagger: {amount: .2}, clearProps: 'opacity,visibility,transform,filter', onComplete: scheduleRebuild});
+  }});
 }
-$$('[data-lang]').forEach(b => b.addEventListener('click', () => lang(b.dataset.lang)));
+$$('[data-lang]').forEach(b => b.addEventListener('click', () => lang(b.dataset.lang, true)));
 const yearEl = $('#year'); if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-/* ---------- filters ---------- */
+/* ---------- filters (FLIP: leaving cards fade out, the rest glide to new spots) ---------- */
+let filterToken = 0, refreshT = 0;
 $$('[data-filter]').forEach(b => b.addEventListener('click', e => {
   e.stopPropagation();
+  if (b.classList.contains('active')) return;
   $$('[data-filter]').forEach(x => x.classList.toggle('active', x === b));
-  const f = b.dataset.filter;
-  const cards = $$('[data-cat]');
-  cards.forEach(c => c.classList.toggle('hidden', f !== 'all' && c.dataset.cat !== f));
-  if (window.gsap && !reduced.matches) gsap.fromTo(cards.filter(c => !c.classList.contains('hidden')), {y: 14, autoAlpha: 0}, {y: 0, autoAlpha: 1, duration: .35, stagger: .04, ease: 'power2.out', overwrite: true, clearProps: 'opacity,visibility,transform'});
-  scheduleRebuild();
+  const f = b.dataset.filter, token = ++filterToken;
+  const cards = $$('[data-cat]'), visible = () => cards.filter(c => !c.classList.contains('hidden'));
+  const keep = c => f === 'all' || c.dataset.cat === f;
+  const apply = () => { cards.forEach(c => c.classList.toggle('hidden', !keep(c))); clearTimeout(refreshT); if (!deck) refreshT = setTimeout(() => window.ScrollTrigger && ScrollTrigger.refresh(), 900); };
+  if (!window.gsap || reduced.matches) return apply();
+  const flip = () => {
+    const first = new Map(visible().map(c => [c, c.getBoundingClientRect()]));
+    apply();
+    visible().forEach((c, i) => {
+      const a = first.get(c), z = c.getBoundingClientRect();
+      if (a) gsap.fromTo(c, {x: a.left - z.left, y: a.top - z.top}, {x: 0, y: 0, autoAlpha: 1, scale: 1, duration: .55, ease: 'power3.out', overwrite: true, clearProps: 'opacity,visibility,transform'});
+      else gsap.fromTo(c, {autoAlpha: 0, scale: .94, y: 18}, {autoAlpha: 1, scale: 1, y: 0, duration: .5, delay: .1 + i * .05, ease: 'power3.out', overwrite: true, clearProps: 'opacity,visibility,transform'});
+    });
+  };
+  const leaving = visible().filter(c => !keep(c));
+  if (!leaving.length) return flip();
+  gsap.to(leaving, {autoAlpha: 0, scale: .94, duration: .2, ease: 'power1.in', overwrite: true, onComplete() {
+    gsap.set(leaving, {clearProps: 'opacity,visibility,transform'});
+    if (token === filterToken) flip();
+  }});
 }));
+
+/* ---------- chapter titles: split into letters for a wave reveal ---------- */
+function splitTitle(h) {
+  const text = h.textContent;
+  h.setAttribute('aria-label', text);
+  h.innerHTML = [...text].map(ch => '<span class="fx-ch" aria-hidden="true">' + (ch === ' ' ? '&nbsp;' : ch) + '</span>').join('');
+  return $$('.fx-ch', h);
+}
+function waveTitle(card) {
+  if (!card._chars || reduced.matches || !window.gsap) return;
+  gsap.fromTo(card._chars, {yPercent: 70, autoAlpha: 0, rotate: 8}, {yPercent: 0, autoAlpha: 1, rotate: 0, duration: .7, stagger: .035, ease: 'back.out(1.7)', overwrite: true, clearProps: 'opacity,visibility,transform'});
+}
 
 /* ---------- deck (desktop only, only if every chapter fits the screen) ---------- */
 const chapters = $$('.ref-card');
+chapters.forEach(c => { const h = $('.chapter-head h2', c); if (h) c._chars = splitTitle(h); });
 const navLinks = $$('.top nav a[href^="#"]');
 let ctx = null, deck = null, lenis = null, activeIndex = -1;
 
@@ -61,12 +100,16 @@ function applyGeo(state) {
 }
 function contentFits() {
   const H = deckH(), n = chapters.length;
+  // measure with every project shown, so filtering never flips the layout mode
+  const filtered = $$('[data-cat].hidden');
+  filtered.forEach(c => c.classList.remove('hidden'));
   const ok = chapters.every((card, i) => {
     const g = geo(i, i, H, n);
     card.style.top = g.top + 'px'; card.style.height = g.height + 'px';
     return !card._body || card._body.scrollHeight <= card._body.clientHeight + 4;
   });
   chapters.forEach(c => { c.style.top = ''; c.style.height = ''; });
+  filtered.forEach(c => c.classList.add('hidden'));
   return ok;
 }
 
@@ -101,14 +144,16 @@ function build() {
           end: () => '+=' + Math.round(innerHeight * duration * .75),
           pin: deck.pin, pinSpacing: true, scrub: lenis ? true : .6, invalidateOnRefresh: true, anticipatePin: 1
         },
-        onUpdate() {
-          const idx = Math.max(-1, Math.min(n - 1, Math.floor((this.time() - trans * .5) / cycle)));
-          if (idx === activeIndex) return;
-          activeIndex = idx;
-          chapters.forEach((c, i) => { if (c._body) c._body.inert = i !== idx; c.classList.toggle('is-open', i === idx); });
-          if (idx >= 0) setActiveNav(chapters[idx].id);
-        }
+        onUpdate() { syncDeck(this.time()); }
       });
+      const syncDeck = time => {
+        const idx = Math.max(-1, Math.min(n - 1, Math.floor((time - trans * .5) / cycle)));
+        if (idx === activeIndex) return;
+        activeIndex = idx;
+        chapters.forEach((c, i) => { if (c._body) c._body.inert = i !== idx; c.classList.toggle('is-open', i === idx); });
+        if (idx >= 0) { setActiveNav(chapters[idx].id); waveTitle(chapters[idx]); }
+      };
+      deck.sync = () => { const st = tl.scrollTrigger; tl.progress(st.progress); syncDeck(tl.time()); };
       for (let k = 0; k < n; k++) {
         const at = k * cycle;
         chapters.forEach((c, i) => {
@@ -129,6 +174,7 @@ function build() {
         const items = $$('.chapter-head, .filters, .project:not(.hidden), .skill-card, .timeline article, .experience-side, .contact-main, .contact-panel', card);
         gsap.from(items, {y: 26, autoAlpha: 0, duration: .6, stagger: .05, ease: 'power2.out', clearProps: 'opacity,visibility,transform',
           scrollTrigger: {trigger: card, start: 'top 88%', once: true}});
+        if (card._chars) { gsap.set(card._chars, {autoAlpha: 0}); ScrollTrigger.create({trigger: card, start: 'top 80%', once: true, onEnter: () => waveTitle(card)}); }
         ScrollTrigger.create({trigger: card, start: 'top 50%', end: 'bottom 50%', onToggle: s => s.isActive && setActiveNav(card.id)});
         gsap.fromTo(card, {scale: .92}, {scale: 1, ease: 'none', scrollTrigger: {trigger: card, start: 'top bottom', end: 'top 35%', scrub: .4}});
         const next = card.nextElementSibling && card.nextElementSibling.classList.contains('ref-card') ? card.nextElementSibling : null;
@@ -140,10 +186,11 @@ function build() {
     }
   });
   ScrollTrigger.refresh();
+  if (deck) deck.sync();
 }
 
 let rebuildT;
-function scheduleRebuild() { clearTimeout(rebuildT); rebuildT = setTimeout(() => { const y = scrollY; build(); scrollTo(0, y); }, 120); }
+function scheduleRebuild() { clearTimeout(rebuildT); rebuildT = setTimeout(() => { const y = scrollY; build(); if (lenis) lenis.scrollTo(y, {immediate: true, force: true}); else scrollTo(0, y); if (deck) { ScrollTrigger.update(); deck.sync(); } }, 120); }
 
 /* ---------- navigation ---------- */
 function targetY(id) {
