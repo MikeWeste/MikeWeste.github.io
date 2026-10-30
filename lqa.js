@@ -356,14 +356,16 @@ function initHover() {
 function initScene() {
   const hero = $('.ref-hero'); if (!hero) return;
   const IW = 1672, IH = 941, root = document.documentElement;
-  const IMG = {open: 'assets/frog-eyes-open.webp', sleep: 'assets/frog-eyes-sleep.webp', closed: 'assets/frog-eyes-closed.webp'};
+  const IMG = {sleep: 'assets/frog-eyes-sleep.webp', closed: 'assets/frog-eyes-closed.webp', lampOn: 'assets/lamp-on.webp', lampOff: 'assets/lamp-off.webp'};
+  // hanging lamp, in source-image px (1672x941): cord centre x, pivot y above the frame, sprite size, bulb centre (fraction of height)
+  const LAMP = {px: 687.5, py: -150, w: 150.8, h: 707.2, bulb: .79};
   Object.values(IMG).forEach(src => { const i = new Image(); i.src = src; });
   const mk = (cls, tag = 'div') => { const e = document.createElement(tag); e.className = cls; return e; };
   const replay = (el, cls) => { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); };
   const scene = mk('fx-scene');
   const frogSleep = mk('fx-frog'), frogClosed = mk('fx-frog');
   frogSleep.style.backgroundImage = 'url(' + IMG.sleep + ')'; frogClosed.style.backgroundImage = 'url(' + IMG.closed + ')';
-  const night = mk('fx-night'), ambient = mk('fx-ambient'), glow = mk('fx-lamp-glow'), dark = mk('fx-lamp-dark');
+  const night = mk('fx-night'), ambient = mk('fx-ambient'), glow = mk('fx-lamp-glow');
   const beamWrap = mk('fx-beam-wrap'), beam = mk('fx-beam'), dust = mk('fx-dust'), ring = mk('fx-ufo-ring'), flash = mk('fx-ufo-flash');
   beamWrap.append(beam, dust);
   const zzz = mk('fx-zzz');
@@ -371,7 +373,11 @@ function initScene() {
   [lampHit, ufoHit, frogHit].forEach(x => x.type = 'button');
   lampHit.setAttribute('aria-label', 'Lights'); ufoHit.setAttribute('aria-label', 'UFO beam'); frogHit.setAttribute('aria-label', 'Wake up / sleep frog');
   glow.append(mk('fx-lamp-core'));
-  scene.append(frogSleep, frogClosed, night, ambient, glow, dark, ring, beamWrap, flash, zzz, lampHit, ufoHit, frogHit);
+  const pend = mk('fx-lamp'), lampOffImg = mk('fx-lamp-img', 'img'), lampOnImg = mk('fx-lamp-img fx-lamp-on', 'img');
+  lampOffImg.src = IMG.lampOff; lampOnImg.src = IMG.lampOn;
+  [lampOffImg, lampOnImg].forEach(i => { i.alt = ''; i.draggable = false; });
+  pend.append(glow, lampOffImg, lampOnImg, lampHit);
+  scene.append(frogSleep, frogClosed, night, ambient, pend, ring, beamWrap, flash, zzz, ufoHit, frogHit);
   hero.append(scene);
 
   // page-wide darkness with flashlight
@@ -380,9 +386,10 @@ function initScene() {
   lightsBtn.type = 'button'; lightsBtn.innerHTML = '<i></i><span>LIGHTS ON</span>';
   const beacon = mk('fx-lamp-beacon', 'button'); beacon.type = 'button'; beacon.setAttribute('aria-label', 'Lights on');
   document.body.append(lights, beacon, lightsBtn);
-  const placeBeacon = () => { if (!map) return; const r = hero.getBoundingClientRect(); const u0 = .30, v0 = .0, u1 = .52, v1 = .58;
-    Object.assign(beacon.style, {left: r.left + scrollX + map.ox + u0 * map.dw + 'px', top: r.top + scrollY + map.oy + v0 * map.dh + 'px', width: (u1 - u0) * map.dw + 'px', height: (v1 - v0) * map.dh + 'px',
-      backgroundImage: 'url(' + IMG.open + ')', backgroundSize: map.dw + 'px ' + map.dh + 'px', backgroundPosition: (-u0 * map.dw) + 'px ' + (-v0 * map.dh) + 'px'}); };
+  // in the dark the beacon is the same pendulum drawn above the darkness, clipped to socket + bulb
+  const placeBeacon = () => { if (!map) return; const r = hero.getBoundingClientRect(), k = map.dw / 1672;
+    Object.assign(beacon.style, {left: r.left + scrollX + map.ox + (LAMP.px - LAMP.w / 2) * k + 'px', top: r.top + scrollY + map.oy + LAMP.py * k + 'px',
+      width: LAMP.w * k + 'px', height: LAMP.h * k + 'px', backgroundImage: 'url(' + IMG.lampOff + ')', transform: pend.style.transform}); };
   beacon.addEventListener('click', () => setLights(true));
   let fx = 0, fy = 0, lightRaf = 0;
   addEventListener('pointermove', e => {
@@ -408,8 +415,10 @@ function initScene() {
       const m = 'radial-gradient(ellipse ' + (.16 * dw) + 'px ' + (.2 * dh) + 'px at ' + (ox + .625 * dw) + 'px ' + (oy + .56 * dh) + 'px,#000 70%,transparent 100%)';
       f.style.webkitMaskImage = f.style.maskImage = m;
     });
-    box(glow, .30, .20, .52, .60); box(dark, .355, .25, .465, .50); box(ambient, .10, -.1, .72, .95);
-    box(lampHit, .36, .10, .46, .50);
+    const k = dw / 1672, pw = LAMP.w * k, ph = LAMP.h * k, gw = .22 * dw, gh = .4 * dh;
+    Object.assign(pend.style, {left: ox + (LAMP.px - LAMP.w / 2) * k + 'px', top: oy + LAMP.py * k + 'px', width: pw + 'px', height: ph + 'px'});
+    Object.assign(glow.style, {left: (pw - gw) / 2 + 'px', top: ph * LAMP.bulb - gh / 2 + 'px', width: gw + 'px', height: gh + 'px'});
+    box(ambient, .10, -.1, .72, .95);
     box(beamWrap, .67, .165, .84, .70); box(ring, .70, .09, .81, .21); box(flash, .62, 0, .89, .3);
     box(ufoHit, .63, .03, .88, .62);
     box(frogHit, .49, .43, .76, .74); box(zzz, .70, .30, .80, .46);
@@ -428,7 +437,7 @@ function initScene() {
     off: {b: [1, .1, .85, .15, 1, .05, 0], at: [0, .1, .18, .32, .44, .62, 1]},
     on: {b: [0, .75, .1, .9, .3, 1, 1], at: [0, .12, .22, .36, .5, .66, 1]},
   };
-  const lampLayers = [[lights, b => 1 - b], [night, b => 1 - b], [dark, b => (1 - b) * .55], [glow, b => b], [ambient, b => b * .8]];
+  const lampLayers = [[lights, b => 1 - b], [night, b => 1 - b], [glow, b => b], [lampOnImg, b => b], [ambient, b => b * .8]];
   const flick = ({b, at}) => lampLayers.filter(([el]) => el.animate).map(([el, f]) =>
     el.animate(b.map((v, i) => ({opacity: f(v), offset: at[i], easing: 'steps(1,end)'})), {duration: 560, fill: 'forwards'}));
   const setLights = v => {
@@ -443,9 +452,41 @@ function initScene() {
     };
     if (anims.length) anims[0].onfinish = end; else end();
   };
-  lampHit.addEventListener('click', e => { e.stopPropagation(); setLights(!on); });
+  lampHit.addEventListener('click', e => { e.stopPropagation(); setLights(!on); kick((Math.random() < .5 ? -1 : 1) * .55); });
   lightsBtn.addEventListener('click', () => setLights(true));
   addEventListener('keydown', e => { if (e.key === 'Escape' && !on) setLights(true); });
+
+  /* --- the lamp is a damped pendulum: brush it with the cursor and it swings, then settles --- */
+  let th = 0, om = 0, swingRaf = 0, swingLast = 0;
+  const W0 = 3.4, DAMP = .8; // natural frequency (rad/s), damping (1/s)
+  const bulbPos = () => { const k = map.dw / 1672, L = LAMP.h * k * LAMP.bulb, px = map.ox + LAMP.px * k, py = map.oy + LAMP.py * k;
+    return {x: px - L * Math.sin(th), y: py + L * Math.cos(th), L, r: 75 * k}; };
+  const renderLamp = () => { const t = 'rotate(' + th.toFixed(4) + 'rad)'; pend.style.transform = t; if (!on) beacon.style.transform = t; };
+  const swingStep = now => {
+    const dt = Math.min(.033, (now - swingLast) / 1000); swingLast = now;
+    om += (-W0 * W0 * Math.sin(th) - DAMP * om) * dt; th += om * dt;
+    if (Math.abs(th) < .0006 && Math.abs(om) < .003) { th = om = 0; renderLamp(); swingRaf = 0; return; }
+    renderLamp(); swingRaf = requestAnimationFrame(swingStep);
+  };
+  function kick(w) {
+    if (reduced.matches) return;
+    om = Math.max(-1.6, Math.min(1.6, om + w));
+    if (!swingRaf) { swingLast = performance.now(); swingRaf = requestAnimationFrame(swingStep); }
+  }
+  let lastPX = null, lastPT = 0;
+  if (finePointer.matches && !reduced.matches) hero.addEventListener('pointermove', e => {
+    if (!map) return;
+    const r = hero.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, t = performance.now();
+    if (lastPX !== null && t > lastPT) {
+      const b = bulbPos();
+      if (Math.hypot(x - b.x, y - b.y) < b.r * 1.25) { // the cursor drags the bulb along with it
+        const vx = Math.max(-2500, Math.min(2500, (x - lastPX) / (t - lastPT) * 1000));
+        kick((-vx / b.L - om) * .18);
+      }
+    }
+    lastPX = x; lastPT = t;
+  });
+  hero.addEventListener('pointerleave', () => { lastPX = null; });
 
   /* --- pointer: lamp proximity + beam follows cursor --- */
   let tilt = 0, target = 0, rafS = 0;
@@ -453,7 +494,7 @@ function initScene() {
   if (finePointer.matches && !reduced.matches) hero.addEventListener('pointermove', e => {
     if (!map) return;
     const r = hero.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-    const d = Math.hypot(x - (map.ox + .41 * map.dw), y - (map.oy + .37 * map.dh)) / (map.dw * .25);
+    const bp = bulbPos(), d = Math.hypot(x - bp.x, y - bp.y) / (map.dw * .25);
     const lampV = Math.max(0, 1 - d).toFixed(3); glow.style.setProperty('--lamp', lampV); ambient.style.setProperty('--lamp', lampV);
     target = Math.max(-8, Math.min(8, -(x - (map.ox + .755 * map.dw)) / (map.dw * .3) * 8));
     if (!rafS) rafS = requestAnimationFrame(loop);
@@ -476,7 +517,7 @@ function initScene() {
     chargeT = setTimeout(() => { charge = 0; beam.style.setProperty('--beam', .3); ring.style.setProperty('--pull', 0); }, 2500);
     beam.style.setProperty('--beam', (.3 + charge * .12).toFixed(2)); ring.style.setProperty('--pull', (charge / 5).toFixed(2));
     for (let i = 0; i < 12 + charge * 6; i++) setTimeout(() => spark(true), i * 16);
-    replay(hero, 'ufo-zap'); replay(flash, 'go');
+    replay(hero, 'ufo-zap'); replay(flash, 'go'); kick(-.22);
     if (charge === 5) { frog.startle(); tags.abduct(); } else tags.tug(charge);
   });
   let hoverT = 0;
@@ -653,7 +694,7 @@ function initScene() {
   (() => {
     if (reduced.matches || !scene.animate) return;
     const tongue = mk('fx-tongue'); scene.append(tongue);
-    const lamp = () => ({x: map.ox + .41 * map.dw, y: map.oy + .38 * map.dh, r: .11 * map.dw});
+    const lamp = () => { const b = bulbPos(); return {x: b.x, y: b.y, r: .11 * map.dw}; };
     const mouth = () => ({x: map.ox + .625 * map.dw, y: map.oy + .615 * map.dh});
     const spawn = f => { const L = lamp(), t = Math.random() * 6.28; f.x = L.x + Math.cos(t) * L.r; f.y = L.y + Math.sin(t) * L.r; f.vx = f.vy = 0; };
     const flies = Array.from({length: finePointer.matches ? 7 : 4}, (_, i) => {

@@ -26,7 +26,7 @@ nav a.active{color:#fff}
 .secondary:hover{border-color:#6b737c}
 
 /* ===== Hero ===== */
-.ref-hero{background-image:url('assets/frog-eyes-open.webp')}
+.ref-hero{background-image:url('assets/hero-plate.webp')}
 .ref-hero .hero-copy{position:relative;z-index:3;pointer-events:none}
 .ref-hero .hero-copy a,.ref-hero .hero-copy button,.ref-hero .hero-tags{pointer-events:auto}
 .ref-hero .scroll-note{z-index:3}
@@ -352,3 +352,12 @@ nav a.active{color:#fff}
  .is-deck .deck-pin .projects-body .project:not(.featured) p{-webkit-line-clamp:2!important;margin-bottom:6px!important}
 }
 @media(max-width:700px){.project-foot{flex-wrap:wrap}.project-link{padding:0}}
+
+/* ===== Hanging lamp (pendulum) ===== */
+.fx-lamp{transform-origin:50% 0;will-change:transform;pointer-events:none}
+.fx-lamp>*{position:absolute}
+.fx-lamp-img{left:0;top:0;width:100%;height:100%;user-select:none;-webkit-user-select:none;pointer-events:none}
+.lamp-off .fx-lamp-on{opacity:0}
+.fx-lamp .fx-hit-lamp{left:-15%;right:-15%;top:57%;bottom:-2%;width:auto;height:auto;border-radius:45% 45% 50% 50%}
+.fx-lamp-beacon{-webkit-mask-image:none!important;mask-image:none!important;background-size:100% 100%!important;background-position:0 0!important;transform-origin:50% 0;clip-path:inset(39% -60% 0 -60%);filter:brightness(.6) saturate(1.05)}
+.fx-lamp-beacon:after{inset:62% 6% 2%!important}
